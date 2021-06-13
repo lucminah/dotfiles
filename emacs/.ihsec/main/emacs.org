@@ -177,6 +177,44 @@
        (evil-commentary-mode 1))
    #+end_src
 
+** Evil Numbers & Speeddating
+   =evil-numbers= brings the functionality of incrementing and
+   decrementing the number at point from Vim's normal mode =C-a= and
+   =C-x= commands. =speeddating= is very similar, with functions to
+   increment and decrement the date at point in various formats. Seems
+   intuitive to have them both in the same binding, so I made a couple
+   functions for that, with =speeddating-increase= as a base.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (use-package evil-numbers
+         :init
+         (setq evil-numbers-pad-default t))
+
+       (use-package speeddating)
+
+       (defun luc/increment-at-point (inc)
+         "Increments the date or literal at point."
+         (interactive "*p")
+         (let ((format-string-and-time (speeddating-time-at-point)))
+           (if format-string-and-time
+               (apply #'speeddating--increase-1 `(,@format-string-and-time ,inc))
+             (evil-numbers/inc-at-pt inc (point)))))
+
+       (defun luc/decrement-at-point (dec)
+         "Decrements the date or literal at point."
+         (interactive "*p")
+         (let ((format-string-and-time (speeddating-time-at-point)))
+           (if format-string-and-time
+               (apply #'speeddating--increase-1 `(,@format-string-and-time ,(- dec)))
+             (evil-numbers/dec-at-pt dec (point)))))
+
+       (general-def
+         :states 'normal
+         "C-=" 'luc/increment-at-point
+         "C--" 'luc/decrement-at-point))
+   #+end_src
+   
 ** Electric Pairs
    Pairs act in pairs. Using parens, quotes, brackets...  All of it
    becomes much more intuitive.
