@@ -495,9 +495,27 @@
        (setq scroll-conservatively 100))
    #+end_src
    
+** Better visual line navigation
+   I always thought the visual line motion commands felt a bit clunky
+   by default on Evil. Fortunately, =evil-better-visual-line= makes
+   those work flawlessly.
+
+   I'm not currently using =evil-better-visual-line-on= by default
+   because I don't want to create discrepancies in behavior relating
+   to line movement. Those could be very minor though, will probably
+   try it out sometime.
+   #+begin_src emacs-lisp
+     (use-package evil-better-visual-line
+       :config
+       (general-def
+         :states 'normal
+         "gj" 'evil-better-visual-line-next-line
+         "gk" 'evil-better-visual-line-previous-line))
+   #+end_src
+   
 * Applications & Utilities
 ** Magit & Forge
-   Amazingly powerful Git frontend. I hadn't known of it before, but
+   Amazingly powerful Git front-end. I hadn't known of it before, but
    =forge= allows for working with Git forges (in my case, Github)
    from inside Emacs. Even more awesome!
    
@@ -572,7 +590,7 @@
          :hook (org-mode . visual-line-mode))
        #+end_src
      
-**** Visual Fill Collum
+**** Visual Fill Column
      For centering text in the buffer.
      #+begin_src emacs-lisp
        (use-package visual-fill-column
@@ -779,7 +797,39 @@
          "mc" 'compose-mail
          "mC" 'compose-mail-other-window))
    #+end_src
-   
-   
 
-   
+** Terminal & Shell
+*** Shell & shell commands
+    I really like using =shell= if I don't need actual terminal
+    emulation, because it really is just an Emacs buffer, with all the
+    editing power I could want.
+    
+    I also want to be able to simply evaluate a command through the
+    shell without having to pull up the buffer, so here I make a
+    better keybinding for =shell-command=.
+    #+begin_src emacs-lisp
+      (use-package shell
+        :config
+        (luc/leader-def
+          "as" 'shell
+          "!" 'shell-command))
+    #+end_src
+    
+*** Vterm
+    A very good terminal emulator for using inside Emacs. With
+    =evil-collection=, it gets a lot more comfortable to use (still
+    not as comfortable as the Emacs buffer that =shell= provides, but
+    more comfortable nonetheless), and I especially like that it can
+    toggle sending =A'S= to Emacs or the shell.
+    #+begin_src emacs-lisp
+      (use-package vterm
+        :config
+        (evil-collection-vterm-setup)
+        (luc/leader-def
+          "at" 'vterm)
+        (general-def
+          :keymaps 'vterm-mode-map
+          "C-j" 'evil-collection-vterm-toggle-send-escape))
+    #+end_src
+    
+    
