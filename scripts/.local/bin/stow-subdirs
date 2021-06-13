@@ -1,0 +1,4 @@
+#!/bin/bash
+# Run GNU Stow on all subdirectories (no single files)
+
+stow $(ls -d */)

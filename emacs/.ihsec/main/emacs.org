@@ -1,0 +1,629 @@
+#+TITLE: Luc's Emacs Config
+#+PROPERTY: header-args :tangle ~/.ihsec/main/init.el
+#+REVEAL_THEME: night
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+OPTIONS: toc:nil num:nil
+
+* What is this?
+  This is my main GNU Emacs configuration file. =org-babel-tangle= will write from
+  it to my =init.el=. I'm currently using =ihsec=, a package for switching Emacs
+  configurations easily, so my =init.el= is actually in =~/.ihsec/main/= (main is
+  just the name I gave this configuration).
+
+  In /Base setup/, I'll replicate the contents of my =early-init.el=. After evaluating
+  that, running =org-babel-tangle= in this file and loading the generated =init.el=,
+  you should have a copy of my Emacs setup.
+  
+  I hope you find this helpful to your own Emacs configuration. Happy hacking!
+
+* Base setup
+** Early Init
+   Other than =init.el=, there's =early-init.el=, which is loaded before and
+   allows for a quicker startup. I'm replicating its contents here for reference.
+   *Note:* this part won't be 'tangled' into =init.el=.
+   
+   #+begin_src emacs-lisp :tangle no
+     (setq package-enable-at-startup nil)
+     (setq inhibit-startup-message t)
+     (setq inhibit-splash-screen t)
+     (menu-bar-mode -1)
+     (scroll-bar-mode -1)
+     (tool-bar-mode -1)
+     (tooltip-mode -1)
+     (set-fringe-mode 5)
+   #+end_src
+   
+** Package Management
+   I'm using a package called =use-package= for package management. Since it's
+   going to be used for configuring pretty much everything in the next blocks,
+   it's necessary to set it up in advance.
+  
+   [[https://www.emacswiki.org/emacs/UsePackage][EmacsWiki - Use Package]]
+   #+begin_src emacs-lisp
+     (require 'package)
+     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+     (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+
+     (unless (bound-and-true-p package--initialized)
+       (setq package-enable-at-startup nil)
+       (package-initialize))
+
+     (unless (package-installed-p 'use-package)
+       (package-refresh-contents)
+       (package-install 'use-package))
+
+     (setq use-package-always-ensure t)
+     (setq use-package-enable-imenu-support t)
+
+     (require 'use-package)
+   #+end_src
+  
+* Editing
+** Evil & General
+   Vim's modal editing, grammar and keybindings are very much pillars of
+   my text editing. Thankfully, these packages are here to save the day.
+*** Evil Mode
+    The Extensive Vi Layer itself! Here I load Evil and customizing some basic variables.
+  
+    [[https://evil.readthedocs.io/en/latest/index.html][Documentation]]
+    #+begin_src emacs-lisp
+      (use-package evil
+        :custom
+        (evil-want-keybinding nil)    ;; For playing nice with `evil-collection'
+        (evil-want-Y-yank-to-eol t)   ;; Just makes more sense to me. Equivalent to 'map Y y$' in Vim
+        (evil-symbol-word-search t)   ;; * and # will search for symbols (Vim 'big words'), not words.
+        (evil-want-C-u-scroll t)      ;; \
+        (evil-want-C-u-delete t)      ;; -\ I don't use C-u for the universal argument (Emacs's default)
+        :config
+        (evil-mode 1)
+        (evil-select-search-module 'evil-search-module 'evil-search)
+        (evil-set-undo-system 'undo-fu)) ;; See the Undo Fu section.
+    #+end_src
+
+*** General
+    The package I use to manage all my custom keybindings. I find it complements Evil
+    very well, being easy to specify in which states and keymaps the bindings apply.
+
+    [[https://github.com/noctuid/general.el][Git repository]]
+
+    Here I create a definer that I'll use for many keybindings going forward, which uses
+    =SPC= or =C-SPC= as a prefix. =SPC= will only work for normal states, while
+    =C-SPC= will work in any state.
+   
+    Other than that, I assign the =keyboard-quit= function to =ESC= when in the normal state.
+    #+begin_src emacs-lisp
+      (use-package general
+        :config
+        (general-create-definer luc/leader-def
+          :states '(normal visual emacs insert)
+          :keymaps 'override
+          :prefix "SPC"
+          :global-prefix "C-SPC")
+        (general-def
+          :states 'normal
+          :keymaps 'override
+          "ESC" 'keyboard-quit))
+    #+end_src
+
+*** Evil Collection
+    Brings Evil keybindings to many, many different parts of Emacs. Saves me a lot of rebinding trouble.
+   
+    [[htTps://github.com/emacs-evil/evil-collection][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package evil-collection
+        :after evil
+        :custom
+        (evil-collection-setup-minibuffer t)   ;; Modal editing in the minibuffer!
+        :init
+        (evil-collection-init))
+    #+end_src
+
+** Undo Fu
+   My preferred undo system. Works by creating checkpoints on the undo actions that keep the functionality linear and
+   sensibly delimited, much easier to follow than the default Emacs undo, but also allow for unconstrained and 
+   non-linear (default) undo/redo, so there's still access to all previous states of the file. It also has a function
+   to allow it to be limited to a selected region, but I haven't tried that out yet.
+
+   [[https://gitlab.com/ideasman42/emacs-undo-fu][Undo Fu]]
+
+   I'm also using =undo-fu-session=, which makes it possible to have a persistent change history of files
+   between sessions. The history saving is made automatically when writing to the file.
+   
+   [[https://gitlab.com/ideasman42/emacs-undo-fu-session][Undo Fu Session]]
+   #+begin_src emacs-lisp
+     (use-package undo-fu
+       :custom
+       (undo-fu-ignore-keyboard-quit t)    ;; C-g won't disable the checkpoint...
+       :config
+       (luc/leader-def
+         "u" 'undo-fu-disable-checkpoint)  ;; ...but now this will
+       (use-package undo-fu-session
+         :config
+         (global-undo-fu-session-mode)))
+   #+end_src
+
+** Evil Surround
+   Makes surrounding pairs (including parens, brackets, quotes) a
+   text object to be operated on, be it changing, deleting or adding.
+
+   [[https://github.com/emacs-evil/evil-surround][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package evil-surround
+       :config
+       (global-evil-surround-mode 1))
+   #+end_src
+
+** Evil Commentary
+   Commenting becomes an Evil verb to be applied on text.
+
+   [[https://github.com/linktohack/evil-commentary][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package evil-commentary
+       :config
+       (evil-commentary-mode 1))
+   #+end_src
+
+** Electric Pairs
+   Pairs act in pairs. Using parens, quotes, brackets... 
+   All of it becomes much more intuitive.
+   #+begin_src emacs-lisp
+   (use-package emacs
+     :config
+     (electric-pair-mode 1))
+   #+end_src
+
+** Subword
+   The concept of "word" gets a bit more flexible, making it so mixed
+   lowercase and uppercase characters delimit its "subwords". Generally
+   feels more intuitive, definitely improves camelCase navigation.
+   #+begin_src emacs-lisp
+     (use-package subword
+       :config
+       (global-subword-mode 1))
+   #+end_src
+
+* Search & Completion
+** Ivy, Counsel & Swiper
+   As my completion framework, I'm using Ivy. On top of it I'm loading 
+   Ivy Rich, for getting details on each selectable option. Also setting up keybindings
+   for the Counsel versions of commands for much better navigability, substituting 
+   I-search with =swiper= and remapping some keys in the =ivy-minibuffer-map=.
+  
+   [[https://github.com/abo-abo/swiper][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package ivy
+       :config
+       (ivy-mode 1)
+       (use-package counsel)
+       (use-package ivy-rich
+         :init
+         (ivy-rich-mode 1))
+       (luc/leader-def
+         "SPC" 'counsel-M-x
+         "C-SPC" 'counsel-M-x
+         "f" 'counsel-find-file
+         "F" 'counsel-fzf
+         "d" 'counsel-dired
+         "b" 'counsel-switch-buffer
+         "B" 'counsel-switch-buffer-other-window
+         "g" 'counsel-rg)
+       (general-def
+         :states 'normal
+         "C-s" 'swiper)
+       (general-def
+         :states 'insert
+         :keymaps 'ivy-minibuffer-map
+         "C-j" 'ivy-next-line
+         "C-k" 'ivy-previous-line
+         "C-n" 'ivy-next-history-element
+         "C-p" 'ivy-previous-history-element)
+       (general-def
+         :states 'normal
+         :keymaps 'ivy-minibuffer-map
+         "j" 'ivy-next-line
+         "k" 'ivy-previous-line
+         "J" 'ivy-next-history-element
+         "K" 'ivy-previous-history-element))
+   #+end_src
+
+** Company
+   An autocompletion package. Very comfortable to use and highly customizable.
+   I do some remapping to use make it so it doesn't interfere with Evil's 
+   completion commands (=C-n= and =C-p=).
+   
+   [[https://company-mode.github.io/][Documentation]]
+   #+begin_src emacs-lisp
+     (use-package company
+       :hook
+       (after-init . global-company-mode)
+       :init
+       (setq company-idle-delay 0)
+       (setq company-minimum-prefix-length 1)
+       (setq company-tooltip-idle-delay 0)
+       (setq company-selection-wrap-around t)
+       :config
+       (general-def
+         :keymaps 'company-active-map
+         "C-<return>" 'company-cancel
+         "C-j" 'company-select-next-or-abort
+         "C-k" 'company-select-previous-or-abort
+         "C-n" 'evil-complete-next
+         "C-p" 'evil-complete-previous))
+   #+end_src
+
+* Interface & Interactions
+** Theme and Default Font
+   Trying out some Doom themes and the Doom modeline. Looking pretty good.
+  
+   [[https://github.com/hlissner/emacs-doom-themes][Doom themes]]
+
+   [[https://github.com/seagle0128/doom-modeline][Doom modeline]]
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (use-package doom-themes)
+       (load-theme 'doom-dracula t)
+       (use-package doom-modeline
+         :init
+         (setq doom-modeline-icon t)
+         (doom-modeline-mode 1)
+         :custom
+         (doom-modeline-height 30))
+       ;; Making this the default font for this and future frames
+       (add-to-list 'default-frame-alist '(font . "UbuntuMono-13"))
+       (set-face-attribute 'default nil :font "UbuntuMono-13"))
+   #+end_src
+
+** Rainbow Delimiters
+   Delimiters (or pairs) have matching colors.
+   
+   [[https://github.com/Fanael/rainbow-delimiters][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters
+       :hook
+       (prog-mode . rainbow-delimiters-mode))
+   #+end_src
+
+** Rainbow Mode
+   Hex codes in text have their background colored.
+   
+   [[https://github.com/emacsmirror/rainbow-mode][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package rainbow-mode
+       :hook (prog-mode
+              conf-mode
+              fundamental-mode
+              org-mode)
+       :init
+       (luc/leader-def
+         "irm" 'rainbow-mode))
+   #+end_src
+
+** Help
+   Emacs is great at discoverability. Here I set keybindings for help 
+   ("describe") commands, and load the =helpful= package for better help buffers.
+   #+begin_src emacs-lisp
+     (use-package helpful
+       :custom
+       (counsel-describe-function-function #'helpful-callable)
+       (counsel-describe-variable-function #'helpful-variable)
+       :config
+       (luc/leader-def
+         "hm" 'describe-mode
+         "hk" 'helpful-key
+         "hv" 'counsel-describe-variable
+         "hf" 'counsel-describe-function
+         "hc" 'helpful-command))
+   #+end_src
+   
+** Finding and reloading configuration
+   I visit this file and reload =init.el= quite a lot.
+   Only makes sense to make a couple keybindings for that.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (defun luc/config-find ()
+         "Navigates to my Emacs configuration Org file."
+         (interactive)
+         (find-file "~/dotfiles/emacs/.ihsec/main/emacs.org"))
+
+       (luc/leader-def
+         "ce" 'luc/config-find)
+
+       (defun luc/config-reload ()
+         "Reloads init.el"
+         (interactive)
+         (load-file "~/.emacs.d/init.el"))
+
+       (luc/leader-def
+         "cr" 'luc/config-reload))
+   #+end_src
+   
+** Relative Line Numbers
+   Display absolute number for current line, relative number for other lines.
+   #+begin_src emacs-lisp
+     (use-package display-line-numbers
+       :config
+       (setq display-line-numbers-type 'relative)
+       (luc/leader-def
+         "iln" 'display-line-numbers-mode)
+       :hook
+       (prog-mode . display-line-numbers-mode))
+   #+end_src
+   
+** Highlight Current Line
+   #+begin_src emacs-lisp
+     (use-package hl-line
+       :config
+       (luc/leader-def
+         "ilh" 'hl-line-mode))
+   #+end_src
+   
+** Hydra
+*** Scaling windows
+    Since
+    #+begin_src emacs-lisp
+      (use-package hydra
+        :config
+        (defhydra luc/hydra-window-scale ()
+          "Scale current window"
+          ("h" evil-window-decrease-width "width--")
+          ("l" evil-window-increase-width "width++")
+          ("j" evil-window-decrease-height "height--")
+          ("k" evil-window-increase-height "height++")
+          ("q" nil "quit" :exit t))
+        (luc/leader-def
+          "es" 'luc/hydra-window-scale/body))
+    #+end_src
+    
+* Windows & Buffers
+** Basic keybindings
+   Creating comfortable keybindings for common buffer/window
+   related commands.
+   #+begin_src emacs-lisp
+     (luc/leader-def
+       "w" 'save-buffer
+       "k" 'kill-current-buffer
+       "q" 'delete-window
+       "v" 'split-window-horizontally
+       "s" 'split-window-vertically
+       "n" 'switch-to-next-buffer
+       "p" 'switch-to-prev-buffer)
+   #+end_src
+
+** Winner
+   Undo and redo for window actions. I use this a lot when I need to have only 
+   one window open for a moment, and then want the layout I had before back.
+   #+begin_src emacs-lisp
+     (use-package winner
+       :hook (after-init . winner-mode)
+       :config
+       ;; (general-def
+       ;;   :states 'normal
+       ;;   :keymaps 'override
+       ;;   "C-w u" 'winner-undo
+       ;;   "C-w r" 'winner-redo))
+       (luc/leader-def
+         "eu" 'winner-undo
+         "er" 'winner-redo))
+   #+end_src
+
+** Scroll conservatively
+   I want my cursor to only move the screen
+   one line at a time when on the edges.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (setq scroll-conservatively 100))
+   #+end_src
+   
+* Applications & Utilities
+** Magit
+   An amazingly useful Git frontend. Don't know 
+   how my projects would go without it.
+   
+   [[https://magit.vc/][Website]]
+   #+begin_src emacs-lisp
+     (use-package magit
+       :config
+       (luc/leader-def
+         "mg" 'magit-status))
+   #+end_src
+
+** Org Mode
+   An amazing organization tool. I'm using it to write this very file,
+   which really facilitates checking and updating the configuration,
+   but there's a lot more to it as well.
+   
+   [[https://orgmode.org/manual/][Org Manual]]
+*** Evil Org
+    More Evil keybindings for Org Mode.
+    
+    [[https://github.com/Somelauw/evil-org-mode][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package evil-org
+        :after org
+        :hook ((org-mode . evil-org-mode)
+               (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation insert textobjects additional))))))
+    #+end_src
+
+*** Exporting: Ox-Reveal and Htmlize
+    Org is pretty easy to export to different formats (by default,
+    =C-c C-e= will bring up Org Export Dispatcher with many options).
+    For better visualization in HTML (including =reveal.js= presentations),
+    these packages really come in handy.
+    
+    [[https://github.com/hexmode/ox-reveal][Ox Reveal]]
+    
+    [[https://github.com/hniksic/emacs-htmlize][Htmlize]]
+    #+begin_src emacs-lisp
+      (use-package ox-reveal
+        :init
+        (setq org-reveal-mathjax t))
+
+      (use-package htmlize
+        :commands htmlize-file)
+    #+end_src
+
+*** Org Agenda
+    I use this daily to manage my schedule, check deadlines, remember
+    dates and keep track of my daily routine. Thankfully =evil-org=
+    can bring more Evil keybindings to it as well.
+    
+    There's a keybinding for toggling =log-mode= in the agenda because
+    repeated tasks (from the daily routine, for example) only show up
+    there when I mark them as =DONE=, along with the timestamp for when
+    I completed them.
+    #+begin_src emacs-lisp
+      (use-package org
+        :config
+        (setq org-directory "~/storage/org/")
+        (setq org-agenda-files '("~/storage/org/agenda/"))
+        (setq org-agenda-log-mode-items '(closed clock state))
+        (use-package evil-org-agenda
+          :ensure nil
+          :config
+          (evil-org-agenda-set-keys))
+        (general-def
+          :states 'motion
+          :keymaps 'org-agenda-mode-map
+          "l" 'org-agenda-log-mode)
+        (luc/leader-def
+          "ca" 'org-agenda))
+    #+end_src
+    
+*** Org Capture
+    For quickly 'capturing' something in Org files. I mostly use it
+    for adding items to the agenda, but have templates for other uses
+    as well. Counsel also has it's version of it.
+    #+begin_src emacs-lisp
+      (use-package org
+        :config
+        (luc/leader-def
+          "cc" 'counsel-org-capture)
+        (setq org-capture-templates
+              '(("d"
+                 "Task with a deadline"
+                 entry (file+headline "agenda/deadlines.org" "Deadlines")
+                 "* TODO %^{Task}\nSCHEDULED: %^t DEADLINE: %^t")
+                ("e"
+                 "Scheduled event"
+                 entry (file+headline "agenda/events.org" "Events")
+                 "* %^{Event}\nSCHEDULED: %^T\n")
+                ("l"
+                 "Link"
+                 entry (file+headline "links.org" "Links")
+                 "* [[%x][%^{Description}]]\n%U")
+                ("i"
+                 "Idea/thought"
+                 entry (file+headline "thoughts.org" "Ideas & Thoughts")
+                 "* %?\n%U")
+                ("t"
+                 "TODO item (no deadline)"
+                 entry (file+headline "agenda/tasks.org" "Tasks")
+                 "* TODO %^{Task}\n SCHEDULED: %^t\n%?"))))
+    #+end_src
+    
+*** Org Babel
+    For managing configuration files written in Org.
+**** Automatic tangling
+     =org-babel-tangle= writes the contents of the source blocks of an Org file
+     into a destination file. Since I'm using it to write to configuration files,
+     I'd like that function to be called every time I save the corresponding Org
+     file.
+
+     Here I make it so =org-babel-tangle= is added to the =after-save-hook= on Org
+     files that match my specification. For that, I create a variable that holds a
+     list of my Org configuration files (so far only this one) and a function to make
+     the check.
+     #+begin_src emacs-lisp
+       (use-package emacs
+	 :config
+	 (defvar luc/org-config-dir (expand-file-name "~/dotfiles")
+	   "Directory with Org files that should call `org-babel-tangle' automatically when written to.")
+
+	 (defun luc/auto-tangle-config-files ()
+	   "If `buffer-file-name' is a file in `luc/org-config-dir' (recursively), call `org-babel-tangle'"
+	   (when (member (buffer-file-name) (directory-files-recursively luc/org-config-dir ".*.org$"))
+	     (let ((org-confirm-babel-evaluate nil))
+	       (org-babel-tangle))
+	     (message "File successfully tangled!")))
+
+	 (use-package org
+	   :hook
+	   (org-mode . (lambda () (add-hook 'after-save-hook #'luc/auto-tangle-config-files)))))
+     #+end_src
+     
+** Dired
+   I use dired for basically all my file management, along some 
+   other packages to make it that much more intuitive and useful.
+   
+   [[https://github.com/jwiegley/emacs-async][Async]]
+   
+   [[https://github.com/Fuco1/dired-hacks/tree/7c0ef09d57a80068a11edc74c3568e5ead5cc15a#dired-subtree][Dired Subtree]]
+   #+begin_src emacs-lisp
+     (use-package dired
+       :ensure nil
+       :custom
+       (trash-directory "~/.local/share/Trash/")
+       (delete-by-moving-to-trash t)
+       (dired-isearch-filenames 'dwim)        ;; I-search only matches filenames if cursor is on filename column
+       (dired-dwim-target t)                  ;; Deduces where to copy/move files, works great on split windows
+       :hook
+       (dired-mode . dired-hide-details-mode) ;; Don't show full details by default - toggle with left paren
+       :config
+       (use-package async)                    ;; \
+       (use-package dired-async               ;; -\ Will allow for Dired operations to be run asynchronously
+         :ensure nil
+         :config
+         (dired-async-mode 1))
+       (use-package dired-subtree             ;; Directories can expand into subtrees
+         :config
+         (general-def
+           :keymaps 'dired-mode-map
+           "<tab>" 'dired-subtree-toggle
+           "<backtab>" 'dired-subtree-cycle))
+       (use-package wdired              ;; Writable Dired
+         :ensure nil
+         :init
+         (setq wdired-allow-to-change-permissions t)
+         (setq wdired-create-parent-directories t)))
+   #+end_src
+   
+** Gnus
+   Built-in package for managing RSS feeds, news and mail. For now I only use it for mail.
+   I'm using two GMail accounts here, each with authentication info in my =.authinfo= file.
+   In each account it's necessary to enable IMAP and either grant access to third party apps
+   or create an app password and use that in =.authinfo=. Other than that, I have the variables
+   =NAME= and =EMAIL= set in my =.profile=.
+   
+   I definitely still have things I want to improve on it, so
+   that's coming soon. Either that or giving =mu4e= another try.
+
+   [[https://www.emacswiki.org/emacs/GnusTutorial][EmacsWiki Gnus Tutorial]]
+   #+begin_src emacs-lisp
+     (use-package gnus
+       :config
+       (setq gnus-expert-user t)
+       (setq gnus-select-method '(nnnil ""))
+       (setq gnus-secondary-select-methods '((nnimap "uni"
+                                                     (nnimap-address "imap.gmail.com")
+                                                     (nnimap-server-port 993)
+                                                     (nnimap-stream ssl)
+                                                     (nnimap-authinfo-file "~/.authinfo"))
+                                             (nnimap "personal"
+                                                     (nnimap-address "imap.gmail.com")
+                                                     (nnimap-server-port 993)
+                                                     (nnimap-stream ssl)
+                                                     (nnimap-authinfo-file "~/.authinfo"))))
+       (setq message-send-mail-function 'smtpmail-send-it
+             smtpmail-default-smtp-server "smtp.gmail.com")
+       (luc/leader-def
+         "ml" 'gnus
+         "mc" 'compose-mail
+         "mC" 'compose-mail-other-window))
+   #+end_src
+   
+   
+
+   
