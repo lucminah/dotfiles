@@ -598,13 +598,21 @@
           "cc" 'counsel-org-capture)
         (setq org-capture-templates
               '(("d"
-                 "Task with a deadline"
+                 "Task with deadline"
                  entry (file+headline "agenda/deadlines.org" "Deadlines")
                  "* TODO %^{Task}\nSCHEDULED: %^t DEADLINE: %^t")
+                ("t"
+                 "Task without deadline"
+                 entry (file+headline "agenda/tasks.org" "Tasks")
+                 "* TODO %^{Task}\n SCHEDULED: %^t\n%?")
                 ("e"
                  "Scheduled event"
                  entry (file+headline "agenda/events.org" "Events")
                  "* %^{Event}\nSCHEDULED: %^T\n")
+                ("r"
+                 "Dates to remember"
+                 entry (file+headline "agenda/dates.org" "Dates")
+                 "* %^{Description}\n%^t\n")
                 ("l"
                  "Link"
                  entry (file+headline "links.org" "Links")
@@ -612,11 +620,7 @@
                 ("i"
                  "Idea/thought"
                  entry (file+headline "thoughts.org" "Ideas & Thoughts")
-                 "* %?\n%U")
-                ("t"
-                 "TODO item (no deadline)"
-                 entry (file+headline "agenda/tasks.org" "Tasks")
-                 "* TODO %^{Task}\n SCHEDULED: %^t\n%?"))))
+                 "* %?\n%U"))))
     #+end_src
     
 *** Org Babel
