@@ -360,13 +360,21 @@
    #+end_src
    
 ** Hydra
+   A package for grouping quick bindings together for a particular task.
+   It's a lot easier to understand just seeing an example.
+   
+   [[https://github.com/abo-abo/hydra][Github repository]]
 *** Scaling windows
-    Since
+    Scaling with =[count] C-w [+/-/</>]= doesn't feel very comfortable,
+    since I never know exactly how much I want to scale. This hydra
+    makes is a lot easier.
     #+begin_src emacs-lisp
+      ;; With this, I can press 'SPC es' and then h/j/k/l how many
+      ;; times I need to scale the window properly, then 'q' to quit.
       (use-package hydra
         :config
         (defhydra luc/hydra-window-scale ()
-          "Scale current window"
+          "Scale current window."
           ("h" evil-window-decrease-width "width--")
           ("l" evil-window-increase-width "width++")
           ("j" evil-window-decrease-height "height--")
@@ -440,6 +448,53 @@
    but there's a lot more to it as well.
    
    [[https://orgmode.org/manual/][Org Manual]]
+*** Aesthetics
+    Changing the look and feel of =org-mode=, for maximum organization power.
+**** Header font sizes
+     #+begin_src emacs-lisp
+       (use-package org
+         :config
+         (dolist (face '((org-level-1 . 1.1)
+                         (org-level-2 . 1.05)
+                         (org-level-3 . 1.0)
+                         (org-level-4 . 1.0)
+                         (org-level-5 . 1.0)
+                         (org-level-6 . 1.0)
+                         (org-level-7 . 1.0)
+                         (org-level-8 . 1.0)))
+           (set-face-attribute (car face) nil :height (cdr face))))
+     #+end_src
+     
+**** Variable pitch
+     Different font pitches for different contexts.
+     #+begin_src emacs-lisp
+       (use-package org
+         :config
+         (defun luc/set-my-face-attributes ()
+           (set-face-attribute 'fixed-pitch nil :font "UbuntuMono-13")
+           (set-face-attribute 'default nil :inherit 'fixed-pitch)
+           (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+           (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+           (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
+           (set-face-attribute 'org-meta-line nil :inherit 'fixed-pitch))
+         :hook
+         (org-mode . luc/set-my-face-attributes)
+         (org-mode . variable-pitch-mode))
+     #+end_src
+     
+**** Ellipsis & Org Bullets
+     Header markers are bullets and expansion markers are little triangles. A lot cleaner.
+     #+begin_src emacs-lisp
+       (use-package org
+         :config
+         (setq org-ellipsis " ▾")
+         (use-package org-bullets
+           :custom
+           (org-bullets-bullet-list '("◉" "●" "○" "●" "○" "●" "○"))
+           :hook
+           (org-mode . org-bullets-mode)))
+     #+end_src
+     
 *** Evil Org
     More Evil keybindings for Org Mode.
     
