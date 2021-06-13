@@ -418,14 +418,18 @@
    #+end_src
    
 * Applications & Utilities
-** Magit
-   An amazingly useful Git frontend. Don't know 
-   how my projects would go without it.
+** Magit & Forge
+   Amazingly powerful Git frontend. I hadn't known of it before, but =forge=
+   allows for working with Git forges (in my case, Github) from inside Emacs.
+   Even more awesome!
    
-   [[https://magit.vc/][Website]]
+   [[https://magit.vc/][Magit Website]]
+   
+   [[https://magit.vc/manual/forge/][Forge Manual]]
    #+begin_src emacs-lisp
      (use-package magit
        :config
+       (use-package forge)
        (luc/leader-def
          "mg" 'magit-status))
    #+end_src
@@ -538,20 +542,20 @@
      the check.
      #+begin_src emacs-lisp
        (use-package emacs
-	 :config
-	 (defvar luc/org-config-dir (expand-file-name "~/dotfiles")
-	   "Directory with Org files that should call `org-babel-tangle' automatically when written to.")
+         :config
+         (defvar luc/org-config-dir (expand-file-name "~/dotfiles")
+           "Directory with Org files that should call `org-babel-tangle' automatically when written to.")
 
-	 (defun luc/auto-tangle-config-files ()
-	   "If `buffer-file-name' is a file in `luc/org-config-dir' (recursively), call `org-babel-tangle'"
-	   (when (member (buffer-file-name) (directory-files-recursively luc/org-config-dir ".*.org$"))
-	     (let ((org-confirm-babel-evaluate nil))
-	       (org-babel-tangle))
-	     (message "File successfully tangled!")))
+         (defun luc/auto-tangle-config-files ()
+           "If `buffer-file-name' is a file in `luc/org-config-dir' (recursively), call `org-babel-tangle'"
+           (when (member (buffer-file-name) (directory-files-recursively luc/org-config-dir ".*.org$"))
+             (let ((org-confirm-babel-evaluate nil))
+               (org-babel-tangle))
+             (message "File successfully tangled!")))
 
-	 (use-package org
-	   :hook
-	   (org-mode . (lambda () (add-hook 'after-save-hook #'luc/auto-tangle-config-files)))))
+         (use-package org
+           :hook
+           (org-mode . (lambda () (add-hook 'after-save-hook #'luc/auto-tangle-config-files)))))
      #+end_src
      
 ** Dired
