@@ -2,12 +2,13 @@
 #+OPTIONS: toc:nil num:nil
 
 * What is this?
-  This repository contains my scripts and configuration files
-  for various programs. I'm using [[https://www.gnu.org/software/stow/][GNU Stow]] to manage it, so
-  each directory will mimic the home directory in its structure.
-  For example, my scripts in =~/.local/bin/= are symlinks from
+  This repository contains my scripts and configuration files for
+  various programs. I'm using [[https://www.gnu.org/software/stow/][GNU Stow]] to manage it, so each directory
+  will mimic the home directory in its structure.  For example, my
+  scripts in =~/.local/bin/= are symlinks from
   =dotfiles/scripts/.local/bin/=.
   
 * Licensing
-  This repository is under the terms of the GNU General Public
-  License v3.0. For more information, please read [[./LICENSE][LICENSE]].
+  These files are under the terms of the GNU General Public License
+  v3.0, as written in [[./LICENSE][LICENSE]], unless a different license is specified
+  in source code or license files in subdirectories.
