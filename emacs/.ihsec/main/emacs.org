@@ -238,7 +238,7 @@
 * Search & Completion
 ** Ivy, Counsel & Swiper
    As my completion framework, I'm using Ivy. On top of it I'm loading
-   Ivy Rich, for getting details on each selectable option. Also
+   Ivy Rich, for getting details on each option for selection. Also
    setting up keybindings for the Counsel versions of commands for
    much better navigability, substituting I-search with =swiper= and
    remapping some keys in the =ivy-minibuffer-map=.
@@ -281,7 +281,7 @@
    #+end_src
 
 ** Company
-   An autocompletion package. Very comfortable to use and highly
+   An auto-completion package. Very comfortable to use and highly
    customizable.  I do some remapping to use make it so it doesn't
    interfere with Evil's completion commands (=C-n= and =C-p=).
    
@@ -302,7 +302,9 @@
          "C-j" 'company-select-next-or-abort
          "C-k" 'company-select-previous-or-abort
          "C-n" 'evil-complete-next
-         "C-p" 'evil-complete-previous))
+         "C-p" 'evil-complete-previous)
+       (luc/leader-def
+         "ac" 'company-mode))
    #+end_src
 
 * Interface & Interactions
@@ -416,15 +418,25 @@
          "ilh" 'hl-line-mode))
    #+end_src
    
+** Highlight Search
+   Search matches will remain highlighted until disabled with this
+   keybinding.
+   #+begin_src emacs-lisp
+     (use-package evil
+       :config
+       (luc/leader-def
+         "ish" 'evil-ex-nohighlight))
+   #+end_src
+   
 ** Hydra
    A package for grouping quick bindings together for a particular
-   task.  It's a lot easier to understand just seeing an example.
+   task. It's a lot easier to understand just seeing an example.
    
    [[https://github.com/abo-abo/hydra][Github repository]]
 *** Scaling windows
     Scaling with =[count] C-w [+/-/</>]= doesn't feel very
     comfortable, since I never know exactly how much I want to
-    scale. This hydra makes is a lot easier.
+    scale. This hydra makes that a lot easier.
     #+begin_src emacs-lisp
       ;; With this, I can press 'SPC es' and then h/j/k/l how many
       ;; times I need to scale the window properly, then 'q' to quit.
