@@ -63,7 +63,7 @@
    #+end_src
   
 * Editing
-** Evil & General
+** Evil & General Setup
    Vim's modal editing, grammar and keybindings are very much pillars
    of my text editing. Thankfully, these packages are here to save the
    day.
@@ -86,8 +86,23 @@
         (evil-set-undo-system 'undo-fu)) ;; See the Undo Fu section.
     #+end_src
 
+*** Evil Collection
+    Brings Evil keybindings to many, many different parts of
+    Emacs. Saves me a lot of rebinding trouble.
+   
+    [[htTps://github.com/emacs-evil/evil-collection][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package evil-collection
+        :after evil
+        :custom
+        (evil-collection-setup-minibuffer t)   ;; Modal editing in the minibuffer!
+        :init
+        (evil-collection-init))
+    #+end_src
+
 *** General
-    The package I use to manage all my custom keybindings. I find it
+    The package I use to manage all my custom keybindings. Going
+    forward I'm going to configure a lot of those. I find it
     complements Evil very well, being easy to specify in which states
     and keymaps the bindings apply.
 
@@ -112,21 +127,7 @@
           :keymaps 'override
           "ESC" 'keyboard-quit))
     #+end_src
-
-*** Evil Collection
-    Brings Evil keybindings to many, many different parts of
-    Emacs. Saves me a lot of rebinding trouble.
-   
-    [[htTps://github.com/emacs-evil/evil-collection][Git repository]]
-    #+begin_src emacs-lisp
-      (use-package evil-collection
-        :after evil
-        :custom
-        (evil-collection-setup-minibuffer t)   ;; Modal editing in the minibuffer!
-        :init
-        (evil-collection-init))
-    #+end_src
-
+    
 ** Undo Fu
    My preferred undo system. Works by creating checkpoints on the undo
    actions that keep the functionality linear and sensibly delimited,
