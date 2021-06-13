@@ -5,23 +5,26 @@
 #+OPTIONS: toc:nil num:nil
 
 * What is this?
-  This is my main GNU Emacs configuration file. =org-babel-tangle= will write from
-  it to my =init.el=. I'm currently using =ihsec=, a package for switching Emacs
-  configurations easily, so my =init.el= is actually in =~/.ihsec/main/= (main is
-  just the name I gave this configuration).
+  This is my main GNU Emacs configuration file. =org-babel-tangle=
+  will write from it to my =init.el=. I'm currently using =ihsec=, a
+  package for switching Emacs configurations easily, so my =init.el=
+  is actually in =~/.ihsec/main/= (main is just the name I gave this
+  configuration).
 
-  In /Base setup/, I'll replicate the contents of my =early-init.el=. After evaluating
-  that, running =org-babel-tangle= in this file and loading the generated =init.el=,
-  you should have a copy of my Emacs setup.
+  In /Base setup/, I'll replicate the contents of my
+  =early-init.el=. After evaluating that, running =org-babel-tangle=
+  in this file and loading the generated =init.el=, you should have a
+  copy of my Emacs setup.
   
-  I hope you find this helpful to your own Emacs configuration. Happy hacking!
+  I hope you find this helpful to your own Emacs configuration. Happy
+  hacking!
 
 * Base setup
 ** Early Init
-   Other than =init.el=, there's =early-init.el=, which is loaded before and
-   allows for a quicker startup. I'm replicating its contents here for reference.
-   *Note:* this part won't be 'tangled' into =init.el=.
-   
+   Other than =init.el=, there's =early-init.el=, which is loaded
+   before and allows for a quicker startup. I'm replicating its
+   contents here for reference.  *Note:* this part won't be 'tangled'
+   into =init.el=.
    #+begin_src emacs-lisp :tangle no
      (setq package-enable-at-startup nil)
      (setq inhibit-startup-message t)
@@ -34,9 +37,10 @@
    #+end_src
    
 ** Package Management
-   I'm using a package called =use-package= for package management. Since it's
-   going to be used for configuring pretty much everything in the next blocks,
-   it's necessary to set it up in advance.
+   I'm using a package called =use-package= for package
+   management. Since it's going to be used for configuring pretty much
+   everything in the next blocks, it's necessary to set it up in
+   advance.
   
    [[https://www.emacswiki.org/emacs/UsePackage][EmacsWiki - Use Package]]
    #+begin_src emacs-lisp
@@ -60,10 +64,12 @@
   
 * Editing
 ** Evil & General
-   Vim's modal editing, grammar and keybindings are very much pillars of
-   my text editing. Thankfully, these packages are here to save the day.
+   Vim's modal editing, grammar and keybindings are very much pillars
+   of my text editing. Thankfully, these packages are here to save the
+   day.
 *** Evil Mode
-    The Extensive Vi Layer itself! Here I load Evil and customizing some basic variables.
+    The Extensive Vi Layer itself! Here I load Evil and customizing
+    some basic variables.
   
     [[https://evil.readthedocs.io/en/latest/index.html][Documentation]]
     #+begin_src emacs-lisp
@@ -81,16 +87,18 @@
     #+end_src
 
 *** General
-    The package I use to manage all my custom keybindings. I find it complements Evil
-    very well, being easy to specify in which states and keymaps the bindings apply.
+    The package I use to manage all my custom keybindings. I find it
+    complements Evil very well, being easy to specify in which states
+    and keymaps the bindings apply.
 
     [[https://github.com/noctuid/general.el][Git repository]]
 
-    Here I create a definer that I'll use for many keybindings going forward, which uses
-    =SPC= or =C-SPC= as a prefix. =SPC= will only work for normal states, while
-    =C-SPC= will work in any state.
+    Here I create a definer that I'll use for many keybindings going
+    forward, which uses =SPC= or =C-SPC= as a prefix. =SPC= will only
+    work for normal states, while =C-SPC= will work in any state.
    
-    Other than that, I assign the =keyboard-quit= function to =ESC= when in the normal state.
+    Other than that, I assign the =keyboard-quit= function to =ESC=
+    when in the normal state.
     #+begin_src emacs-lisp
       (use-package general
         :config
@@ -106,7 +114,8 @@
     #+end_src
 
 *** Evil Collection
-    Brings Evil keybindings to many, many different parts of Emacs. Saves me a lot of rebinding trouble.
+    Brings Evil keybindings to many, many different parts of
+    Emacs. Saves me a lot of rebinding trouble.
    
     [[htTps://github.com/emacs-evil/evil-collection][Git repository]]
     #+begin_src emacs-lisp
@@ -119,15 +128,19 @@
     #+end_src
 
 ** Undo Fu
-   My preferred undo system. Works by creating checkpoints on the undo actions that keep the functionality linear and
-   sensibly delimited, much easier to follow than the default Emacs undo, but also allow for unconstrained and 
-   non-linear (default) undo/redo, so there's still access to all previous states of the file. It also has a function
-   to allow it to be limited to a selected region, but I haven't tried that out yet.
+   My preferred undo system. Works by creating checkpoints on the undo
+   actions that keep the functionality linear and sensibly delimited,
+   much easier to follow than the default Emacs undo, but also allow
+   for unconstrained and non-linear (default) undo/redo, so there's
+   still access to all previous states of the file. It also has a
+   function to allow it to be limited to a selected region, but I
+   haven't tried that out yet.
 
    [[https://gitlab.com/ideasman42/emacs-undo-fu][Undo Fu]]
 
-   I'm also using =undo-fu-session=, which makes it possible to have a persistent change history of files
-   between sessions. The history saving is made automatically when writing to the file.
+   I'm also using =undo-fu-session=, which makes it possible to have a
+   persistent change history of files between sessions. The history
+   saving is made automatically when writing to the file.
    
    [[https://gitlab.com/ideasman42/emacs-undo-fu-session][Undo Fu Session]]
    #+begin_src emacs-lisp
@@ -143,8 +156,8 @@
    #+end_src
 
 ** Evil Surround
-   Makes surrounding pairs (including parens, brackets, quotes) a
-   text object to be operated on, be it changing, deleting or adding.
+   Makes surrounding pairs (including parens, brackets, quotes) a text
+   object to be operated on, be it changing, deleting or adding.
 
    [[https://github.com/emacs-evil/evil-surround][Git repository]]
    #+begin_src emacs-lisp
@@ -164,8 +177,8 @@
    #+end_src
 
 ** Electric Pairs
-   Pairs act in pairs. Using parens, quotes, brackets... 
-   All of it becomes much more intuitive.
+   Pairs act in pairs. Using parens, quotes, brackets...  All of it
+   becomes much more intuitive.
    #+begin_src emacs-lisp
    (use-package emacs
      :config
@@ -174,8 +187,9 @@
 
 ** Subword
    The concept of "word" gets a bit more flexible, making it so mixed
-   lowercase and uppercase characters delimit its "subwords". Generally
-   feels more intuitive, definitely improves camelCase navigation.
+   lowercase and uppercase characters delimit its
+   "subwords". Generally feels more intuitive, definitely improves
+   camelCase navigation.
    #+begin_src emacs-lisp
      (use-package subword
        :config
@@ -184,10 +198,11 @@
 
 * Search & Completion
 ** Ivy, Counsel & Swiper
-   As my completion framework, I'm using Ivy. On top of it I'm loading 
-   Ivy Rich, for getting details on each selectable option. Also setting up keybindings
-   for the Counsel versions of commands for much better navigability, substituting 
-   I-search with =swiper= and remapping some keys in the =ivy-minibuffer-map=.
+   As my completion framework, I'm using Ivy. On top of it I'm loading
+   Ivy Rich, for getting details on each selectable option. Also
+   setting up keybindings for the Counsel versions of commands for
+   much better navigability, substituting I-search with =swiper= and
+   remapping some keys in the =ivy-minibuffer-map=.
   
    [[https://github.com/abo-abo/swiper][Git repository]]
    #+begin_src emacs-lisp
@@ -227,9 +242,9 @@
    #+end_src
 
 ** Company
-   An autocompletion package. Very comfortable to use and highly customizable.
-   I do some remapping to use make it so it doesn't interfere with Evil's 
-   completion commands (=C-n= and =C-p=).
+   An autocompletion package. Very comfortable to use and highly
+   customizable.  I do some remapping to use make it so it doesn't
+   interfere with Evil's completion commands (=C-n= and =C-p=).
    
    [[https://company-mode.github.io/][Documentation]]
    #+begin_src emacs-lisp
@@ -253,7 +268,8 @@
 
 * Interface & Interactions
 ** Theme and Default Font
-   Trying out some Doom themes and the Doom modeline. Looking pretty good.
+   Trying out some Doom themes and the Doom modeline. Looking pretty
+   good.
   
    [[https://github.com/hlissner/emacs-doom-themes][Doom themes]]
 
@@ -300,8 +316,9 @@
    #+end_src
 
 ** Help
-   Emacs is great at discoverability. Here I set keybindings for help 
-   ("describe") commands, and load the =helpful= package for better help buffers.
+   Emacs is great at discoverability. Here I set keybindings for help
+   ("describe") commands, and load the =helpful= package for better
+   help buffers.
    #+begin_src emacs-lisp
      (use-package helpful
        :custom
@@ -317,8 +334,8 @@
    #+end_src
    
 ** Finding and reloading configuration
-   I visit this file and reload =init.el= quite a lot.
-   Only makes sense to make a couple keybindings for that.
+   I visit this file and reload =init.el= quite a lot.  Only makes
+   sense to make a couple keybindings for that.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
@@ -340,7 +357,8 @@
    #+end_src
    
 ** Relative Line Numbers
-   Display absolute number for current line, relative number for other lines.
+   Display absolute number for current line, relative number for other
+   lines.
    #+begin_src emacs-lisp
      (use-package display-line-numbers
        :config
@@ -360,14 +378,14 @@
    #+end_src
    
 ** Hydra
-   A package for grouping quick bindings together for a particular task.
-   It's a lot easier to understand just seeing an example.
+   A package for grouping quick bindings together for a particular
+   task.  It's a lot easier to understand just seeing an example.
    
    [[https://github.com/abo-abo/hydra][Github repository]]
 *** Scaling windows
-    Scaling with =[count] C-w [+/-/</>]= doesn't feel very comfortable,
-    since I never know exactly how much I want to scale. This hydra
-    makes is a lot easier.
+    Scaling with =[count] C-w [+/-/</>]= doesn't feel very
+    comfortable, since I never know exactly how much I want to
+    scale. This hydra makes is a lot easier.
     #+begin_src emacs-lisp
       ;; With this, I can press 'SPC es' and then h/j/k/l how many
       ;; times I need to scale the window properly, then 'q' to quit.
@@ -386,8 +404,8 @@
     
 * Windows & Buffers
 ** Basic keybindings
-   Creating comfortable keybindings for common buffer/window
-   related commands.
+   Creating comfortable keybindings for common buffer/window related
+   commands.
    #+begin_src emacs-lisp
      (luc/leader-def
        "w" 'save-buffer
@@ -400,8 +418,9 @@
    #+end_src
 
 ** Winner
-   Undo and redo for window actions. I use this a lot when I need to have only 
-   one window open for a moment, and then want the layout I had before back.
+   Undo and redo for window actions. I use this a lot when I need to
+   have only one window open for a moment, and then want the layout I
+   had before back.
    #+begin_src emacs-lisp
      (use-package winner
        :hook (after-init . winner-mode)
@@ -417,8 +436,8 @@
    #+end_src
 
 ** Scroll conservatively
-   I want my cursor to only move the screen
-   one line at a time when on the edges.
+   I want my cursor to only move the screen one line at a time when on
+   the edges.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
@@ -427,9 +446,9 @@
    
 * Applications & Utilities
 ** Magit & Forge
-   Amazingly powerful Git frontend. I hadn't known of it before, but =forge=
-   allows for working with Git forges (in my case, Github) from inside Emacs.
-   Even more awesome!
+   Amazingly powerful Git frontend. I hadn't known of it before, but
+   =forge= allows for working with Git forges (in my case, Github)
+   from inside Emacs. Even more awesome!
    
    [[https://magit.vc/][Magit Website]]
    
@@ -465,7 +484,7 @@
            (set-face-attribute (car face) nil :height (cdr face))))
      #+end_src
      
-**** Variable pitch
+**** Variable Pitch Mode 
      Different font pitches for different contexts.
      #+begin_src emacs-lisp
        (use-package org
@@ -495,6 +514,24 @@
            (org-mode . org-bullets-mode)))
      #+end_src
      
+**** Visual Line Mode
+     For visual line wrapping at words spaces.
+     #+begin_src emacs-lisp
+       (use-package org
+         :hook (org-mode . visual-line-mode))
+       #+end_src
+     
+**** Visual Fill Collum
+     For centering text in the buffer.
+     #+begin_src emacs-lisp
+       (use-package visual-fill-column
+         :init
+         (setq visual-fill-column-width 100)
+         (setq visual-fill-column-center-text 1)
+         :hook
+         (org-mode . visual-fill-column-mode))
+     #+end_src
+     
 *** Evil Org
     More Evil keybindings for Org Mode.
     
@@ -507,9 +544,8 @@
     #+end_src
 
 *** Exporting: Ox-Reveal and Htmlize
-    Org is pretty easy to export to different formats (by default,
-    =C-c C-e= will bring up Org Export Dispatcher with many options).
-    For better visualization in HTML (including =reveal.js= presentations),
+    Org is pretty easy to export to different formats (by default, =C-c C-e= will bring up Org Export
+    Dispatcher with many options). For better visualization in HTML (including =reveal.js= presentations),
     these packages really come in handy.
     
     [[https://github.com/hexmode/ox-reveal][Ox Reveal]]
@@ -531,8 +567,8 @@
     
     There's a keybinding for toggling =log-mode= in the agenda because
     repeated tasks (from the daily routine, for example) only show up
-    there when I mark them as =DONE=, along with the timestamp for when
-    I completed them.
+    there when I mark them as =DONE=, along with the timestamp for
+    when I completed them.
     #+begin_src emacs-lisp
       (use-package org
         :config
@@ -614,8 +650,8 @@
      #+end_src
      
 ** Dired
-   I use dired for basically all my file management, along some 
-   other packages to make it that much more intuitive and useful.
+   I use dired for basically all my file management, along some other
+   packages to make it that much more intuitive and useful.
    
    [[https://github.com/jwiegley/emacs-async][Async]]
    
@@ -650,14 +686,16 @@
    #+end_src
    
 ** Gnus
-   Built-in package for managing RSS feeds, news and mail. For now I only use it for mail.
-   I'm using two GMail accounts here, each with authentication info in my =.authinfo= file.
-   In each account it's necessary to enable IMAP and either grant access to third party apps
-   or create an app password and use that in =.authinfo=. Other than that, I have the variables
-   =NAME= and =EMAIL= set in my =.profile=.
+   Built-in package for managing RSS feeds, news and mail. For now I
+   only use it for mail.  I'm using two GMail accounts here, each with
+   authentication info in my =.authinfo= file.  In each account it's
+   necessary to enable IMAP and either grant access to third party
+   apps or create an app password and use that in =.authinfo=. Other
+   than that, I have the variables =NAME= and =EMAIL= set in my
+   =.profile=.
    
-   I definitely still have things I want to improve on it, so
-   that's coming soon. Either that or giving =mu4e= another try.
+   I definitely still have things I want to improve on it, so that's
+   coming soon. Either that or giving =mu4e= another try.
 
    [[https://www.emacswiki.org/emacs/GnusTutorial][EmacsWiki Gnus Tutorial]]
    #+begin_src emacs-lisp
