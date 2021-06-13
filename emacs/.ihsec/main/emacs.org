@@ -662,13 +662,17 @@
        :custom
        (trash-directory "~/.local/share/Trash/")
        (delete-by-moving-to-trash t)
-       (dired-isearch-filenames 'dwim)        ;; I-search only matches filenames if cursor is on filename column
-       (dired-dwim-target t)                  ;; Deduces where to copy/move files, works great on split windows
+       (dired-isearch-filenames 'dwim)        ;; I-search only matches filenames if cursor is on 
+                                              ;;   filename column.
+       (dired-dwim-target t)                  ;; Deduces where to copy/move files, works great on 
+                                              ;;   split windows
        :hook
-       (dired-mode . dired-hide-details-mode) ;; Don't show full details by default - toggle with left paren
+       (dired-mode . dired-hide-details-mode) ;; Don't show full details by default - toggle with
+                                              ;; left paren
        :config
        (use-package async)                    ;; \
-       (use-package dired-async               ;; -\ Will allow for Dired operations to be run asynchronously
+       (use-package dired-async               ;; -\ Will allow for Dired operations to be run
+                                              ;;      asynchronously
          :ensure nil
          :config
          (dired-async-mode 1))
@@ -678,7 +682,7 @@
            :keymaps 'dired-mode-map
            "<tab>" 'dired-subtree-toggle
            "<backtab>" 'dired-subtree-cycle))
-       (use-package wdired              ;; Writable Dired
+       (use-package wdired                    ;; Writable Dired
          :ensure nil
          :init
          (setq wdired-allow-to-change-permissions t)
