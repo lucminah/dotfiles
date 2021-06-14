@@ -420,7 +420,8 @@
        (luc/leader-def
          "in" 'display-line-numbers-mode)
        :hook
-       (prog-mode . display-line-numbers-mode))
+       (prog-mode . display-line-numbers-mode)
+       (conf-mode . display-line-numbers-mode))
    #+end_src
    
 ** Highlight Current Line
