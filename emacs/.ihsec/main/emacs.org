@@ -441,31 +441,6 @@
          "ih" 'evil-ex-nohighlight))
    #+end_src
    
-** Hydra
-   A package for grouping quick bindings together for a particular
-   task. It's a lot easier to understand just seeing an example.
-   
-   [[https://github.com/abo-abo/hydra][Github repository]]
-*** Scaling windows
-    Scaling with =[count] C-w [+/-/</>]= doesn't feel very
-    comfortable, since I never know exactly how much I want to
-    scale. This hydra makes that a lot easier.
-    #+begin_src emacs-lisp
-      ;; With this, I can press 'SPC es' and then h/j/k/l how many
-      ;; times I need to scale the window properly, then 'q' to quit.
-      (use-package hydra
-        :config
-        (defhydra luc/hydra-window-scale ()
-          "Scale current window."
-          ("h" evil-window-decrease-width "width--")
-          ("l" evil-window-increase-width "width++")
-          ("j" evil-window-decrease-height "height--")
-          ("k" evil-window-increase-height "height++")
-          ("q" nil "quit" :exit t))
-        (luc/leader-def
-          "es" 'luc/hydra-window-scale/body))
-    #+end_src
-    
 * Windows & Buffers
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
@@ -845,6 +820,31 @@
         (general-def
           :keymaps 'vterm-mode-map
           "C-j" 'evil-collection-vterm-toggle-send-escape))
+    #+end_src
+    
+** Hydra
+   A package for grouping quick bindings together for a particular
+   task. It's a lot easier to understand just seeing an example.
+   
+   [[https://github.com/abo-abo/hydra][Github repository]]
+*** Scaling windows
+    Scaling with =[count] C-w [+/-/</>]= doesn't feel very
+    comfortable, since I never know exactly how much I want to
+    scale. This hydra makes that a lot easier.
+    #+begin_src emacs-lisp
+      ;; With this, I can press 'SPC es' and then h/j/k/l how many
+      ;; times I need to scale the window properly, then 'q' to quit.
+      (use-package hydra
+        :config
+        (defhydra luc/hydra-window-scale ()
+          "Scale current window."
+          ("h" evil-window-decrease-width "width--")
+          ("l" evil-window-increase-width "width++")
+          ("j" evil-window-decrease-height "height--")
+          ("k" evil-window-increase-height "height++")
+          ("q" nil "quit" :exit t))
+        (luc/leader-def
+          "es" 'luc/hydra-window-scale/body))
     #+end_src
     
 ** Ispell & Flyspell
