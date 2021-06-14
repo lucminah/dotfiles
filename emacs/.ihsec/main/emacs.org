@@ -336,6 +336,39 @@
        (set-face-attribute 'default nil :font "UbuntuMono-13"))
    #+end_src
 
+** Dashboard
+   A nice starting buffer for Emacs.
+   #+begin_src emacs-lisp
+     (use-package dashboard
+       :config
+       (dashboard-setup-startup-hook)
+       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+       :custom
+       (dashboard-center-content t)
+       (dashboard-banner-logo-title "Welcome to Luc's Emacs!")
+       (dashboard-set-heading-icons t)
+       (dashboard-set-file-icons t)
+       (dashboard-set-navigator t)
+       (dashboard-set-footer nil)
+       (dashboard-items '((bookmarks . 10)
+                          (recents  . 20)))
+       (dashboard-navigator-buttons
+        `(((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+            "Homepage"
+            "Browse homepage"
+            (lambda (&rest _) (browse-url "https://github.com/")))))))
+   #+end_src
+   
+** Bookmarks
+   A keybinding for accessing =counsel-bookmark=. It can be used for
+   setting and jumping to bookmarks so, pretty useful.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (luc/leader-def
+         "ab" 'counsel-bookmark))
+   #+end_src
+   
 ** Rainbow Delimiters
    Bracket pairs have matching colors.
    
