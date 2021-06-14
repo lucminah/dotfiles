@@ -498,11 +498,6 @@
      (use-package winner
        :hook (after-init . winner-mode)
        :config
-       ;; (general-def
-       ;;   :states 'normal
-       ;;   :keymaps 'override
-       ;;   "C-w u" 'winner-undo
-       ;;   "C-w r" 'winner-redo))
        (luc/leader-def
          "eu" 'winner-undo
          "er" 'winner-redo))
@@ -537,9 +532,9 @@
    
 * Applications & Utilities
 ** Magit & Forge
-   Amazingly powerful Git front-end. I hadn't known of it before, but
-   =forge= allows for working with Git forges (in my case, Github)
-   from inside Emacs. Even more awesome!
+   =magit= is an amazingly powerful Git front-end. I hadn't known of it
+   before, but =forge= allows for working with Git forges (in my case,
+   Github) from inside Emacs. Even more awesome!
    
    [[https://magit.vc/][Magit Website]]
    
@@ -547,7 +542,10 @@
    #+begin_src emacs-lisp
      (use-package magit
        :config
-       (use-package forge)
+       (use-package forge
+         :custom-face
+         ;; For correcting error "Invalid face box".
+         (forge-topic-label ((t :box (:line-width -1 :style released-button)))))
        (luc/leader-def
          "mg" 'magit-status))
    #+end_src
@@ -830,6 +828,12 @@
          "mC" 'compose-mail-other-window))
    #+end_src
 
+** Try Packages
+   Package for trying out packages. Will save and load them on =/tmp/=.
+   #+begin_src emacs-lisp
+     (use-package try)
+   #+end_src
+   
 ** Terminal & Shell
 *** Shell & shell commands
     I really like using =shell= if I don't need actual terminal
