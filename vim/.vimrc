@@ -38,7 +38,8 @@ call plug#begin('~/.vim/plugged')
 	 Plug 'scrooloose/nerdcommenter'         " Commenting becomes a Vim 'verb'
 	 Plug 'tpope/vim-surround'               " Surrounding characters become a vim 'Object'
 	 Plug 'joshdick/onedark.vim'             " \
-	 Plug 'colepeters/spacemacs-theme.vim'   " -\ More colorschemes
+         Plug 'dracula/vim', {'as':'dracula'}    " -\ More colorschemes
+	 Plug 'colepeters/spacemacs-theme.vim'   " --\
 	 Plug 'pangloss/vim-javascript'          " Better JS sytax highlighting
 call plug#end()
 
