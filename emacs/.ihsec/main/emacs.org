@@ -23,7 +23,7 @@
 ** Early Init
    Other than =init.el=, there's =early-init.el=, which is loaded
    before and allows for a quicker startup. I'm replicating its
-   contents here for reference.  *Note:* this part won't be 'tangled'
+   contents here for reference. *Note:* this part won't be 'tangled'
    into =init.el=.
    #+begin_src emacs-lisp :tangle no
      (setq package-enable-at-startup nil)
@@ -527,7 +527,7 @@
    [[https://orgmode.org/manual/][Org Manual]]
 *** Aesthetics
     Changing the look and feel of =org-mode=, for maximum organization power.
-**** Header font sizes
+**** Header Font Sizes
      #+begin_src emacs-lisp
        (use-package org
          :config
@@ -573,7 +573,7 @@
      #+end_src
      
 **** Visual Line Mode
-     For visual line wrapping at words spaces.
+     For visual line wrapping at words.
      #+begin_src emacs-lisp
        (use-package org
          :hook (org-mode . visual-line-mode))
@@ -588,6 +588,16 @@
          (setq visual-fill-column-center-text 1)
          :hook
          (org-mode . visual-fill-column-mode))
+     #+end_src
+     
+**** Hide Emphasis Markers
+     Emphasis markers (for *bold*, /italics/, _underline_...) are
+     hidden. It does look a lot better, hoping it doesn't get in the
+     way of editing too much.
+     #+begin_src emacs-lisp
+       (use-package org
+         :init
+         (setq org-hide-emphasis-markers t))
      #+end_src
      
 *** Evil Org
@@ -648,7 +658,7 @@
 *** Org Capture
     For quickly 'capturing' something in Org files. I mostly use it
     for adding items to the agenda, but have templates for other uses
-    as well. Counsel also has it's version of it.
+    as well. Counsel also has its version of it.
     #+begin_src emacs-lisp
       (use-package org
         :config
