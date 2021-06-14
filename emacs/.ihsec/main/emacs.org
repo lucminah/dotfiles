@@ -184,6 +184,10 @@
    increment and decrement the date at point in various formats. Seems
    intuitive to have them both in the same binding, so I made a couple
    functions for that, with =speeddating-increase= as a base.
+   
+   [[https://github.com/juliapath/evil-numbers][Evil Numbers]]
+   
+   [[https://github.com/xuchunyang/emacs-speeddating][Speeddating]]
    #+begin_src emacs-lisp
      (use-package emacs
        :config
