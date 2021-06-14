@@ -822,6 +822,8 @@
     not as comfortable as the Emacs buffer that =shell= provides, but
     more comfortable nonetheless), and I especially like that it can
     toggle sending =A'S= to Emacs or the shell.
+    
+    [[https://github.com/akermu/emacs-libvterm][Github repository]]
     #+begin_src emacs-lisp
       (use-package vterm
         :config
@@ -833,4 +835,22 @@
           "C-j" 'evil-collection-vterm-toggle-send-escape))
     #+end_src
     
-    
+** Ispell & Flyspell
+   =ispell= is a built-in spellchecking package, and =flyspell-mode=
+   is used to highlight misspelled words. I had to install =aspell-en=
+   (there are different =aspell= packages for other languages, at
+   least in the Arch repositories) for it to work properly, but once
+   that's done, it's done!
+
+   #+begin_src emacs-lisp
+     (use-package flyspell
+       :hook
+       (outline-mode . flyspell-mode)
+       (text-mode . flyspell-mode)
+       (prog-mode . flyspell-prog-mode)
+       :config
+       (luc/leader-def
+         "is" 'flyspell-buffer
+         "ic" 'flyspell-auto-correct-word))
+   #+end_src
+   
