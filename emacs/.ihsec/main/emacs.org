@@ -379,6 +379,14 @@
          "hc" 'helpful-command))
    #+end_src
    
+** Y/N Prompts
+   Please, ask me "y/n" instead of "yes or no".
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (defalias 'yes-or-no-p 'y-or-n-p))
+   #+end_src
+   
 ** Finding and reloading configuration
    I visit this file and reload =init.el= quite a lot.  Only makes
    sense to make a couple keybindings for that.
