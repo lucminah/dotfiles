@@ -157,8 +157,8 @@
    #+end_src
 
 ** Evil Surround
-   Makes surrounding pairs (including parens, brackets, quotes) a text
-   object to be operated on, be it changing, deleting or adding.
+   Makes surrounding pairs (including brackets, quotes) a text object
+   to be operated on, be it changing, deleting or adding.
 
    [[https://github.com/emacs-evil/evil-surround][Git repository]]
    #+begin_src emacs-lisp
@@ -216,8 +216,9 @@
    #+end_src
    
 ** Electric Pairs
-   Pairs act in pairs. Using parens, quotes, brackets...  All of it
-   becomes much more intuitive.
+   Matching pairs are 'electric'. Isn't the easiest to explain, but
+   once you see it in action, you'll know what it does. Pretty
+   intuitive.
    #+begin_src emacs-lisp
    (use-package emacs
      :config
@@ -332,7 +333,7 @@
    #+end_src
 
 ** Rainbow Delimiters
-   Delimiters (or pairs) have matching colors.
+   Bracket pairs have matching colors.
    
    [[https://github.com/Fanael/rainbow-delimiters][Git repository]]
    #+begin_src emacs-lisp
@@ -405,7 +406,7 @@
        :config
        (setq display-line-numbers-type 'relative)
        (luc/leader-def
-         "iln" 'display-line-numbers-mode)
+         "in" 'display-line-numbers-mode)
        :hook
        (prog-mode . display-line-numbers-mode))
    #+end_src
@@ -415,7 +416,7 @@
      (use-package hl-line
        :config
        (luc/leader-def
-         "ilh" 'hl-line-mode))
+         "il" 'hl-line-mode))
    #+end_src
    
 ** Highlight Search
@@ -425,7 +426,7 @@
      (use-package evil
        :config
        (luc/leader-def
-         "ish" 'evil-ex-nohighlight))
+         "ih" 'evil-ex-nohighlight))
    #+end_src
    
 ** Hydra
