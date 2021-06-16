@@ -18,7 +18,6 @@
   
   I hope you find this helpful to your own Emacs configuration. Happy
   hacking!
-
 * Base setup
 ** Early Init
    Other than =init.el=, there's =early-init.el=, which is loaded
@@ -365,6 +364,7 @@
    #+begin_src emacs-lisp
      (use-package emacs
        :config
+       (setq bookmark-file "~/.ihsec/main/bookmarks")
        (luc/leader-def
          "ab" 'counsel-bookmark))
    #+end_src
@@ -487,7 +487,8 @@
        "v" 'split-window-horizontally
        "s" 'split-window-vertically
        "n" 'switch-to-next-buffer
-       "p" 'switch-to-prev-buffer)
+       "p" 'switch-to-prev-buffer
+       "eb" 'ibuffer)
    #+end_src
 
 ** Winner
@@ -911,6 +912,8 @@
        :config
        (luc/leader-def
          "is" 'flyspell-buffer
+         "id" 'ispell-change-dictionary
          "ic" 'flyspell-auto-correct-word))
    #+end_src
+   
    
