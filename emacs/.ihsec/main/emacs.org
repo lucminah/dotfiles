@@ -68,7 +68,8 @@
    day.
 *** Evil Mode
     The Extensive Vi Layer itself! Here I load Evil and customizing
-    some basic variables.
+    some basic variables. For information on the package I'm using for
+    undo-redo actions and setting here as my undo system, see [[*Undo Fu][Undo Fu]].
   
     [[https://evil.readthedocs.io/en/latest/index.html][Documentation]]
     #+begin_src emacs-lisp
@@ -245,7 +246,8 @@
    Ivy Rich, for getting details on each option for selection. Also
    setting up keybindings for the Counsel versions of commands for
    much better navigability, substituting I-search with =swiper= and
-   remapping some keys in the =ivy-minibuffer-map=.
+   remapping some keys for better navigation in the
+   =ivy-minibuffer-map=.
   
    [[https://github.com/abo-abo/swiper][Git repository]]
    #+begin_src emacs-lisp
@@ -478,7 +480,8 @@
 * Windows & Buffers
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
-   commands.
+   commands. Some other relevant keybindings (such as for
+   =counsel-switch-buffer=) were set in [[*Ivy, Counsel & Swiper][Ivy, Counsel & Swiper]].
    #+begin_src emacs-lisp
      (luc/leader-def
        "w" 'save-buffer
@@ -613,6 +616,8 @@
      
 **** Visual Fill Column
      For centering text in the buffer.
+     
+     [[https://github.com/joostkremers/visual-fill-column][Github repository]]
      #+begin_src emacs-lisp
        (use-package visual-fill-column
          :init
