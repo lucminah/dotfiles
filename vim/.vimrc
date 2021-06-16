@@ -20,8 +20,14 @@ set statusline=%F[%{&ff}]%h%r%y%m%=%c,%l/%L\ %P
 language en_US.UTF-8
 
 " Enables
-syntax on
+syntax enable
 filetype plugin indent on
+
+" Colors
+set termguicolors                         " Necessary for getting pretty colors.
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"    " Taken from :h xterm-true-color. Without it,
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"    "   I only get black and white when termguicolors
+                                          "   is set.
 
 " Mappings
 nnoremap <Leader>h :set hls!<cr>
@@ -34,7 +40,6 @@ map : q:i
 
 " Plugins
 call plug#begin('~/.vim/plugged')
-         Plug 'flazz/vim-colorschemes'           " Colorscheme pack
 	 Plug 'scrooloose/nerdcommenter'         " Commenting becomes a Vim 'verb'
 	 Plug 'tpope/vim-surround'               " Surrounding characters become a vim 'Object'
 	 Plug 'joshdick/onedark.vim'             " \
@@ -44,7 +49,7 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 
 " Colorscheme
-colorscheme codedark
+colorscheme dracula
 
 " Different cursor appearance per mode
 let &t_SI="\e[6 q"                      " Insert mode  = line
