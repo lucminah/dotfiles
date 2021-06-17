@@ -422,7 +422,7 @@
      (use-package emacs
        :config
        (defun luc/toggle-debug-on-error ()
-         "Toggles the local value of `debug-on-error'".
+         "Toggles the local value of `debug-on-error'"
          (interactive)
          (if (eq debug-on-error t)
              (setq-local debug-on-error nil)
@@ -761,7 +761,7 @@
        (use-package org
          :config
          (defun luc/toggle-indent-tabs-mode ()
-           "Toggles the local value of `indent-tabs-mode'".
+           "Toggles the local value of `indent-tabs-mode'"
            (interactive)
            (if (eq indent-tabs-mode t)
                (setq-local indent-tabs-mode nil)
