@@ -421,7 +421,12 @@
    #+begin_src emacs-lisp
      (use-package emacs
        :config
-       (setq-default debug-on-error t))
+       (defun luc/toggle-debug-on-error ()
+         "Toggles the local value of `debug-on-error'".
+         (interactive)
+         (if (eq debug-on-error t)
+             (setq-local debug-on-error nil)
+           (setq-local debug-on-error t))))
    #+end_src
    
 ** Y/N Prompts
@@ -753,11 +758,13 @@
        (use-package org
          :config
          (defun luc/toggle-indent-tabs-mode ()
+           "Toggles the local value of `indent-tabs-mode'".
            (interactive)
            (if (eq indent-tabs-mode t)
-               (setq indent-tabs-mode nil)
-             (setq indent-tabs-mode t)))
-         :hook (org-mode . luc/toggle-indent-tabs-mode))
+               (setq-local indent-tabs-mode nil)
+             (setq-local indent-tabs-mode t)))
+         :hook
+         (org-mode . luc/toggle-indent-tabs-mode))
      #+end_src
      
 *** Evil Org
