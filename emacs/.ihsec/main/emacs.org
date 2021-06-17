@@ -575,13 +575,67 @@
          "mg" 'magit-status))
    #+end_src
 
+** MPDel
+   Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
+   use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
+   client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
+   integrates with it, and that's always good news!).
+   
+   I already have global keybindings in my window manager for managing
+   toggling the playing/paused state, going forwards and backwards in
+   the playlist, controlling volume, etc. So this should be used
+   mostly just for searching and playlist management.
+   
+   So far I've had some issues, mainly the slow time to search in the
+   massive buffer of artist names, not being able to have a list of
+   album artist names, album contents not displaying properly and lag
+   when receiving =error in process filter: Quit=, mainly. But I'm still
+   excited to tweak around, if it works like I'm imagining it can, I'd
+   be happy to make it my new MPD client.
+   
+   [[https://github.com/mpdel/mpdel][Github repository]]
+   #+begin_src emacs-lisp
+     (use-package mpdel
+       :hook
+       (mpdel-tablist-mode . hl-line-mode)
+       :init
+       (evil-collection-mpdel-setup)
+       (use-package ivy-mpdel)
+       
+       ;; I usually search for the album artist tag, so I made that possible here.
+       (mpdel-browser--defsearch albumartist)
+       (defun luc/mpdel-core-search-by-album-artist (name)
+         "Display all songs whose album artist's name match NAME.
+     Interactively, ask for NAME."
+         (interactive (list (read-from-minibuffer "Search for album artist: ")))
+         (mpdel-core-open (libmpdel-search-criteria-create :type "albumartist" :what name)))
+         
+       (general-def
+         :keymaps 'mpdel-tablist-mode-map
+         :states 'normal
+         "J" 'mpdel-playlist-move-down
+         "K" 'mpdel-playlist-move-up
+         "c" 'mpdel-song-open
+         "m" 'tablist-mark-forward
+         "u" 'tablist-unmark-forward
+         "t" 'tablist-toggle-marks
+         "or" 'mpdel-core-open-artists
+         "ol" 'mpdel-core-open-albums
+         "od" 'mpdel-core-open-directories
+         "sa" 'luc/mpdel-core-search-by-album-artist
+         "sy" 'ivy-mpdel-list)
+       (luc/leader-def
+         "mp" 'mpdel-playlist-open
+         "mP" 'mpdel-playlist-open-stored-playlist))
+   #+end_src
+   
 ** Org Mode
    An amazing organization tool. I'm using it to write this very file,
    which really facilitates checking and updating the configuration,
    but there's a lot more to it as well.
    
    [[https://orgmode.org/manual/][Org Manual]]
-*** Aesthetics
+*** Preferences
     Changing the look and feel of =org-mode=, for maximum organization power.
 **** Header Font Sizes
      #+begin_src emacs-lisp
