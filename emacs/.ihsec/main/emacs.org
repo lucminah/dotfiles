@@ -415,6 +415,15 @@
          "hc" 'helpful-command))
    #+end_src
    
+** Debug on Error
+   Hopefully helps getting a backtrace to the cause of errors, or just
+   getting rid of freezing from =error on process filter=.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (setq-default debug-on-error t))
+   #+end_src
+   
 ** Y/N Prompts
    Please, ask me "y/n" instead of "yes or no".
    #+begin_src emacs-lisp
@@ -588,10 +597,11 @@
    
    So far I've had some issues, mainly the slow time to search in the
    massive buffer of artist names, not being able to have a list of
-   album artist names, album contents not displaying properly and lag
-   when receiving =error in process filter: Quit=, mainly. But I'm still
-   excited to tweak around, if it works like I'm imagining it can, I'd
-   be happy to make it my new MPD client.
+   album artist names and album contents not displaying properly,
+   mainly. But I'm still excited to tweak around, if it works like I'm
+   imagining it can, I'd be happy to make it my new MPD client.
+   
+   *Note:* =error on process filter= fixed [[*Debug on Error][here]].
    
    [[https://github.com/mpdel/mpdel][Github repository]]
    #+begin_src emacs-lisp
@@ -600,16 +610,34 @@
        (mpdel-tablist-mode . hl-line-mode)
        :init
        (evil-collection-mpdel-setup)
-       (use-package ivy-mpdel)
-       
-       ;; I usually search for the album artist tag, so I made that possible here.
+       (use-package ivy-mpdel
+         :config
+         ;; Was pretty easy to make more ivy-mpdel functions for other
+         ;; types of searching.
+         (defun luc/ivy-mpdel-albums ()
+           "Select music from a list of albums."
+           (interactive)
+           (ivy-mpdel-list 'albums))
+
+         (defun luc/ivy-mpdel-directories ()
+           "Select music from a list of directories."
+           (interactive)
+           (ivy-mpdel-list 'directories)))
+
+       (defun luc/ivy-mpdel-songs ()
+         "Select music from a list of matching titles."
+         (interactive)
+         (ivy-mpdel-list 'songs))
+
+       ;; I usually search for matches to the album artist tag, so I made
+       ;; that possible here.
        (mpdel-browser--defsearch albumartist)
        (defun luc/mpdel-core-search-by-album-artist (name)
          "Display all songs whose album artist's name match NAME.
-     Interactively, ask for NAME."
+          Interactively, ask for NAME."
          (interactive (list (read-from-minibuffer "Search for album artist: ")))
          (mpdel-core-open (libmpdel-search-criteria-create :type "albumartist" :what name)))
-         
+
        (general-def
          :keymaps 'mpdel-tablist-mode-map
          :states 'normal
@@ -623,7 +651,9 @@
          "ol" 'mpdel-core-open-albums
          "od" 'mpdel-core-open-directories
          "sa" 'luc/mpdel-core-search-by-album-artist
-         "sy" 'ivy-mpdel-list)
+         "sl" 'luc/ivy-mpdel-albums
+         "sd" 'luc/ivy-mpdel-directories
+         "sr" 'ivy-mpdel-list)
        (luc/leader-def
          "mp" 'mpdel-playlist-open
          "mP" 'mpdel-playlist-open-stored-playlist))
