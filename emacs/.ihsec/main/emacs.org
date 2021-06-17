@@ -87,8 +87,9 @@
     #+end_src
 
 *** Evil Collection
-    Brings Evil keybindings to many, many different parts of
-    Emacs. Saves me a lot of rebinding trouble.
+    Brings Evil keybindings to many, many different parts of Emacs,
+    usually through a setup function. Saves me a lot of rebinding
+    trouble.
    
     [[htTps://github.com/emacs-evil/evil-collection][Git repository]]
     #+begin_src emacs-lisp
@@ -532,6 +533,26 @@
          :states 'normal
          "gj" 'evil-better-visual-line-next-line
          "gk" 'evil-better-visual-line-previous-line))
+   #+end_src
+   
+** Moving to last line in buffer
+   In =evil-mode=, Vim's G key is associated with the motion
+   =evil-goto-line=, which calls Emacs's =end-of-buffer= when without
+   arguments (a line number, in this case). The problem is that
+   =end-of-buffer= actually goes beyond what I'd expect, placing the
+   cursor after the last newline character, in the beginning of a line
+   that isn't really there. I'd prefer it to move to the last actually
+   existing line.
+
+   Thankfully, I found someone with an [[https://emacs.stackexchange.com/a/31649][answer]] in Stack Exchange that
+   suits me just right. I simply have to add an advice to
+   =end-of-buffer=.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (defun luc/beginning-of-this-or-previous-line (&rest _)
+         (beginning-of-line (and (looking-at-p "^$") 0)))
+       (advice-add #'end-of-buffer :after #'luc/beginning-of-this-or-previous-line))
    #+end_src
    
 * Applications & Utilities
