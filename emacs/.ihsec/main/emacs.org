@@ -593,59 +593,64 @@
    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
    use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
    client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
-   integrates with it, and that's always good news!).
+   integrates with it, and that's always good news!). I already have
+   global keybindings in my window manager for managing toggling the
+   playing/paused state, going forwards and backwards in the playlist,
+   controlling volume, etc. So this should be used mostly just for
+   searching and playlist management.
    
-   I already have global keybindings in my window manager for managing
-   toggling the playing/paused state, going forwards and backwards in
-   the playlist, controlling volume, etc. So this should be used
-   mostly just for searching and playlist management.
+   *Note:* I've made some changes to the =libmpdel= and =mpdel= source code
+   to accommodate certain needs of mine. These include, mainly:
    
-   So far I've had some issues, mainly the slow time to search in the
-   massive buffer of artist names, not being able to have a list of
-   album artist names and album contents not displaying properly,
-   mainly. But I'm still excited to tweak around, if it works like I'm
-   imagining it can, I'd be happy to make it my new MPD client.
-   
-   *Note:* =error on process filter= fixed [[*Debug on Error][here]].
+   1. Having the /Album Artist/ file tag read in place of the /Artist/ tag.
+      Ideally I'd have both easily and distinctly available, but I
+      wasn't able to make that happen so far, and /Album Artist/ is a
+      lot more useful for me overall. Roughly, the way to do this is
+      changing =artist= into =albumartist= and ='Artist= into ='AlbumArtist=
+      in mpc formatted commands in =libmpdel.el=.
+   2. Using the =search= and =searchadd= mpc commands in place of =find= and =findadd=.
+      The way the latter ones operate made browsing album tracks not
+      function - I'd choose an album from =mpdel-core-open-albums= and
+      get nothing for each and every one. The command =mpc find artist
+      ""= will only return songs /without/ an artist tag, while replacing
+      =find= with =search= will return songs with /any/ artist tag, and that
+      fixed my issue. This is easy to achieve: simply change =find= and
+      =findadd= into =search= and =searchadd= in the strings contained in
+      the =libmpdel-send-command= calls in the body of the following
+      functions: =libmpdel-list-songs (entity function)= and
+      =libmpdel-playlist-add (entity (_ (eql current-playlist)))=.
+   3. Changing the formatting and layout of the playlist. 
+   This can be made changing the function =mpdel-tablist--song-format
+   ()= and this (I'm not familiar with 'navigel methods'):
+   =(navigel-method mpdel navigel-entity-to-columns ((song
+   libmpdel-song))=.
+      
+   I'm currently working on organizing these changes so I can separate
+   them from the original packages into this file and/or forks and you
+   can benefit from them as well. If you don't have the aforementioned
+   needs/problems, this config alone will work just fine for you.
    
    [[https://github.com/mpdel/mpdel][Github repository]]
    #+begin_src emacs-lisp
      (use-package mpdel
        :hook
        (mpdel-tablist-mode . hl-line-mode)
+       ;; Fixing lag of 'error on process filter: Quit'
+       (mpdel-tablist-mode . luc/toggle-local-debug-on-error)
        :init
        (evil-collection-mpdel-setup)
        (use-package ivy-mpdel
          :config
-         ;; Was pretty easy to make more ivy-mpdel functions for other
-         ;; types of searching.
+         ;; I used the other `ivy-mpdel' functions as a base for this new one.
          (defun luc/ivy-mpdel-albums ()
            "Select music from a list of albums."
            (interactive)
-           (ivy-mpdel-list 'albums))
-
-         (defun luc/ivy-mpdel-directories ()
-           "Select music from a list of directories."
-           (interactive)
-           (ivy-mpdel-list 'directories)))
-
-       (defun luc/ivy-mpdel-songs ()
-         "Select music from a list of matching titles."
-         (interactive)
-         (ivy-mpdel-list 'songs))
-
-       ;; I usually search for matches to the album artist tag, so I made
-       ;; that possible here.
-       (mpdel-browser--defsearch albumartist)
-       (defun luc/mpdel-core-search-by-album-artist (name)
-         "Display all songs whose album artist's name match NAME.
-          Interactively, ask for NAME."
-         (interactive (list (read-from-minibuffer "Search for album artist: ")))
-         (mpdel-core-open (libmpdel-search-criteria-create :type "albumartist" :what name)))
+           (ivy-mpdel-list 'albums)))
 
        (general-def
          :keymaps 'mpdel-tablist-mode-map
          :states 'normal
+         "=" 'mpdel-core-volume-increase
          "J" 'mpdel-playlist-move-down
          "K" 'mpdel-playlist-move-up
          "c" 'mpdel-song-open
@@ -654,8 +659,6 @@
          "t" 'tablist-toggle-marks
          "or" 'mpdel-core-open-artists
          "ol" 'mpdel-core-open-albums
-         "od" 'mpdel-core-open-directories
-         "sa" 'luc/mpdel-core-search-by-album-artist
          "sl" 'luc/ivy-mpdel-albums
          "sd" 'luc/ivy-mpdel-directories
          "sr" 'ivy-mpdel-list)
