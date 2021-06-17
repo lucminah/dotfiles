@@ -712,6 +712,24 @@
          (setq org-hide-emphasis-markers t))
      #+end_src
      
+**** Tabs are Spaces
+     The visualization of indentation levels in Org files (especially
+     after exporting) can get weird using tabs. Emacs will fill what
+     can't be turned into a full tab into spaces, and the already
+     different indentation of source code blocks and the very heading
+     structure makes it pretty inconsistent. Hence I prefer using only
+     spaces in Org buffers.
+     #+begin_src emacs-lisp
+       (use-package org
+         :config
+         (defun luc/toggle-indent-tabs-mode ()
+           (interactive)
+           (if (eq indent-tabs-mode t)
+               (setq indent-tabs-mode nil)
+             (setq indent-tabs-mode t)))
+         :hook (org-mode . luc/toggle-indent-tabs-mode))
+     #+end_src
+     
 *** Evil Org
     More Evil keybindings for Org Mode.
     
