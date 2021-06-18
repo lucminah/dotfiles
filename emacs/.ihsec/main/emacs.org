@@ -649,18 +649,20 @@
        The way the latter ones operate made browsing album tracks not
        function - I'd choose an album from =mpdel-core-open-albums= and
        get nothing for each and every one. The command =mpc find artist
-       ""= will only return songs /without/ an artist tag, while replacing
-       =find= with =search= will return songs with /any/ artist tag, and that
-       fixed my issue. This is easy to achieve: simply change =find= and
-       =findadd= into =search= and =searchadd= in the strings contained in
-       the =libmpdel-send-command= calls in the body of the following
-       functions: =libmpdel-list-songs (entity function)= and
-       =libmpdel-playlist-add (entity (_ (eql current-playlist)))=.
+       ""= will only return songs /without/ an artist tag, while
+       replacing =find= with =search= will return songs with /any/ artist
+       tag, and that fixed my issue. This is easy to achieve: simply
+       change =find= and =findadd= into =search= and =searchadd= in the
+       strings contained in the =libmpdel-send-command= calls in the
+       body of the following functions: =libmpdel-list-songs (entity
+       function)= and =libmpdel-playlist-add (entity (_ (eql
+       current-playlist)))=, both in =libmpdel.el=.
     3. Changing the formatting and layout of the playlist. 
        This can be made changing the function
        =mpdel-tablist--song-format ()= and this (I'm not familiar with
        'navigel methods'): =(navigel-method mpdel
-       navigel-entity-to-columns ((song libmpdel-song))=.
+       navigel-entity-to-columns ((song libmpdel-song))=, both in
+       =mpdel-tablist.el=.
        
     I'm currently working on organizing these changes so I can separate
     them from the original packages into this file and/or forks and you
