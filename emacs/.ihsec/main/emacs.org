@@ -590,6 +590,7 @@
    #+end_src
 
 ** MPDel
+*** Keybindings & Functions
    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
    use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
    client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
@@ -602,10 +603,6 @@
    [[https://github.com/mpdel/mpdel][Github repository]]
    #+begin_src emacs-lisp
      (use-package mpdel
-       :hook
-       (mpdel-tablist-mode . hl-line-mode)
-       ;; Fixing lag of 'error on process filter: Quit'
-       (mpdel-tablist-mode . luc/toggle-debug-on-error)
        :init
        (evil-collection-mpdel-setup)
        (use-package ivy-mpdel
@@ -635,7 +632,22 @@
          "mP" 'mpdel-playlist-open-stored-playlist))
    #+end_src
    
-*** Changes to the source code
+*** Aesthetics
+    #+begin_src emacs-lisp
+      (use-package mpdel
+        :hook
+        (mpdel-tablist-mode . hl-line-mode)
+        (mpdel-tablist-mode . display-line-numbers-mode)
+        :init
+        (set-face-attribute 'mpdel-tablist-song-name-face nil :foreground "#50fa7b")
+        (set-face-attribute 'mpdel-tablist-track-face nil :foreground "#8be9fd")
+        (set-face-attribute 'mpdel-tablist-album-face nil :foreground "#bd93f9")
+        (set-face-attribute 'mpdel-tablist-artist-face nil :foreground "#bd93f9")
+        (set-face-attribute 'mpdel-tablist-date-face nil :foreground "#8be9fd")
+        (set-face-attribute 'mpdel-playlist-current-song-face nil :weight 'bold))
+    #+end_src
+    
+*** Note: Changes to the source code
     I've made some changes to the =libmpdel= and =mpdel= source code
     to accommodate certain needs of mine. These include, mainly:
     
