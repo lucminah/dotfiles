@@ -349,6 +349,20 @@
          "ib" 'hide-mode-line-mode))
    #+end_src
    
+** TTY Faces
+   Here I change some face attributes for when using =emacs[client] [-nw|-t|--tty]=.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (defun luc/tty-set-face-attributes (&optional frame)
+         "If the created frame is in a tty, set these face attributes."
+         (unless (display-graphic-p frame)
+           (set-face-attribute 'hl-line frame :reverse-video t)
+           ;; Use terminal's background.
+           (set-face-attribute 'default frame :background "unspecified")))
+       (add-to-list 'after-make-frame-functions 'luc/tty-set-face-attributes))
+   #+end_src
+   
 ** Dashboard
    A nice starting buffer for Emacs.
    #+begin_src emacs-lisp
