@@ -664,10 +664,11 @@
        navigel-entity-to-columns ((song libmpdel-song))=, both in
        =mpdel-tablist.el=.
        
-    I'm currently working on organizing these changes so I can separate
-    them from the original packages into this file and/or forks and you
-    can benefit from them as well. If you don't have the aforementioned
-    needs/problems, the code above alone will work just fine for you.
+    I'm currently working on organizing these changes so I can
+    separate them from the original packages into this file and/or
+    forks and you can benefit from them as well. If you don't have the
+    aforementioned needs/problems, the code from the source block
+    above alone will work just fine for you.
 ** Org Mode
    An amazing organization tool. I'm using it to write this very file,
    which really facilitates checking and updating the configuration,
