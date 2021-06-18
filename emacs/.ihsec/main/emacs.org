@@ -77,7 +77,7 @@
         :custom
         (evil-want-keybinding nil)    ;; For playing nice with `evil-collection'
         (evil-want-Y-yank-to-eol t)   ;; Equivalent to 'map Y y$' in Vim
-        (evil-symbol-word-search t)   ;; * and # will search for symbols (Vim's W), not words.
+        (evil-symbol-word-search t)   ;; * and # will search for symbols, not words.
         (evil-want-C-u-scroll t)      ;; \
         (evil-want-C-u-delete t)      ;; -\ I don't use C-u for the universal argument
         :config
@@ -338,6 +338,17 @@
        (set-face-attribute 'default nil :font "UbuntuMono-13"))
    #+end_src
 
+** Hide Mode Line
+   Sometimes I just need to clean the screen that bit more by hiding
+   the modeline. Thankfully, this package provides a minor mode for
+   that, so I can toggle it pretty easily.
+   #+begin_src emacs-lisp
+     (use-package hide-mode-line
+       :config
+       (luc/leader-def
+         "ib" 'hide-mode-line-mode))
+   #+end_src
+   
 ** Dashboard
    A nice starting buffer for Emacs.
    #+begin_src emacs-lisp
