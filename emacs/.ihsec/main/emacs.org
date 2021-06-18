@@ -599,44 +599,13 @@
    controlling volume, etc. So this should be used mostly just for
    searching and playlist management.
    
-   *Note:* I've made some changes to the =libmpdel= and =mpdel= source code
-   to accommodate certain needs of mine. These include, mainly:
-   
-   1. Having the /Album Artist/ file tag read in place of the /Artist/ tag.
-      Ideally I'd have both easily and distinctly available, but I
-      wasn't able to make that happen so far, and /Album Artist/ is a
-      lot more useful for me overall. Roughly, the way to do this is
-      changing =artist= into =albumartist= and ='Artist= into ='AlbumArtist=
-      in mpc formatted commands in =libmpdel.el=.
-   2. Using the =search= and =searchadd= mpc commands in place of =find= and =findadd=.
-      The way the latter ones operate made browsing album tracks not
-      function - I'd choose an album from =mpdel-core-open-albums= and
-      get nothing for each and every one. The command =mpc find artist
-      ""= will only return songs /without/ an artist tag, while replacing
-      =find= with =search= will return songs with /any/ artist tag, and that
-      fixed my issue. This is easy to achieve: simply change =find= and
-      =findadd= into =search= and =searchadd= in the strings contained in
-      the =libmpdel-send-command= calls in the body of the following
-      functions: =libmpdel-list-songs (entity function)= and
-      =libmpdel-playlist-add (entity (_ (eql current-playlist)))=.
-   3. Changing the formatting and layout of the playlist. 
-   This can be made changing the function =mpdel-tablist--song-format
-   ()= and this (I'm not familiar with 'navigel methods'):
-   =(navigel-method mpdel navigel-entity-to-columns ((song
-   libmpdel-song))=.
-      
-   I'm currently working on organizing these changes so I can separate
-   them from the original packages into this file and/or forks and you
-   can benefit from them as well. If you don't have the aforementioned
-   needs/problems, this config alone will work just fine for you.
-   
    [[https://github.com/mpdel/mpdel][Github repository]]
    #+begin_src emacs-lisp
      (use-package mpdel
        :hook
        (mpdel-tablist-mode . hl-line-mode)
        ;; Fixing lag of 'error on process filter: Quit'
-       (mpdel-tablist-mode . luc/toggle-local-debug-on-error)
+       (mpdel-tablist-mode . luc/toggle-debug-on-error)
        :init
        (evil-collection-mpdel-setup)
        (use-package ivy-mpdel
@@ -660,13 +629,43 @@
          "or" 'mpdel-core-open-artists
          "ol" 'mpdel-core-open-albums
          "sl" 'luc/ivy-mpdel-albums
-         "sd" 'luc/ivy-mpdel-directories
          "sr" 'ivy-mpdel-list)
        (luc/leader-def
          "mp" 'mpdel-playlist-open
          "mP" 'mpdel-playlist-open-stored-playlist))
    #+end_src
    
+*** Changes to the source code
+    I've made some changes to the =libmpdel= and =mpdel= source code
+    to accommodate certain needs of mine. These include, mainly:
+    
+    1. Having the /Album Artist/ file tag read in place of the /Artist/ tag.
+       Ideally I'd have both easily and distinctly available, but I
+       wasn't able to make that happen so far, and /Album Artist/ is a
+       lot more useful for me overall. Roughly, the way to do this is
+       changing =artist= into =albumartist= and ='Artist= into ='AlbumArtist=
+       in mpc formatted commands in =libmpdel.el=.
+    2. Using the =search= and =searchadd= mpc commands in place of =find= and =findadd=.
+       The way the latter ones operate made browsing album tracks not
+       function - I'd choose an album from =mpdel-core-open-albums= and
+       get nothing for each and every one. The command =mpc find artist
+       ""= will only return songs /without/ an artist tag, while replacing
+       =find= with =search= will return songs with /any/ artist tag, and that
+       fixed my issue. This is easy to achieve: simply change =find= and
+       =findadd= into =search= and =searchadd= in the strings contained in
+       the =libmpdel-send-command= calls in the body of the following
+       functions: =libmpdel-list-songs (entity function)= and
+       =libmpdel-playlist-add (entity (_ (eql current-playlist)))=.
+    3. Changing the formatting and layout of the playlist. 
+       This can be made changing the function
+       =mpdel-tablist--song-format ()= and this (I'm not familiar with
+       'navigel methods'): =(navigel-method mpdel
+       navigel-entity-to-columns ((song libmpdel-song))=.
+       
+    I'm currently working on organizing these changes so I can separate
+    them from the original packages into this file and/or forks and you
+    can benefit from them as well. If you don't have the aforementioned
+    needs/problems, the code above alone will work just fine for you.
 ** Org Mode
    An amazing organization tool. I'm using it to write this very file,
    which really facilitates checking and updating the configuration,
