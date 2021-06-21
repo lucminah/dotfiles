@@ -14,6 +14,7 @@ set showmode                      " Shows if in Insert, Visual or Replace mode i
 set smarttab                      " Insert and delete tabs (including expanded tabs) in one go.
 set ttyfast                       " Smoother redrawing of the windows.
 set wrap                          " Lines will wrap when longer than width of the window (visual lines).
+set path+=**                      " :find looks through all files in cwd and its subfolders.
 let mapleader=" "                 " <Leader> key
 set statusline=%F[%{&ff}]%h%r%y%m%=%c,%l/%L\ %P
 
