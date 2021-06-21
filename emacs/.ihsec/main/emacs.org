@@ -943,8 +943,13 @@
      (use-package dired
        :ensure nil
        :custom
-       (trash-directory "~/.local/share/Trash/")
        (delete-by-moving-to-trash t)
+       (use-package trashed                   ;; For managing the trash can.
+         :init
+         (general-def
+           :states 'normal
+           :keymaps 'dired-mode-map
+           "gt" 'trashed))
        (dired-isearch-filenames 'dwim)        ;; I-search only matches filenames if cursor is on 
                                               ;;   filename column.
        (dired-dwim-target t)                  ;; Deduces where to copy/move files, works great on 
@@ -1091,8 +1096,23 @@
        :config
        (luc/leader-def
          "is" 'flyspell-buffer
+         "iS" 'flyspell-mode
          "id" 'ispell-change-dictionary
          "ic" 'flyspell-auto-correct-word))
    #+end_src
    
+   
+** PDF Tools
+   #+begin_src emacs-lisp
+     (use-package pdf-tools
+       :magic ("%PDF" . pdf-view-mode)
+       :init
+       (defun luc/pdf-view-mode-hook ()
+         (pdf-view-fit-height-to-window))
+       :hook
+       (pdf-view-mode . luc/pdf-view-mode-hook)
+       :config
+       (pdf-tools-install
+         :no-query t))
+   #+end_src
    
