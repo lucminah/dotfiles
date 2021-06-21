@@ -274,6 +274,7 @@
        (general-def
          :states 'insert
          :keymaps 'ivy-minibuffer-map
+         "S-SPC" 'ivy-dispatching-done  ;; Access to ivy actions.
          "C-j" 'ivy-next-line
          "C-k" 'ivy-previous-line
          "C-n" 'ivy-next-history-element
@@ -281,6 +282,7 @@
        (general-def
          :states 'normal
          :keymaps 'ivy-minibuffer-map
+         "o" 'ivy-dispatching-done
          "j" 'ivy-next-line
          "k" 'ivy-previous-line
          "J" 'ivy-next-history-element
@@ -1034,7 +1036,7 @@
     =evil-collection=, it gets a lot more comfortable to use (still
     not as comfortable as the Emacs buffer that =shell= provides, but
     more comfortable nonetheless), and I especially like that it can
-    toggle sending =A'S= to Emacs or the shell.
+    toggle sending =ESC= to Emacs or the shell.
     
     [[https://github.com/akermu/emacs-libvterm][Github repository]]
     #+begin_src emacs-lisp
