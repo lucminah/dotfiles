@@ -1101,16 +1101,14 @@
          "ic" 'flyspell-auto-correct-word))
    #+end_src
    
-   
 ** PDF Tools
+   My use for this so far have been simply reading PDF files, and it
+   works very well.
    #+begin_src emacs-lisp
      (use-package pdf-tools
        :magic ("%PDF" . pdf-view-mode)
-       :init
-       (defun luc/pdf-view-mode-hook ()
-         (pdf-view-fit-height-to-window))
        :hook
-       (pdf-view-mode . luc/pdf-view-mode-hook)
+       (pdf-view-mode . (lambda () (pdf-view-fit-page-to-window)))
        :config
        (pdf-tools-install
          :no-query t))
