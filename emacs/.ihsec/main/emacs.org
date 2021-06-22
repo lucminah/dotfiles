@@ -261,20 +261,22 @@
          (ivy-rich-mode 1))
        (luc/leader-def
          "SPC" 'counsel-M-x
-         "C-SPC" 'counsel-M-x
          "f" 'counsel-find-file
          "F" 'counsel-fzf
          "d" 'counsel-dired
          "b" 'counsel-switch-buffer
          "B" 'counsel-switch-buffer-other-window
-         "g" 'counsel-rg)
+         "ag" 'counsel-rg)
        (general-def
          :states 'normal
          "C-s" 'swiper)
+       (general-unbind
+         :keymaps 'ivy-minibuffer-map
+         "S-SPC")
        (general-def
          :states 'insert
          :keymaps 'ivy-minibuffer-map
-         "S-SPC" 'ivy-dispatching-done  ;; Access to ivy actions.
+         "C-l" 'ivy-dispatching-done  ;; Access to ivy actions.
          "C-j" 'ivy-next-line
          "C-k" 'ivy-previous-line
          "C-n" 'ivy-next-history-element
@@ -307,7 +309,6 @@
        :config
        (general-def
          :keymaps 'company-active-map
-         "C-<return>" 'company-cancel
          "C-j" 'company-select-next-or-abort
          "C-k" 'company-select-previous-or-abort
          "C-n" 'evil-complete-next
