@@ -597,26 +597,42 @@
        (advice-add #'end-of-buffer :after #'luc/beginning-of-this-or-previous-line))
    #+end_src
    
-* Applications & Utilities
-** Magit & Forge
-   =magit= is an amazingly powerful Git front-end. I hadn't known of it
-   before, but =forge= allows for working with Git forges (in my case,
-   Github) from inside Emacs. Even more awesome!
+** Evil Snipe
+   Extends Evil's character search capabilities, adding a new motion
+   that allows for two character searching. Think of Evil's =f/F/t/T=
+   commands, but you give those a two character long string as a
+   search term. 
    
-   [[https://magit.vc/][Magit Website]]
+   By default, the inclusive commands (like =f/F=) are bound to =s/S= in
+   the normal state (finally some good use for those chords!) and =z/Z=
+   as an operator (say, when it's used as the motion for a =c= command),
+   while the exclusive commands (like =t/t=) are bound to nothing in the
+   normal state and =x/X= as an operator. For now I've settled on
+   binding the exclusive commands to =gh/gH= in the normal state, may
+   try something new later.
    
-   [[https://magit.vc/manual/forge/][Forge Manual]]
+   On top of that, Snipe has its own versions of =f/F/t/T/;/,= that work
+   just like the basic ones but with highlighting for matches and are
+   also more customizable (for example, changing the scope of the
+   search, which I haven't messed around with yet). Overall a great
+   addition to Evil's vocabulary.
    #+begin_src emacs-lisp
-     (use-package magit
+     (use-package evil-snipe
+       :init
+       ;; Keep the repeat motions to ; and ,
+       (setq evil-snipe-repeat-keys nil)
+       (general-def
+         :states 'normal
+         :keymaps 'evil-snipe-mode-map
+         "gh" 'evil-snipe-x
+         "gH" 'evil-snipe-X)
        :config
-       (use-package forge
-         :custom-face
-         ;; For correcting error "Invalid face box".
-         (forge-topic-label ((t :box (:line-width -1 :style released-button)))))
-       (luc/leader-def
-         "mg" 'magit-status))
+       (evil-snipe-mode 1)
+       ;; Use Snipe's versions of f/F/t/T/;/,
+       (evil-snipe-override-mode 1))
    #+end_src
-
+   
+* Applications & Utilities
 ** MPDel
 *** Keybindings & Functions
    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
@@ -631,6 +647,8 @@
    [[https://github.com/mpdel/mpdel][Github repository]]
    #+begin_src emacs-lisp
      (use-package mpdel
+       :hook
+       (mpdel-tablist-mode . turn-off-evil-snipe-mode)
        :init
        (evil-collection-mpdel-setup)
        (use-package ivy-mpdel
@@ -1115,3 +1133,83 @@
          :no-query t))
    #+end_src
    
+* Development
+** LSP & DAP Setup
+*** LSP Mode
+   #+begin_src emacs-lisp
+     (use-package lsp-mode
+       :commands (lsp lsp-deferred)
+       :init
+       (use-package flycheck ;; Syntax checker
+         :config
+         (luc/leader-def-for-keymaps
+           :keymaps 'flycheck-mode-map
+           "le" 'flycheck-list-errors))
+       (luc/leader-def-for-keymaps
+         :keymaps 'lsp-mode-map
+         "la" 'lsp-execute-code-action
+         "ld" 'lsp-find-declaration
+         "lr" 'lsp-rename
+         "lR" 'lsp-find-references))
+   #+end_src
+   
+*** LSP UI
+    #+begin_src emacs-lisp
+      (use-package lsp-ui
+        :after lsp-mode
+        :hook
+        (lsp-mode . lsp-ui-mode)
+        :init
+        (setq lsp-ui-sideline-show-code-actions t)
+        (setq lsp-ui-sideline-show-symbol t)
+        (setq lsp-ui-sideline-show-diagnostics t))
+    #+end_src
+    
+*** DAP Mode
+    #+begin_src emacs-lisp
+      (use-package dap-mode
+        :hook
+        ((lsp-mode . dap-mode)
+         (dap-mode . dap-ui-mode)))
+    #+end_src
+    
+** YASnippet
+   #+begin_src emacs-lisp
+     (use-package yasnippet
+       :hook 
+       (prog-mode . yas-minor-mode)
+       :init
+       (general-def
+         :keymaps 'yas-minor-mode-map
+         :states 'insert
+         "C-l" 'yas-expand)
+       :config
+       (use-package yasnippet-snippets))
+   #+end_src
+   
+** Languages
+*** C++
+    #+begin_src emacs-lisp
+      (use-package cpp
+        :hook ((c-mode c++-mode objc-mode) . lsp-deferred))
+    #+end_src
+    
+** Magit & Forge
+   =magit= is an amazingly powerful Git front-end. I hadn't known of it
+   before, but =forge= allows for working with Git forges (in my case,
+   Github) from inside Emacs. Even more awesome!
+   
+   [[https://magit.vc/][Magit Website]]
+   
+   [[https://magit.vc/manual/forge/][Forge Manual]]
+   #+begin_src emacs-lisp
+     (use-package magit
+       :config
+       (use-package forge
+         :custom-face
+         ;; For correcting error "Invalid face box".
+         (forge-topic-label ((t :box (:line-width -1 :style released-button)))))
+       (luc/leader-def
+         "mg" 'magit-status))
+   #+end_src
+
