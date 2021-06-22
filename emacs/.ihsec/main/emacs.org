@@ -616,6 +616,8 @@
    also more customizable (for example, changing the scope of the
    search, which I haven't messed around with yet). Overall a great
    addition to Evil's vocabulary.
+   
+   [[https://github.com/hlissner/evil-snipe][Github repository]]
    #+begin_src emacs-lisp
      (use-package evil-snipe
        :init
@@ -1134,8 +1136,16 @@
    #+end_src
    
 * Development
+  Building a comfy and powerful development environment.
 ** LSP & DAP Setup
+   Language Server and Debug Adapter protocols. These will be used by
+   different languages in different ways, which will be configured in
+   [[*Languages][Languages]], so this is only a base setup. Fortunately, neither this
+   or the specific setups are hard to get working properly. Here I'm
+   also installing [[https://www.flycheck.org/][Flycheck]] so I can use it as my syntax checker (in
+   place of =flymake=).
 *** LSP Mode
+    [[https://emacs-lsp.github.io/lsp-mode/][Overview]]
    #+begin_src emacs-lisp
      (use-package lsp-mode
        :commands (lsp lsp-deferred)
@@ -1166,6 +1176,7 @@
     #+end_src
     
 *** DAP Mode
+    [[https://github.com/emacs-lsp/dap-mode][Git repository]]
     #+begin_src emacs-lisp
       (use-package dap-mode
         :hook
@@ -1173,7 +1184,26 @@
          (dap-mode . dap-ui-mode)))
     #+end_src
     
+** Languages
+   Configuring the development environment for different languages (mainly with LSP and DAP).
+*** C++
+    Using =clangd=, which is looked for by default. For reference:
+    [[https://emacs-lsp.github.io/lsp-mode/page/lsp-clangd/]]
+    #+begin_src emacs-lisp
+      (use-package cpp
+        :hook ((c-mode c++-mode objc-mode) . lsp-deferred))
+    #+end_src
+    
 ** YASnippet
+   For snippets of code - for and while loops, main function
+   definition, if statements... Anything you'd like to have easily
+   printed out and jump to part of it, for specific modes. Pretty easy
+   to customize and create your own. The package =yasnippet-snippets=
+   contains a bunch ready to use.
+   
+   [[https://github.com/joaotavora/yasnippet][YASnippet]]
+   
+   [[https://github.com/AndreaCrotti/yasnippet-snippets][YASnippet Snippets]]
    #+begin_src emacs-lisp
      (use-package yasnippet
        :hook 
@@ -1187,13 +1217,6 @@
        (use-package yasnippet-snippets))
    #+end_src
    
-** Languages
-*** C++
-    #+begin_src emacs-lisp
-      (use-package cpp
-        :hook ((c-mode c++-mode objc-mode) . lsp-deferred))
-    #+end_src
-    
 ** Magit & Forge
    =magit= is an amazingly powerful Git front-end. I hadn't known of it
    before, but =forge= allows for working with Git forges (in my case,
