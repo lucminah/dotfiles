@@ -106,20 +106,23 @@
 
     [[https://github.com/noctuid/general.el][Git repository]]
 
-    Here I create a definer that I'll use for many keybindings going
-    forward, which uses =SPC= or =C-SPC= as a prefix. =SPC= will only
-    work for normal states, while =C-SPC= will work in any state.
-   
-    Other than that, I assign the =keyboard-quit= function to =ESC=
-    when in the normal state.
+    Here I created a couple definers that I'll use for many
+    keybindings going forward. For the sake of organization, I created
+    one for global and one for local keybindings, both using =SPC= as a
+    prefix.  Other than that, I assign the =keyboard-quit= function to
+    =ESC= when in the normal state.
     #+begin_src emacs-lisp
       (use-package general
         :config
+        ;; For global keybindings.
         (general-create-definer luc/leader-def
-          :states '(normal visual emacs insert)
+          :states '(normal visual motion)
           :keymaps 'override
-          :prefix "SPC"
-          :global-prefix "C-SPC")
+          :prefix "SPC")
+        ;; For local keybindings.
+        (general-create-definer luc/leader-def-for-keymaps
+          :states '(normal visual motion)
+          :prefix "SPC")
         (general-def
           :states 'normal
           :keymaps 'override
