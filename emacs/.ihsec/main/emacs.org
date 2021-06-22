@@ -533,7 +533,7 @@
        "ev" 'split-window-horizontally
        "es" 'split-window-vertically
        "en" 'switch-to-next-buffer
-       "en" 'switch-to-prev-buffer
+       "ep" 'switch-to-prev-buffer
        "eb" 'ibuffer)
    #+end_src
 
@@ -632,6 +632,23 @@
        (evil-snipe-mode 1)
        ;; Use Snipe's versions of f/F/t/T/;/,
        (evil-snipe-override-mode 1))
+   #+end_src
+   
+** Tabs
+   Not something I have really used in Emacs, but I'm feeling like
+   trying it for a while, so here are some keybindings for controlling
+   tabs. I'm still counting on Evil's =gt/gT= for switching between
+   those.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (luc/leader-def
+         "et" 'tab-new
+         "eq" 'tab-close
+         "eo" 'tab-close-other
+         "ej" 'tab-select      ;; Requires number argument
+         "eU" 'tab-undo
+         "it" 'tab-bar-mode))
    #+end_src
    
 * Applications & Utilities
