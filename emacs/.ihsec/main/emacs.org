@@ -530,10 +530,10 @@
        "w" 'save-buffer
        "k" 'kill-current-buffer
        "q" 'delete-window
-       "v" 'split-window-horizontally
-       "s" 'split-window-vertically
-       "n" 'switch-to-next-buffer
-       "p" 'switch-to-prev-buffer
+       "ev" 'split-window-horizontally
+       "es" 'split-window-vertically
+       "en" 'switch-to-next-buffer
+       "en" 'switch-to-prev-buffer
        "eb" 'ibuffer)
    #+end_src
 
