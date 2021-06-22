@@ -5,26 +5,23 @@
 #+OPTIONS: toc:nil num:nil
 
 * What is this?
-  This is my main GNU Emacs configuration file. =org-babel-tangle=
-  will write from it to my =init.el=. I'm currently using =ihsec=, a
-  package for switching Emacs configurations easily, so my =init.el=
-  is actually in =~/.ihsec/main/= (main is just the name I gave this
-  configuration).
-
-  In /Base setup/, I'll replicate the contents of my
-  =early-init.el=. After evaluating that, running =org-babel-tangle=
-  in this file and loading the generated =init.el=, you should have a
-  copy of my Emacs setup.
+  This is my main GNU Emacs configuration file. =org-babel-tangle= will
+  write the Emacs-Lisp code blocks from it to my =early-init.el= (only
+  the code block in [[*Early Init][Early Init]]) and =init.el= (the rest of the
+  configuration). I'm currently using =ihsec=, a package for switching
+  Emacs configurations easily, so my Emacs files are actually in
+  =~/.ihsec/main/= (main is just the name I gave this configuration).
   
-  I hope you find this helpful to your own Emacs configuration. Happy
-  hacking!
+  After running =org-babel-tangle= and loading the generated
+  =early-init.el= and =init.el=, you should have a copy of my Emacs
+  configuration. I hope you find this helpful to your own Emacs
+  configuration. Happy hacking!
 * Base setup
 ** Early Init
-   Other than =init.el=, there's =early-init.el=, which is loaded
-   before and allows for a quicker startup. I'm replicating its
-   contents here for reference. *Note:* this part won't be 'tangled'
-   into =init.el=.
-   #+begin_src emacs-lisp :tangle no
+   Other than =init.el=, there's =early-init.el=, which is loaded before
+   and allows for a quicker startup. *Note:* I'm making it so this
+   section specifically is tangled into =early-init.el= and not =init.el=.
+   #+begin_src emacs-lisp :tangle ~/.ihsec/main/early-init.el
      (setq package-enable-at-startup nil)
      (setq inhibit-startup-message t)
      (setq inhibit-splash-screen t)
