@@ -904,9 +904,9 @@
                  entry (file+headline "agenda/tasks.org" "Tasks")
                  "* TODO %^{Task}\n SCHEDULED: %^t\n%?")
                 ("e"
-                 "Scheduled event"
+                 "Event"
                  entry (file+headline "agenda/events.org" "Events")
-                 "* %^{Event}\nSCHEDULED: %^T\n")
+                 "* %^{Event}\n%^T\n")
                 ("r"
                  "Dates to remember"
                  entry (file+headline "agenda/dates.org" "Dates")
