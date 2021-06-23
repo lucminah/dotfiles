@@ -973,50 +973,108 @@
      #+end_src
      
 ** Dired
-   I use dired for basically all my file management, along some other
-   packages to make it that much more intuitive and useful.
+   I use =dired= for basically all my file management. Very versatile and powerful.
+*** Preferences & Keybindings
+    #+begin_src emacs-lisp
+      (use-package dired
+        :ensure nil
+        :custom
+        (delete-by-moving-to-trash t)
+        (dired-listing-switches "-al --group-directories-first")
+        (dired-isearch-filenames 'dwim)        ;; I-search only matches filenames if cursor is on 
+                                               ;;   filename column.
+        (dired-dwim-target t)                  ;; Deduces where to copy/move files, works great on 
+                                               ;;   split windows
+        :hook
+        (dired-mode . dired-hide-details-mode) ;; Don't show full details by default - toggle with
+                                               ;;   open paren
+        :init
+        (general-def
+          :keymaps 'dired-mode-map
+          :states 'normal
+          "h" 'dired-up-directory              ;; \
+          "l" 'dired-find-file                 ;; -\ Quick navigation
+          "q" 'kill-current-buffer))           ;; For keeping Dired buffers from cluttering.
+    #+end_src
    
-   [[https://github.com/jwiegley/emacs-async][Async]]
+*** Trashed
+    For managing the trash can.
+
+    [[https://github.com/shingo256/trashed][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package trashed
+        :after dired
+        :commands trashed
+        :init
+        (general-def
+          :states 'normal
+          :keymaps 'dired-mode-map
+          "gt" 'trashed))
+    #+end_src
+    
+*** Dired Subtree
+    For tree viewing of directories in the style of Org headings. It's
+    one of packages from [[https://github.com/Fuco1/dired-hacks][Dired Hacks]].
+    #+begin_src emacs-lisp
+      (use-package dired-subtree
+        :after dired
+        :config
+        (general-def
+          :keymaps 'dired-mode-map
+          "<tab>" 'dired-subtree-toggle
+          "<backtab>" 'dired-subtree-cycle))
+    #+end_src
+    
+*** Async
+    For managing asynchronous operations.
+
+    [[https://github.com/jwiegley/emacs-async][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package async
+        (use-package dired-async
+          :ensure nil
+          :after dired
+          :config
+          (dired-async-mode 1)))
+    #+end_src
+    
+*** Dired Open
+    For opening different file extensions with external programs. Also
+    from [[https://github.com/Fuco1/dired-hacks][Dired Hacks]].
    
-   [[https://github.com/Fuco1/dired-hacks/tree/7c0ef09d57a80068a11edc74c3568e5ead5cc15a#dired-subtree][Dired Subtree]]
-   #+begin_src emacs-lisp
-     (use-package dired
-       :ensure nil
-       :custom
-       (delete-by-moving-to-trash t)
-       (use-package trashed                   ;; For managing the trash can.
-         :init
-         (general-def
-           :states 'normal
-           :keymaps 'dired-mode-map
-           "gt" 'trashed))
-       (dired-isearch-filenames 'dwim)        ;; I-search only matches filenames if cursor is on 
-                                              ;;   filename column.
-       (dired-dwim-target t)                  ;; Deduces where to copy/move files, works great on 
-                                              ;;   split windows
-       :hook
-       (dired-mode . dired-hide-details-mode) ;; Don't show full details by default - toggle with
-                                              ;; left paren
-       :config
-       (use-package async)                    ;; \
-       (use-package dired-async               ;; -\ Will allow for Dired operations to be run
-                                              ;;      asynchronously
-         :ensure nil
-         :config
-         (dired-async-mode 1))
-       (use-package dired-subtree             ;; Directories can expand into subtrees
-         :config
-         (general-def
-           :keymaps 'dired-mode-map
-           "<tab>" 'dired-subtree-toggle
-           "<backtab>" 'dired-subtree-cycle))
-       (use-package wdired                    ;; Writable Dired
-         :ensure nil
-         :init
-         (setq wdired-allow-to-change-permissions t)
-         (setq wdired-create-parent-directories t)))
-   #+end_src
-   
+    #+begin_src emacs-lisp
+      (use-package dired-open
+        :after dired
+        :init
+        (setq dired-open-extensions '(("png" . "sxiv")
+                                      ("jpg" . "sxiv")
+                                      ("jpeg" . "sxiv")
+                                      ("mkv" . "mpv")
+                                      ("mp4" . "mpv"))))
+    #+end_src
+    
+*** All The Icons Dired
+    Pretty symbols!
+    
+    [[https://github.com/jtbm37/all-the-icons-dired][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package all-the-icons-dired
+        :after dired
+        :hook
+        (dired-mode . all-the-icons-dired-mode))
+    #+end_src
+    
+*** Writable Dired
+    Configuration for =wdired-mode=.
+    #+begin_src emacs-lisp
+      (use-package wdired
+        :ensure nil
+        :after dired
+        :init
+        (setq wdired-allow-to-change-permissions t)
+        (setq wdired-create-parent-directories t))
+    #+end_src
+    
 ** Gnus
    Built-in package for managing RSS feeds, news and mail. For now I
    only use it for mail.  I'm using two GMail accounts here, each with
