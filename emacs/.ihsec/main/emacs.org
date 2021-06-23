@@ -648,6 +648,8 @@
          "eo" 'tab-close-other
          "ej" 'tab-select      ;; Requires number argument
          "eU" 'tab-undo
+         "eN" 'tab-next
+         "eP" 'tab-previous
          "it" 'tab-bar-mode))
    #+end_src
    
@@ -1130,7 +1132,6 @@
        :hook
        (outline-mode . flyspell-mode)
        (text-mode . flyspell-mode)
-       (prog-mode . flyspell-prog-mode)
        :config
        (luc/leader-def
          "is" 'flyspell-buffer
