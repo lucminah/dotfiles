@@ -617,7 +617,7 @@
    search, which I haven't messed around with yet). Overall a great
    addition to Evil's vocabulary.
    
-   [[https://github.com/hlissner/evil-snipe][Github repository]]
+   [[https://github.com/hlissner/evil-snipe][Git repository]]
    #+begin_src emacs-lisp
      (use-package evil-snipe
        :init
@@ -663,7 +663,7 @@
    controlling volume, etc. So this should be used mostly just for
    searching and playlist management.
    
-   [[https://github.com/mpdel/mpdel][Github repository]]
+   [[https://github.com/mpdel/mpdel][Git repository]]
    #+begin_src emacs-lisp
      (use-package mpdel
        :hook
@@ -809,7 +809,7 @@
 **** Visual Fill Column
      For centering text in the buffer.
      
-     [[https://github.com/joostkremers/visual-fill-column][Github repository]]
+     [[https://github.com/joostkremers/visual-fill-column][Git repository]]
      #+begin_src emacs-lisp
        (use-package visual-fill-column
          :init
@@ -1081,7 +1081,7 @@
     more comfortable nonetheless), and I especially like that it can
     toggle sending =ESC= to Emacs or the shell.
     
-    [[https://github.com/akermu/emacs-libvterm][Github repository]]
+    [[https://github.com/akermu/emacs-libvterm][Git repository]]
     #+begin_src emacs-lisp
       (use-package vterm
         :config
@@ -1097,7 +1097,7 @@
    A package for grouping quick bindings together for a particular
    task. It's a lot easier to understand just seeing an example.
    
-   [[https://github.com/abo-abo/hydra][Github repository]]
+   [[https://github.com/abo-abo/hydra][Git repository]]
 *** Scaling windows
     Scaling with =[count] C-w [+/-/</>]= doesn't feel very
     comfortable, since I never know exactly how much I want to
