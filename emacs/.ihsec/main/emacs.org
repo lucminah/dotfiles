@@ -180,44 +180,28 @@
 
 ** Evil Numbers & Speeddating
    =evil-numbers= brings the functionality of incrementing and
-   decrementing the number at point from Vim's normal mode =C-a= and
-   =C-x= commands. =speeddating= is very similar, with functions to
-   increment and decrement the date at point in various formats. Seems
-   intuitive to have them both in the same binding, so I made a couple
-   functions for that, with =speeddating-increase= as a base.
+   decrementing the number at point from Vim's normal mode =C-a= and =C-x=
+   commands. =speeddating= is very similar, with functions to increment
+   and decrement the date at point in various formats. 
+   
+   *Note:* Here I'm only binding the =evil-numbers= functions/operators
+   because I've changed their source code to check for a date and call
+   =speeddating= if appropriate. I'm still figuring out which is the
+   best way to replicate that code here.
    
    [[https://github.com/juliapath/evil-numbers][Evil Numbers]]
    
    [[https://github.com/xuchunyang/emacs-speeddating][Speeddating]]
    #+begin_src emacs-lisp
-     (use-package emacs
+     (use-package speeddating
        :config
        (use-package evil-numbers
          :init
          (setq evil-numbers-pad-default t))
-
-       (use-package speeddating)
-
-       (defun luc/increment-at-point (inc)
-         "Increments the date or literal at point."
-         (interactive "*p")
-         (let ((format-string-and-time (speeddating-time-at-point)))
-           (if format-string-and-time
-               (apply #'speeddating--increase-1 `(,@format-string-and-time ,inc))
-             (evil-numbers/inc-at-pt inc (point)))))
-
-       (defun luc/decrement-at-point (dec)
-         "Decrements the date or literal at point."
-         (interactive "*p")
-         (let ((format-string-and-time (speeddating-time-at-point)))
-           (if format-string-and-time
-               (apply #'speeddating--increase-1 `(,@format-string-and-time ,(- dec)))
-             (evil-numbers/dec-at-pt dec (point)))))
-
        (general-def
          :states 'normal
-         "C-=" 'luc/increment-at-point
-         "C--" 'luc/decrement-at-point))
+         "C-=" 'evil-numbers/inc-at-pt
+         "C--" 'evil-numbers/dec-at-pt))
    #+end_src
    
 ** Electric Pairs
