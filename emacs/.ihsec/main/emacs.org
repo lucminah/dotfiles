@@ -327,6 +327,62 @@
        (set-face-attribute 'default nil :font "UbuntuMono-13"))
    #+end_src
 
+** Indentation Preferences
+   I've mostly been a tabs user, but recently those started to feel
+   less intuitive to me, so I'm setting spaces as the default for now,
+   let's see how that goes. Other than that I've made a keybinding for
+   indenting the whole buffer, since I find myself pressing =gg=G= a
+   lot.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (setq-default indent-tabs-mode nil)
+       (defun luc/evil-indent-whole-buffer ()
+         (interactive)
+         (save-excursion
+           (evil-indent (point-min) (point-max))))
+       (luc/leader-def
+         "=" 'luc/evil-indent-whole-buffer))
+   #+end_src
+   
+** Aggressive Indent
+   This will actively prevent you from messing indentation up, hence
+   aggressive indent. Can feel /too/ aggressive at times, so I only load
+   it when I choose to explicitly.
+   #+begin_src emacs-lisp
+     (use-package aggressive-indent
+       :commands aggressive-indent-mode
+       :init
+       (luc/leader-def
+         "ii" 'aggressive-indent-mode))
+   #+end_src
+   
+** Hungry Delete
+   When deleting whitespace characters, delete all preceding
+   whitespace characters.
+   #+begin_src emacs-lisp
+     (use-package hungry-delete
+       :init
+       (setq hungry-delete-join-reluctantly t)
+       (luc/leader-def
+         "ih" 'hungry-delete-mode)
+       :config
+       (global-hungry-delete-mode))
+   #+end_src
+   
+** Transpose
+   A really cool Emacs editing feature for switching around or
+   'transposing' text objects. 
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (general-def
+         :states 'normal
+         "C-t" 'transpose-words
+         "C-q" 'transpose-chars
+         "C-l" 'transpose-lines))
+     #+end_src
+   
 ** Hide Mode Line
    Sometimes I just need to clean the screen that bit more by hiding
    the modeline. Thankfully, this package provides a minor mode for
@@ -815,26 +871,6 @@
        (use-package org
          :init
          (setq org-hide-emphasis-markers t))
-     #+end_src
-     
-**** Tabs are Spaces
-     The visualization of indentation levels in Org files (especially
-     after exporting) can get weird using tabs. Emacs will fill what
-     can't be turned into a full tab into spaces, and the already
-     different indentation of source code blocks and the very heading
-     structure makes it pretty inconsistent. Hence I prefer using only
-     spaces in Org buffers.
-     #+begin_src emacs-lisp
-       (use-package org
-         :config
-         (defun luc/toggle-indent-tabs-mode ()
-           "Toggles the local value of `indent-tabs-mode'"
-           (interactive)
-           (if (eq indent-tabs-mode t)
-               (setq-local indent-tabs-mode nil)
-             (setq-local indent-tabs-mode t)))
-         :hook
-         (org-mode . luc/toggle-indent-tabs-mode))
      #+end_src
      
 *** Evil Org
