@@ -302,7 +302,7 @@
    #+end_src
 
 * Interface & Interactions
-** Theme and Default Font
+** Theme, Modeline & Default Font
    Trying out some Doom themes and the Doom modeline. Looking pretty
    good.
   
@@ -312,14 +312,16 @@
    #+begin_src emacs-lisp
      (use-package emacs
        :config
-       (use-package doom-themes)
-       (load-theme 'doom-dracula t)
+       (use-package doom-themes
+         :config
+        (load-theme 'doom-dracula t))
        (use-package doom-modeline
-         :init
-         (setq doom-modeline-icon t)
-         (doom-modeline-mode 1)
          :custom
-         (doom-modeline-height 30))
+         (doom-modeline-window-width-limit 213)
+         (doom-modeline-icon t)
+         (doom-modeline-height 30)
+         :init
+         (doom-modeline-mode 1))
        ;; Making this the default font for this and future frames
        (add-to-list 'default-frame-alist '(font . "UbuntuMono-13"))
        (set-face-attribute 'default nil :font "UbuntuMono-13"))
