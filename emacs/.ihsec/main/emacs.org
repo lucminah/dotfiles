@@ -464,7 +464,7 @@
               org-mode)
        :init
        (luc/leader-def
-         "irm" 'rainbow-mode))
+         "ir" 'rainbow-mode))
    #+end_src
 
 ** Help
@@ -478,6 +478,7 @@
        (counsel-describe-variable-function #'helpful-variable)
        :config
        (luc/leader-def
+         "hh" 'helpful-at-point
          "hm" 'describe-mode
          "hk" 'helpful-key
          "hv" 'counsel-describe-variable
@@ -1053,6 +1054,7 @@
     [[https://github.com/jwiegley/emacs-async][Git repository]]
     #+begin_src emacs-lisp
       (use-package async
+        :config
         (use-package dired-async
           :ensure nil
           :after dired
@@ -1258,7 +1260,7 @@
          "la" 'lsp-execute-code-action
          "ld" 'lsp-find-declaration
          "lr" 'lsp-rename
-         "lR" 'lsp-find-references))
+         "lf" 'lsp-find-references))
    #+end_src
    
 *** LSP UI
@@ -1270,7 +1272,10 @@
         :init
         (setq lsp-ui-sideline-show-code-actions t)
         (setq lsp-ui-sideline-show-symbol t)
-        (setq lsp-ui-sideline-show-diagnostics t))
+        (setq lsp-ui-sideline-show-diagnostics t)
+        (luc/leader-def-for-keymaps
+          :keymaps 'lsp-mode-map
+          "ls" 'lsp-ui-sideline-mode))
     #+end_src
     
 *** DAP Mode
@@ -1331,6 +1336,6 @@
          ;; For correcting error "Invalid face box".
          (forge-topic-label ((t :box (:line-width -1 :style released-button)))))
        (luc/leader-def
-         "mg" 'magit-status))
+         "am" 'magit-status))
    #+end_src
 
