@@ -726,6 +726,8 @@
        (general-def
          :keymaps 'mpdel-tablist-mode-map
          :states 'normal
+         "l" 'tablist-find-entry
+         "h" 'mpdel-song-quit-window
          "=" 'mpdel-core-volume-increase
          "J" 'mpdel-playlist-move-down
          "K" 'mpdel-playlist-move-up
