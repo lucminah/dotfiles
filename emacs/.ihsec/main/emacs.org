@@ -1291,12 +1291,12 @@
     
 ** Languages
    Configuring the development environment for different languages (mainly with LSP and DAP).
-*** C++
+*** C/C++
     Using =clangd=, which is looked for by default. For reference:
     [[https://emacs-lsp.github.io/lsp-mode/page/lsp-clangd/]]
     #+begin_src emacs-lisp
       (use-package cpp
-        :hook ((c-mode c++-mode objc-mode) . lsp-deferred))
+        :hook ((c-mode c++-mode) . lsp-deferred))
     #+end_src
     
 ** YASnippet
