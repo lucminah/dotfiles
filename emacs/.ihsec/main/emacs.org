@@ -349,6 +349,8 @@
    This will actively prevent you from messing indentation up, hence
    aggressive indent. Can feel /too/ aggressive at times, so I only load
    it when I choose to explicitly.
+   
+   [[https://github.com/Malabarba/aggressive-indent-mode][Git repository]]
    #+begin_src emacs-lisp
      (use-package aggressive-indent
        :commands aggressive-indent-mode
@@ -360,6 +362,8 @@
 ** Hungry Delete
    When deleting whitespace characters, delete all preceding
    whitespace characters.
+   
+   [[https://github.com/nflath/hungry-delete][Git repository]]
    #+begin_src emacs-lisp
      (use-package hungry-delete
        :init
@@ -387,6 +391,8 @@
    Sometimes I just need to clean the screen that bit more by hiding
    the modeline. Thankfully, this package provides a minor mode for
    that, so I can toggle it pretty easily.
+   
+   [[https://github.com/hlissner/emacs-hide-mode-line][Git repository]]
    #+begin_src emacs-lisp
      (use-package hide-mode-line
        :config
@@ -410,6 +416,8 @@
    
 ** Dashboard
    A nice starting buffer for Emacs.
+   
+   [[https://github.com/emacs-dashboard/emacs-dashboard][Git repository]]
    #+begin_src emacs-lisp
      (use-package dashboard
        :config
@@ -471,6 +479,8 @@
    Emacs is great at discoverability. Here I set keybindings for help
    ("describe") commands, and load the =helpful= package for better
    help buffers.
+   
+   [[https://github.com/Wilfred/helpful][Git repository]]
    #+begin_src emacs-lisp
      (use-package helpful
        :custom
@@ -621,7 +631,7 @@
    #+end_src
    
 ** Moving to last line in buffer
-   In =evil-mode=, Vim's G key is associated with the motion
+   In =evil-mode=, Vim's =G= key is associated with the motion
    =evil-goto-line=, which calls Emacs's =end-of-buffer= when without
    arguments (a line number, in this case). The problem is that
    =end-of-buffer= actually goes beyond what I'd expect, placing the
@@ -1227,6 +1237,8 @@
 ** PDF Tools
    My use for this so far have been simply reading PDF files, and it
    works very well.
+   
+   [[https://github.com/politza/pdf-tools][Git repository]]
    #+begin_src emacs-lisp
      (use-package pdf-tools
        :magic ("%PDF" . pdf-view-mode)
