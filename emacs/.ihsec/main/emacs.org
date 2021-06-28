@@ -64,8 +64,8 @@
    of my text editing. Thankfully, these packages are here to save the
    day.
 *** Evil Mode
-    The Extensive Vi Layer itself! Here I load Evil and customizing
-    some basic variables. For information on the package I'm using for
+    The Extensive Vi Layer itself! Here I load Evil and customizing some
+    basic variables. For information on the package I'm using for
     undo-redo actions and setting here as my undo system, see [[*Undo Fu][Undo Fu]].
   
     [[https://evil.readthedocs.io/en/latest/index.html][Documentation]]
@@ -85,8 +85,7 @@
 
 *** Evil Collection
     Brings Evil keybindings to many, many different parts of Emacs,
-    usually through a setup function. Saves me a lot of rebinding
-    trouble.
+    usually through a setup function. Saves me a lot of rebinding trouble.
    
     [[htTps://github.com/emacs-evil/evil-collection][Git repository]]
     #+begin_src emacs-lisp
@@ -99,18 +98,18 @@
     #+end_src
 
 *** General
-    The package I use to manage all my custom keybindings. Going
-    forward I'm going to configure a lot of those. I find it
-    complements Evil very well, being easy to specify in which states
-    and keymaps the bindings apply.
+    The package I use to manage all my custom keybindings. Going forward
+    I'm going to configure a lot of those. I find it complements Evil very
+    well, being easy to specify in which states and keymaps the bindings
+    apply.
 
     [[https://github.com/noctuid/general.el][Git repository]]
 
-    Here I created a couple definers that I'll use for many
-    keybindings going forward. For the sake of organization, I created
-    one for global and one for local keybindings, both using =SPC= as a
-    prefix.  Other than that, I assign the =keyboard-quit= function to
-    =ESC= when in the normal state.
+    Here I created a couple definers that I'll use for many keybindings
+    going forward. For the sake of organization, I created one for global
+    and one for local keybindings, both using =SPC= as a prefix.  Other than
+    that, I assign the =keyboard-quit= function to =ESC= when in the normal
+    state.
     #+begin_src emacs-lisp
       (use-package general
         :config
@@ -182,7 +181,7 @@
    =evil-numbers= brings the functionality of incrementing and
    decrementing the number at point from Vim's normal mode =C-a= and =C-x=
    commands. =speeddating= is very similar, with functions to increment
-   and decrement the date at point in various formats. 
+   and decrement the date at point in various formats.
    
    *Note:* Here I'm only binding the =evil-numbers= functions/operators
    because I've changed their source code to check for a date and call
@@ -209,9 +208,9 @@
    once you see it in action, you'll know what it does. Pretty
    intuitive.
    #+begin_src emacs-lisp
-   (use-package emacs
-     :config
-     (electric-pair-mode 1))
+     (use-package emacs
+       :config
+       (electric-pair-mode 1))
    #+end_src
 
 ** Subword
@@ -293,8 +292,9 @@
        :config
        (general-def
          :keymaps 'company-active-map
-         "C-j" 'company-select-next-or-abort
-         "C-k" 'company-select-previous-or-abort
+         "<tab>" 'company-complete-selection
+         "C-j" 'company-select-next
+         "C-k" 'company-select-previous
          "C-n" 'evil-complete-next
          "C-p" 'evil-complete-previous)
        (luc/leader-def
@@ -376,7 +376,7 @@
    
 ** Transpose
    A really cool Emacs editing feature for switching around or
-   'transposing' text objects. 
+   'transposing' text objects.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
@@ -385,7 +385,7 @@
          "C-t" 'transpose-words
          "C-q" 'transpose-chars
          "C-l" 'transpose-lines))
-     #+end_src
+   #+end_src
    
 ** Hide Mode Line
    Sometimes I just need to clean the screen that bit more by hiding
@@ -477,8 +477,8 @@
 
 ** Help
    Emacs is great at discoverability. Here I set keybindings for help
-   ("describe") commands, and load the =helpful= package for better
-   help buffers.
+   ("describe") commands, and load the =helpful= package for better help
+   buffers.
    
    [[https://github.com/Wilfred/helpful][Git repository]]
    #+begin_src emacs-lisp
@@ -519,8 +519,8 @@
    #+end_src
    
 ** Finding and reloading configuration
-   I visit this file and reload =init.el= quite a lot.  Only makes
-   sense to make a couple keybindings for that.
+   I visit this file and reload =init.el= quite a lot.  Only makes sense
+   to make a couple keybindings for that.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
@@ -573,6 +573,15 @@
          "ih" 'evil-ex-nohighlight))
    #+end_src
    
+** Evil Show Registers
+   Keybinding for quickly getting Evil register values.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (luc/leader-def
+         "gr" 'evil-show-registers))
+   #+end_src
+   
 * Windows & Buffers
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
@@ -603,13 +612,15 @@
          "er" 'winner-redo))
    #+end_src
 
-** Scroll conservatively
+** Scrolling
    I want my cursor to only move the screen one line at a time when on
    the edges.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
-       (setq scroll-conservatively 100))
+       (setq scroll-step 1)
+       (setq scroll-conservatively 10000)
+       (setq auto-window-vscroll nil))
    #+end_src
    
 ** Better visual line navigation
@@ -654,7 +665,7 @@
    Extends Evil's character search capabilities, adding a new motion
    that allows for two character searching. Think of Evil's =f/F/t/T=
    commands, but you give those a two character long string as a
-   search term. 
+   search term.
    
    By default, the inclusive commands (like =f/F=) are bound to =s/S= in
    the normal state (finally some good use for those chords!) and =z/Z=
@@ -706,53 +717,66 @@
          "it" 'tab-bar-mode))
    #+end_src
    
+** Save Hist
+   Saves minibuffer histories, allowing for additional variables, so
+   here I'm using it to keep register and kill ring contents
+   persistent through sessions as well.
+   #+begin_src emacs-lisp
+     (use-package savehist
+       :init
+       (setq history-length 250)
+       (setq savehist-additional-variables '(kill-ring
+                                             register-alist))
+       (savehist-mode 1))
+   #+end_src
+   
 * Applications & Utilities
 ** MPDel
 *** Keybindings & Functions
-   Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
-   use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
-   client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
-   integrates with it, and that's always good news!). I already have
-   global keybindings in my window manager for managing toggling the
-   playing/paused state, going forwards and backwards in the playlist,
-   controlling volume, etc. So this should be used mostly just for
-   searching and playlist management.
+    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
+    use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
+    client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
+    integrates with it, and that's always good news!). I already have
+    global keybindings in my window manager for managing toggling the
+    playing/paused state, going forwards and backwards in the
+    playlist, controlling volume, etc. So this should be used mostly
+    just for searching and playlist management.
    
-   [[https://github.com/mpdel/mpdel][Git repository]]
-   #+begin_src emacs-lisp
-     (use-package mpdel
-       :hook
-       (mpdel-tablist-mode . turn-off-evil-snipe-mode)
-       :init
-       (evil-collection-mpdel-setup)
-       (use-package ivy-mpdel
-         :config
-         ;; I used the other `ivy-mpdel' functions as a base for this new one.
-         (defun luc/ivy-mpdel-albums ()
-           "Select music from a list of albums."
-           (interactive)
-           (ivy-mpdel-list 'albums)))
+    [[https://github.com/mpdel/mpdel][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package mpdel
+        :hook
+        (mpdel-tablist-mode . turn-off-evil-snipe-mode)
+        :init
+        (evil-collection-mpdel-setup)
+        (use-package ivy-mpdel
+          :config
+          ;; I used the other `ivy-mpdel' functions as a base for this new one.
+          (defun luc/ivy-mpdel-albums ()
+            "Select music from a list of albums."
+            (interactive)
+            (ivy-mpdel-list 'albums)))
 
-       (general-def
-         :keymaps 'mpdel-tablist-mode-map
-         :states 'normal
-         "l" 'tablist-find-entry
-         "h" 'mpdel-song-quit-window
-         "=" 'mpdel-core-volume-increase
-         "J" 'mpdel-playlist-move-down
-         "K" 'mpdel-playlist-move-up
-         "c" 'mpdel-song-open
-         "m" 'tablist-mark-forward
-         "u" 'tablist-unmark-forward
-         "t" 'tablist-toggle-marks
-         "or" 'mpdel-core-open-artists
-         "ol" 'mpdel-core-open-albums
-         "sl" 'luc/ivy-mpdel-albums
-         "sr" 'ivy-mpdel-list)
-       (luc/leader-def
-         "mp" 'mpdel-playlist-open
-         "mP" 'mpdel-playlist-open-stored-playlist))
-   #+end_src
+        (general-def
+          :keymaps 'mpdel-tablist-mode-map
+          :states 'normal
+          "l" 'tablist-find-entry
+          "h" 'mpdel-song-quit-window
+          "=" 'mpdel-core-volume-increase
+          "J" 'mpdel-playlist-move-down
+          "K" 'mpdel-playlist-move-up
+          "c" 'mpdel-song-open
+          "m" 'tablist-mark-forward
+          "u" 'tablist-unmark-forward
+          "t" 'tablist-toggle-marks
+          "or" 'mpdel-core-open-artists
+          "ol" 'mpdel-core-open-albums
+          "sl" 'luc/ivy-mpdel-albums
+          "sr" 'ivy-mpdel-list)
+        (luc/leader-def
+          "mp" 'mpdel-playlist-open
+          "mP" 'mpdel-playlist-open-stored-playlist))
+    #+end_src
    
 *** Aesthetics
     #+begin_src emacs-lisp
@@ -770,8 +794,8 @@
     #+end_src
     
 *** Note: Changes to the source code
-    I've made some changes to the =libmpdel= and =mpdel= source code
-    to accommodate certain needs of mine. These include, mainly:
+    I've made some changes to the =libmpdel= and =mpdel= source code to
+    accommodate certain needs of mine. These include, mainly:
     
     1. Having the /Album Artist/ file tag read in place of the /Artist/ tag.
        Ideally I'd have both easily and distinctly available, but I
@@ -797,12 +821,12 @@
        'navigel methods'): =(navigel-method mpdel
        navigel-entity-to-columns ((song libmpdel-song))=, both in
        =mpdel-tablist.el=.
-       
-    I'm currently working on organizing these changes so I can
-    separate them from the original packages into this file and/or
-    forks and you can benefit from them as well. If you don't have the
-    aforementioned needs/problems, the code from the source block
-    above alone will work just fine for you.
+
+       I'm currently working on organizing these changes so I can
+       separate them from the original packages into this file and/or
+       forks and you can benefit from them as well. If you don't have
+       the aforementioned needs/problems, the code from the source
+       block above alone will work just fine for you.
 ** Org Mode
    An amazing organization tool. I'm using it to write this very file,
    which really facilitates checking and updating the configuration,
@@ -810,7 +834,8 @@
    
    [[https://orgmode.org/manual/][Org Manual]]
 *** Preferences
-    Changing the look and feel of =org-mode=, for maximum organization power.
+    Changing the look and feel of =org-mode=, for maximum organization
+    power.
 **** Header Font Sizes
      #+begin_src emacs-lisp
        (use-package org
@@ -844,24 +869,20 @@
      #+end_src
      
 **** Ellipsis & Org Bullets
-     Header markers are bullets and expansion markers are little triangles. A lot cleaner.
+     Header markers are bullets and expansion markers are little
+     triangles. A lot cleaner.
      #+begin_src emacs-lisp
-       (use-package org
-         :config
-         (setq org-ellipsis " ▾")
-         (use-package org-bullets
-           :custom
-           (org-bullets-bullet-list '("◉" "●" "○" "●" "○" "●" "○"))
-           :hook
-           (org-mode . org-bullets-mode)))
-     #+end_src
+       (use-package org :config (setq org-ellipsis " ▾") (use-package
+         org-bullets :custom (org-bullets-bullet-list '("◉" "●" "○"
+         "●" "○" "●" "○")) :hook (org-mode . org-bullets-mode)))
+         #+end_src
      
 **** Visual Line Mode
      For visual line wrapping at words.
      #+begin_src emacs-lisp
        (use-package org
          :hook (org-mode . visual-line-mode))
-       #+end_src
+     #+end_src
      
 **** Visual Fill Column
      For centering text in the buffer.
@@ -877,9 +898,9 @@
      #+end_src
      
 **** Hide Emphasis Markers
-     Emphasis markers (for *bold*, /italics/, _underline_...) are
-     hidden. It does look a lot better, hoping it doesn't get in the
-     way of editing too much.
+     Emphasis markers (for *bold*, /italics/, _underline_...) are hidden. It
+     does look a lot better, hoping it doesn't get in the way of
+     editing too much.
      #+begin_src emacs-lisp
        (use-package org
          :init
@@ -898,8 +919,9 @@
     #+end_src
 
 *** Exporting: Ox-Reveal and Htmlize
-    Org is pretty easy to export to different formats (by default, =C-c C-e= will bring up Org Export
-    Dispatcher with many options). For better visualization in HTML (including =reveal.js= presentations),
+    Org is pretty easy to export to different formats (by default, =C-c
+    C-e= will bring up Org Export Dispatcher with many options). For
+    better visualization in HTML (including =reveal.js= presentations),
     these packages really come in handy.
     
     [[https://github.com/hexmode/ox-reveal][Ox Reveal]]
@@ -916,13 +938,13 @@
 
 *** Org Agenda
     I use this daily to manage my schedule, check deadlines, remember
-    dates and keep track of my daily routine. Thankfully =evil-org=
-    can bring more Evil keybindings to it as well.
+    dates and keep track of my daily routine. Thankfully =evil-org= can
+    bring more Evil keybindings to it as well.
     
     There's a keybinding for toggling =log-mode= in the agenda because
     repeated tasks (from the daily routine, for example) only show up
-    there when I mark them as =DONE=, along with the timestamp for
-    when I completed them.
+    there when I mark them as =DONE=, along with the timestamp for when
+    I completed them.
     #+begin_src emacs-lisp
       (use-package org
         :config
@@ -980,14 +1002,15 @@
 *** Org Babel
     For managing configuration files written in Org.
 **** Automatic tangling
-     =org-babel-tangle= writes the contents of the source blocks of an Org file
-     into a destination file. Since I'm using it to write to configuration files,
-     I'd like that function to be called every time I save the corresponding Org
-     file.
+     =org-babel-tangle= writes the contents of the source blocks of an
+     Org file into a destination file. Since I'm using it to write to
+     configuration files, I'd like that function to be called every
+     time I save the corresponding Org file.
 
-     Here I make it so =org-babel-tangle= is added to the =after-save-hook= on Org
-     files that match my specification. For that, I create a variable that holds a
-     list of my Org configuration files (so far only this one) and a function to make
+     Here I make it so =org-babel-tangle= is added to the
+     =after-save-hook= on Org files that match my specification. For
+     that, I create a variable that holds a list of my Org
+     configuration files (so far only this one) and a function to make
      the check.
      #+begin_src emacs-lisp
        (use-package emacs
@@ -1008,7 +1031,8 @@
      #+end_src
      
 ** Dired
-   I use =dired= for basically all my file management. Very versatile and powerful.
+   I use =dired= for basically all my file management. Very versatile
+   and powerful.
 *** Preferences & Keybindings
     #+begin_src emacs-lisp
       (use-package dired
@@ -1077,7 +1101,6 @@
 *** Dired Open
     For opening different file extensions with external programs. Also
     from [[https://github.com/Fuco1/dired-hacks][Dired Hacks]].
-   
     #+begin_src emacs-lisp
       (use-package dired-open
         :after dired
@@ -1117,8 +1140,7 @@
    authentication info in my =.authinfo= file.  In each account it's
    necessary to enable IMAP and either grant access to third party
    apps or create an app password and use that in =.authinfo=. Other
-   than that, I have the variables =NAME= and =EMAIL= set in my
-   =.profile=.
+   than that, I have the variables =NAME= and =EMAIL= set in my =.profile=.
    
    I definitely still have things I want to improve on it, so that's
    coming soon. Either that or giving =mu4e= another try.
@@ -1172,10 +1194,10 @@
     
 *** Vterm
     A very good terminal emulator for using inside Emacs. With
-    =evil-collection=, it gets a lot more comfortable to use (still
-    not as comfortable as the Emacs buffer that =shell= provides, but
-    more comfortable nonetheless), and I especially like that it can
-    toggle sending =ESC= to Emacs or the shell.
+    =evil-collection=, it gets a lot more comfortable to use (still not
+    as comfortable as the Emacs buffer that =shell= provides, but more
+    comfortable nonetheless), and I especially like that it can toggle
+    sending =ESC= to Emacs or the shell.
     
     [[https://github.com/akermu/emacs-libvterm][Git repository]]
     #+begin_src emacs-lisp
@@ -1195,9 +1217,9 @@
    
    [[https://github.com/abo-abo/hydra][Git repository]]
 *** Scaling windows
-    Scaling with =[count] C-w [+/-/</>]= doesn't feel very
-    comfortable, since I never know exactly how much I want to
-    scale. This hydra makes that a lot easier.
+    Scaling with =[count] C-w [+/-/</>]= doesn't feel very comfortable,
+    since I never know exactly how much I want to scale. This hydra
+    makes that a lot easier.
     #+begin_src emacs-lisp
       ;; With this, I can press 'SPC es' and then h/j/k/l how many
       ;; times I need to scale the window properly, then 'q' to quit.
@@ -1215,12 +1237,11 @@
     #+end_src
     
 ** Ispell & Flyspell
-   =ispell= is a built-in spellchecking package, and =flyspell-mode=
-   is used to highlight misspelled words. I had to install =aspell-en=
-   (there are different =aspell= packages for other languages, at
-   least in the Arch repositories) for it to work properly, but once
-   that's done, it's done!
-
+   =ispell= is a built-in spellchecking package, and =flyspell-mode= is
+   used to highlight misspelled words. I had to install =aspell-en=
+   (there are different =aspell= packages for other languages, at least
+   in the Arch repositories) for it to work properly, but once that's
+   done, it's done!
    #+begin_src emacs-lisp
      (use-package flyspell
        :hook
@@ -1260,22 +1281,22 @@
    place of =flymake=).
 *** LSP Mode
     [[https://emacs-lsp.github.io/lsp-mode/][Overview]]
-   #+begin_src emacs-lisp
-     (use-package lsp-mode
-       :commands (lsp lsp-deferred)
-       :init
-       (use-package flycheck ;; Syntax checker
-         :config
-         (luc/leader-def-for-keymaps
-           :keymaps 'flycheck-mode-map
-           "le" 'flycheck-list-errors))
-       (luc/leader-def-for-keymaps
-         :keymaps 'lsp-mode-map
-         "la" 'lsp-execute-code-action
-         "ld" 'lsp-find-declaration
-         "lr" 'lsp-rename
-         "lf" 'lsp-find-references))
-   #+end_src
+    #+begin_src emacs-lisp
+      (use-package lsp-mode
+        :commands (lsp lsp-deferred)
+        :init
+        (use-package flycheck ;; Syntax checker
+          :config
+          (luc/leader-def-for-keymaps
+            :keymaps 'flycheck-mode-map
+            "le" 'flycheck-list-errors))
+        (luc/leader-def-for-keymaps
+          :keymaps 'lsp-mode-map
+          "la" 'lsp-execute-code-action
+          "ld" 'lsp-find-declaration
+          "lr" 'lsp-rename
+          "lf" 'lsp-find-references))
+    #+end_src
    
 *** LSP UI
     #+begin_src emacs-lisp
@@ -1302,7 +1323,8 @@
     #+end_src
     
 ** Languages
-   Configuring the development environment for different languages (mainly with LSP and DAP).
+   Configuring the development environment for different languages
+   (mainly with LSP and DAP).
 *** C/C++
     Using =clangd=, which is looked for by default. For reference:
     [[https://emacs-lsp.github.io/lsp-mode/page/lsp-clangd/]]
