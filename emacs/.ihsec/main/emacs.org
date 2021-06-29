@@ -203,6 +203,43 @@
          "C--" 'evil-numbers/dec-at-pt))
    #+end_src
    
+** Evil Snipe
+   Extends Evil's character search capabilities, adding a new motion
+   that allows for two character searching. Think of Evil's =f/F/t/T=
+   commands, but you give those a two character long string as a
+   search term.
+   
+   By default, the inclusive commands (like =f/F=) are bound to =s/S= in
+   the normal state (finally some good use for those chords!) and =z/Z=
+   as an operator (say, when it's used as the motion for a =c= command),
+   while the exclusive commands (like =t/t=) are bound to nothing in the
+   normal state and =x/X= as an operator. For now I've settled on
+   binding the exclusive commands to =gh/gH= in the normal state, may
+   try something new later.
+   
+   On top of that, Snipe has its own versions of =f/F/t/T/;/,= that work
+   just like the basic ones but with highlighting for matches and are
+   also more customizable (for example, changing the scope of the
+   search, which I haven't messed around with yet). Overall a great
+   addition to Evil's vocabulary.
+   
+   [[https://github.com/hlissner/evil-snipe][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package evil-snipe
+       :init
+       ;; Keep the repeat motions to ; and ,
+       (setq evil-snipe-repeat-keys nil)
+       (general-def
+         :states 'normal
+         :keymaps 'evil-snipe-mode-map
+         "gh" 'evil-snipe-x
+         "gH" 'evil-snipe-X)
+       :config
+       (evil-snipe-mode 1)
+       ;; Use Snipe's versions of f/F/t/T/;/,
+       (evil-snipe-override-mode 1))
+   #+end_src
+   
 ** Electric Pairs
    Matching pairs are 'electric'. Isn't the easiest to explain, but
    once you see it in action, you'll know what it does. Pretty
@@ -222,109 +259,6 @@
      (use-package subword
        :config
        (global-subword-mode 1))
-   #+end_src
-
-* Search & Completion
-** Ivy, Counsel & Swiper
-   As my completion framework, I'm using Ivy. On top of it I'm loading
-   Ivy Rich, for getting details on each option for selection. Also
-   setting up keybindings for the Counsel versions of commands for
-   much better navigability, substituting I-search with =swiper= and
-   remapping some keys for better navigation in the
-   =ivy-minibuffer-map=.
-  
-   [[https://github.com/abo-abo/swiper][Git repository]]
-   #+begin_src emacs-lisp
-     (use-package ivy
-       :config
-       (ivy-mode 1)
-       (use-package counsel)
-       (use-package ivy-rich
-         :init
-         (ivy-rich-mode 1))
-       (luc/leader-def
-         "SPC" 'counsel-M-x
-         "f" 'counsel-find-file
-         "F" 'counsel-fzf
-         "d" 'counsel-dired
-         "b" 'counsel-switch-buffer
-         "B" 'counsel-switch-buffer-other-window
-         "ag" 'counsel-rg)
-       (general-def
-         :states 'normal
-         "C-s" 'swiper)
-       (general-unbind
-         :keymaps 'ivy-minibuffer-map
-         "S-SPC")
-       (general-def
-         :states 'insert
-         :keymaps 'ivy-minibuffer-map
-         "C-l" 'ivy-dispatching-done  ;; Access to ivy actions.
-         "C-j" 'ivy-next-line
-         "C-k" 'ivy-previous-line
-         "C-n" 'ivy-next-history-element
-         "C-p" 'ivy-previous-history-element)
-       (general-def
-         :states 'normal
-         :keymaps 'ivy-minibuffer-map
-         "o" 'ivy-dispatching-done
-         "j" 'ivy-next-line
-         "k" 'ivy-previous-line
-         "J" 'ivy-next-history-element
-         "K" 'ivy-previous-history-element))
-   #+end_src
-
-** Company
-   An auto-completion package. Very comfortable to use and highly
-   customizable.  I do some remapping to use make it so it doesn't
-   interfere with Evil's completion commands (=C-n= and =C-p=).
-   
-   [[https://company-mode.github.io/][Documentation]]
-   #+begin_src emacs-lisp
-     (use-package company
-       :hook
-       (after-init . global-company-mode)
-       :init
-       (setq company-idle-delay 0)
-       (setq company-minimum-prefix-length 1)
-       (setq company-tooltip-idle-delay 0)
-       (setq company-selection-wrap-around t)
-       :config
-       (general-def
-         :keymaps 'company-active-map
-         "<tab>" 'company-complete-selection
-         "C-j" 'company-select-next
-         "C-k" 'company-select-previous
-         "C-n" 'evil-complete-next
-         "C-p" 'evil-complete-previous)
-       (luc/leader-def
-         "ac" 'company-mode))
-   #+end_src
-
-* Interface & Interactions
-** Theme, Modeline & Default Font
-   Trying out some Doom themes and the Doom modeline. Looking pretty
-   good.
-  
-   [[https://github.com/hlissner/emacs-doom-themes][Doom themes]]
-
-   [[https://github.com/seagle0128/doom-modeline][Doom modeline]]
-   #+begin_src emacs-lisp
-     (use-package emacs
-       :config
-       (use-package doom-themes
-         :config
-        (load-theme 'doom-dracula t))
-       (use-package doom-modeline
-         :custom
-         (doom-modeline-window-width-limit 213)
-         (doom-modeline-icon t)
-         (doom-modeline-height 30)
-         :init
-         (doom-modeline-mode 1))
-       ;; Making this the default font for this and future frames
-       (add-to-list 'default-frame-alist '(font . "UbuntuMono-13"))
-       (set-face-attribute 'default nil :font "UbuntuMono-13"))
    #+end_src
 
 ** Indentation Preferences
@@ -387,6 +321,129 @@
          "C-l" 'transpose-lines))
    #+end_src
    
+* Search & Completion
+** Ivy, Counsel & Swiper
+   As my completion framework, I'm using Ivy. On top of it I'm loading
+   Ivy Rich, for getting details on each option for selection. Also
+   setting up keybindings for the Counsel versions of commands for
+   much better navigability, substituting I-search with =swiper= and
+   remapping some keys for better navigation in the
+   =ivy-minibuffer-map=.
+  
+   [[https://github.com/abo-abo/swiper][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package ivy
+       :config
+       (ivy-mode 1)
+       (use-package counsel)
+       (use-package ivy-rich
+         :init
+         (ivy-rich-mode 1))
+       (luc/leader-def
+         "SPC" 'counsel-M-x
+         "r" 'counsel-recentf
+         "f" 'counsel-find-file
+         "z" 'counsel-fzf
+         "d" 'counsel-dired
+         "b" 'counsel-switch-buffer
+         "B" 'counsel-switch-buffer-other-window
+         "ag" 'counsel-rg)
+       (general-def
+         :states 'normal
+         "C-s" 'swiper)
+       (general-unbind
+         :keymaps 'ivy-minibuffer-map
+         "S-SPC")
+       (general-def
+         :states 'insert
+         :keymaps 'ivy-minibuffer-map
+         "C-l" 'ivy-dispatching-done  ;; Access to ivy actions.
+         "C-j" 'ivy-next-line
+         "C-k" 'ivy-previous-line
+         "C-n" 'ivy-next-history-element
+         "C-p" 'ivy-previous-history-element)
+       (general-def
+         :states 'normal
+         :keymaps 'ivy-minibuffer-map
+         "o" 'ivy-dispatching-done
+         "j" 'ivy-next-line
+         "k" 'ivy-previous-line
+         "J" 'ivy-next-history-element
+         "K" 'ivy-previous-history-element))
+   #+end_src
+
+** Company
+   An auto-completion package. Very comfortable to use and highly
+   customizable.  I do some remapping to use make it so it doesn't
+   interfere with Evil's completion commands (=C-n= and =C-p=).
+   
+   [[https://company-mode.github.io/][Documentation]]
+   #+begin_src emacs-lisp
+     (use-package company
+       :hook
+       (after-init . global-company-mode)
+       :init
+       (setq company-idle-delay 0)
+       (setq company-minimum-prefix-length 1)
+       (setq company-tooltip-idle-delay 0)
+       (setq company-selection-wrap-around t)
+       :config
+       (general-unbind
+         :keymaps 'company-active-map
+         "<tab>")
+       (general-def
+         :keymaps 'company-active-map
+         "C-h" 'company-complete-selection
+         "C-j" 'company-select-next
+         "C-k" 'company-select-previous
+         "C-n" 'evil-complete-next
+         "C-p" 'evil-complete-previous)
+       (luc/leader-def
+         "ac" 'company-mode))
+   #+end_src
+
+** Evil Search History
+   Keybindings for easily accessing history elements in Evil search.
+   #+begin_src emacs-lisp
+     (use-package evil
+       :config
+       (general-def
+         :keymaps 'evil-ex-search-keymap
+         :states 'insert
+         "C-n" 'next-history-element
+         "C-p" 'previous-history-element)
+       (general-def
+         :keymaps 'evil-ex-search-keymap
+         :states 'normal
+         "J" 'next-history-element
+         "K" 'previous-history-element))
+   #+end_src
+   
+* Interface & Interactions
+** Theme, Modeline & Default Font
+   Trying out some Doom themes and the Doom modeline. Looking pretty
+   good.
+  
+   [[https://github.com/hlissner/emacs-doom-themes][Doom themes]]
+
+   [[https://github.com/seagle0128/doom-modeline][Doom modeline]]
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (use-package doom-themes
+         :config
+        (load-theme 'doom-dracula t))
+       (use-package doom-modeline
+         :custom
+         (doom-modeline-window-width-limit 207)
+         (doom-modeline-icon t)
+         (doom-modeline-height 30)
+         :init
+         (doom-modeline-mode 1))
+       ;; Making this the default font for this and future frames
+       (add-to-list 'default-frame-alist '(font . "UbuntuMono-13")))
+   #+end_src
+
 ** Hide Mode Line
    Sometimes I just need to clean the screen that bit more by hiding
    the modeline. Thankfully, this package provides a minor mode for
@@ -395,7 +452,8 @@
    [[https://github.com/hlissner/emacs-hide-mode-line][Git repository]]
    #+begin_src emacs-lisp
      (use-package hide-mode-line
-       :config
+       :commands hide-mode-line-mode
+       :init
        (luc/leader-def
          "ib" 'hide-mode-line-mode))
    #+end_src
@@ -410,7 +468,7 @@
          (unless (display-graphic-p frame)
            (set-face-attribute 'hl-line frame :reverse-video t)
            ;; Use terminal's background.
-           (set-face-attribute 'default frame :background "unspecified")))
+           (set-face-background 'default "unspecified-bg" frame)))
        (add-to-list 'after-make-frame-functions 'luc/tty-set-face-attributes))
    #+end_src
    
@@ -558,7 +616,8 @@
 ** Highlight Current Line
    #+begin_src emacs-lisp
      (use-package hl-line
-       :config
+       :commands hl-line-mode
+       :init
        (luc/leader-def
          "il" 'hl-line-mode))
    #+end_src
@@ -576,7 +635,7 @@
 ** Evil Show Registers
    Keybinding for quickly getting Evil register values.
    #+begin_src emacs-lisp
-     (use-package emacs
+     (use-package evil
        :config
        (luc/leader-def
          "gr" 'evil-show-registers))
@@ -634,6 +693,8 @@
    try it out sometime.
    #+begin_src emacs-lisp
      (use-package evil-better-visual-line
+       :commands (evil-better-visual-line-next-line
+                  evil-better-visual-line-previous-line)
        :config
        (general-def
          :states 'normal
@@ -659,43 +720,6 @@
        (defun luc/beginning-of-this-or-previous-line (&rest _)
          (beginning-of-line (and (looking-at-p "^$") 0)))
        (advice-add #'end-of-buffer :after #'luc/beginning-of-this-or-previous-line))
-   #+end_src
-   
-** Evil Snipe
-   Extends Evil's character search capabilities, adding a new motion
-   that allows for two character searching. Think of Evil's =f/F/t/T=
-   commands, but you give those a two character long string as a
-   search term.
-   
-   By default, the inclusive commands (like =f/F=) are bound to =s/S= in
-   the normal state (finally some good use for those chords!) and =z/Z=
-   as an operator (say, when it's used as the motion for a =c= command),
-   while the exclusive commands (like =t/t=) are bound to nothing in the
-   normal state and =x/X= as an operator. For now I've settled on
-   binding the exclusive commands to =gh/gH= in the normal state, may
-   try something new later.
-   
-   On top of that, Snipe has its own versions of =f/F/t/T/;/,= that work
-   just like the basic ones but with highlighting for matches and are
-   also more customizable (for example, changing the scope of the
-   search, which I haven't messed around with yet). Overall a great
-   addition to Evil's vocabulary.
-   
-   [[https://github.com/hlissner/evil-snipe][Git repository]]
-   #+begin_src emacs-lisp
-     (use-package evil-snipe
-       :init
-       ;; Keep the repeat motions to ; and ,
-       (setq evil-snipe-repeat-keys nil)
-       (general-def
-         :states 'normal
-         :keymaps 'evil-snipe-mode-map
-         "gh" 'evil-snipe-x
-         "gH" 'evil-snipe-X)
-       :config
-       (evil-snipe-mode 1)
-       ;; Use Snipe's versions of f/F/t/T/;/,
-       (evil-snipe-override-mode 1))
    #+end_src
    
 ** Tabs
@@ -727,6 +751,7 @@
        (setq history-length 250)
        (setq savehist-additional-variables '(kill-ring
                                              register-alist))
+       :config
        (savehist-mode 1))
    #+end_src
    
@@ -745,6 +770,7 @@
     [[https://github.com/mpdel/mpdel][Git repository]]
     #+begin_src emacs-lisp
       (use-package mpdel
+        :commands mpdel-playlist-open
         :hook
         (mpdel-tablist-mode . turn-off-evil-snipe-mode)
         :init
@@ -769,13 +795,14 @@
           "m" 'tablist-mark-forward
           "u" 'tablist-unmark-forward
           "t" 'tablist-toggle-marks
+          "gp" 'mpdel-playlist-open
+          "gP" 'mpdel-playlist-open-stored-playlist
           "or" 'mpdel-core-open-artists
           "ol" 'mpdel-core-open-albums
           "sl" 'luc/ivy-mpdel-albums
           "sr" 'ivy-mpdel-list)
         (luc/leader-def
-          "mp" 'mpdel-playlist-open
-          "mP" 'mpdel-playlist-open-stored-playlist))
+          "mp" 'mpdel-playlist-open))
     #+end_src
    
 *** Aesthetics
@@ -872,9 +899,14 @@
      Header markers are bullets and expansion markers are little
      triangles. A lot cleaner.
      #+begin_src emacs-lisp
-       (use-package org :config (setq org-ellipsis " ▾") (use-package
-         org-bullets :custom (org-bullets-bullet-list '("◉" "●" "○"
-         "●" "○" "●" "○")) :hook (org-mode . org-bullets-mode)))
+       (use-package org
+         :config
+         (setq org-ellipsis " ▾")
+         (use-package
+           org-bullets
+           :custom
+           (org-bullets-bullet-list '("◉" "●" "○" "●" "○" "●" "○"))
+           :hook (org-mode . org-bullets-mode)))
          #+end_src
      
 **** Visual Line Mode
@@ -907,7 +939,14 @@
          (setq org-hide-emphasis-markers t))
      #+end_src
      
-*** Evil Org
+**** Startup Folded
+     #+begin_src emacs-lisp
+       (use-package org
+         :config
+         (setq org-startup-folded t))
+     #+end_src
+     
+*** Keybindings
     More Evil keybindings for Org Mode.
     
     [[https://github.com/Somelauw/evil-org-mode][Git repository]]
@@ -915,7 +954,15 @@
       (use-package evil-org
         :after org
         :hook ((org-mode . evil-org-mode)
-               (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation insert textobjects additional))))))
+               (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation
+                                                                     insert
+                                                                     return
+                                                                     textobjects
+                                                                     additional
+                                                                     shift
+                                                                     todo
+                                                                     heading
+                                                                     calendar))))))
     #+end_src
 
 *** Exporting: Ox-Reveal and Htmlize
@@ -947,6 +994,8 @@
     I completed them.
     #+begin_src emacs-lisp
       (use-package org
+        :hook
+        (org-agenda-mode . hl-line-mode)
         :config
         (setq org-directory "~/storage/org/")
         (setq org-agenda-files '("~/storage/org/agenda/"))
@@ -1105,10 +1154,7 @@
       (use-package dired-open
         :after dired
         :init
-        (setq dired-open-extensions '(("png" . "sxiv")
-                                      ("jpg" . "sxiv")
-                                      ("jpeg" . "sxiv")
-                                      ("mkv" . "mpv")
+        (setq dired-open-extensions '(("mkv" . "mpv")
                                       ("mp4" . "mpv"))))
     #+end_src
     
@@ -1148,6 +1194,9 @@
    [[https://www.emacswiki.org/emacs/GnusTutorial][EmacsWiki Gnus Tutorial]]
    #+begin_src emacs-lisp
      (use-package gnus
+       :commands (gnus
+                  compose-mail
+                  compose-mail-other-window)
        :config
        (setq gnus-expert-user t)
        (setq gnus-select-method '(nnnil ""))
@@ -1172,7 +1221,8 @@
 ** Try Packages
    Package for trying out packages. Will save and load them on =/tmp/=.
    #+begin_src emacs-lisp
-     (use-package try)
+     (use-package try
+       :commands try)
    #+end_src
    
 ** Terminal & Shell
@@ -1186,7 +1236,8 @@
     better keybinding for =shell-command=.
     #+begin_src emacs-lisp
       (use-package shell
-        :config
+        :commands shell
+        :init
         (luc/leader-def
           "as" 'shell
           "!" 'shell-command))
@@ -1202,10 +1253,12 @@
     [[https://github.com/akermu/emacs-libvterm][Git repository]]
     #+begin_src emacs-lisp
       (use-package vterm
-        :config
-        (evil-collection-vterm-setup)
+        :init
         (luc/leader-def
           "at" 'vterm)
+        :commands vterm
+        :config
+        (evil-collection-vterm-setup)
         (general-def
           :keymaps 'vterm-mode-map
           "C-j" 'evil-collection-vterm-toggle-send-escape))
@@ -1366,12 +1419,14 @@
    [[https://magit.vc/manual/forge/][Forge Manual]]
    #+begin_src emacs-lisp
      (use-package magit
+       :commands magit-status
+       :init
+       (luc/leader-def
+         "am" 'magit-status))
        :config
        (use-package forge
          :custom-face
          ;; For correcting error "Invalid face box".
          (forge-topic-label ((t :box (:line-width -1 :style released-button)))))
-       (luc/leader-def
-         "am" 'magit-status))
    #+end_src
 
