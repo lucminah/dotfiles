@@ -433,7 +433,7 @@
        :config
        (use-package doom-themes
          :config
-        (load-theme 'doom-dracula t))
+         (load-theme 'doom-dracula t))
        (use-package doom-modeline
          :custom
          (doom-modeline-window-width-limit 207)
@@ -758,32 +758,49 @@
    
 * Applications & Utilities
 ** MPDel
-*** Keybindings & Functions
-    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
-    use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
-    client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
-    integrates with it, and that's always good news!). I already have
-    global keybindings in my window manager for managing toggling the
-    playing/paused state, going forwards and backwards in the
-    playlist, controlling volume, etc. So this should be used mostly
-    just for searching and playlist management.
+   Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
+   use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
+   client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
+   integrates with it, and that's always good news!). I already have
+   global keybindings in my window manager for managing toggling the
+   playing/paused state, going forwards and backwards in the
+   playlist, controlling volume, etc. So this should be used mostly
+   just for searching and playlist management.
+*** Setup
+    I've made some changes to the source code of =libmpdel= and =mpdel= to
+    accommodate certain needs of mine, so I'm loading these packages
+    from my forks. Briefly, the changes to =mpdel= pertain to changing
+    the playlist view, and the changes to =libmpdel= to:
+    - Use the =albumartist= tag instead of =artist= - just more useful for me most of the time, and makes it more intuitive for navigating from artist -> album -> song, since the album's contents won't be affected by which artist you selected before.
+    - Use =search= and =searchadd= commands instead of =find= and =findadd= - fixes albums appearing empty when opened, which I believe is because =find= commands, when receive an empty string, look for files with that content, in this case, empty, while =search= commands treat the empty string as a wildcard.
    
     [[https://github.com/mpdel/mpdel][Git repository]]
     #+begin_src emacs-lisp
+      (use-package libmpdel
+        :straight (libmpdel :type git :host github :repo "mpdel/libmpdel"
+                            :fork (:host github :repo "lucasminah/libmpdel"))
+        :config
+        (use-package mpdel
+          :straight (mpdel :type git :host github :repo "mpdel/mpdel"
+                           :fork (:host github :repo "lucasminah/mpdel"))
+          :commands mpdel-playlist-open
+          :hook
+          (mpdel-tablist-mode . turn-off-evil-snipe-mode)
+          :init
+          (evil-collection-mpdel-setup)
+          (use-package ivy-mpdel
+            :config
+            ;; I used the other `ivy-mpdel' functions as a base for this new one.
+            (defun luc/ivy-mpdel-albums ()
+              "Select music from a list of albums."
+              (interactive)
+              (ivy-mpdel-list 'albums)))))
+    #+end_src
+   
+*** Keybindings
+    #+begin_src emacs-lisp
       (use-package mpdel
-        :commands mpdel-playlist-open
-        :hook
-        (mpdel-tablist-mode . turn-off-evil-snipe-mode)
         :init
-        (evil-collection-mpdel-setup)
-        (use-package ivy-mpdel
-          :config
-          ;; I used the other `ivy-mpdel' functions as a base for this new one.
-          (defun luc/ivy-mpdel-albums ()
-            "Select music from a list of albums."
-            (interactive)
-            (ivy-mpdel-list 'albums)))
-
         (general-def
           :keymaps 'mpdel-tablist-mode-map
           :states 'normal
@@ -805,7 +822,7 @@
         (luc/leader-def
           "mp" 'mpdel-playlist-open))
     #+end_src
-   
+    
 *** Aesthetics
     #+begin_src emacs-lisp
       (use-package mpdel
@@ -821,40 +838,6 @@
         (set-face-attribute 'mpdel-playlist-current-song-face nil :weight 'bold))
     #+end_src
     
-*** Note: Changes to the source code
-    I've made some changes to the =libmpdel= and =mpdel= source code to
-    accommodate certain needs of mine. These include, mainly:
-    
-    1. Having the /Album Artist/ file tag read in place of the /Artist/ tag.
-       Ideally I'd have both easily and distinctly available, but I
-       wasn't able to make that happen so far, and /Album Artist/ is a
-       lot more useful for me overall. Roughly, the way to do this is
-       changing =artist= into =albumartist= and ='Artist= into ='AlbumArtist=
-       in mpc formatted commands in =libmpdel.el=.
-    2. Using the =search= and =searchadd= mpc commands in place of =find= and =findadd=.
-       The way the latter ones operate made browsing album tracks not
-       function - I'd choose an album from =mpdel-core-open-albums= and
-       get nothing for each and every one. The command =mpc find artist
-       ""= will only return songs /without/ an artist tag, while
-       replacing =find= with =search= will return songs with /any/ artist
-       tag, and that fixed my issue. This is easy to achieve: simply
-       change =find= and =findadd= into =search= and =searchadd= in the
-       strings contained in the =libmpdel-send-command= calls in the
-       body of the following functions: =libmpdel-list-songs (entity
-       function)= and =libmpdel-playlist-add (entity (_ (eql
-       current-playlist)))=, both in =libmpdel.el=.
-    3. Changing the formatting and layout of the playlist. 
-       This can be made changing the function
-       =mpdel-tablist--song-format ()= and this (I'm not familiar with
-       'navigel methods'): =(navigel-method mpdel
-       navigel-entity-to-columns ((song libmpdel-song))=, both in
-       =mpdel-tablist.el=.
-
-       I'm currently working on organizing these changes so I can
-       separate them from the original packages into this file and/or
-       forks and you can benefit from them as well. If you don't have
-       the aforementioned needs/problems, the code from the source
-       block above alone will work just fine for you.
 ** Org Mode
    An amazing organization tool. I'm using it to write this very file,
    which really facilitates checking and updating the configuration,
