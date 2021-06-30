@@ -179,25 +179,29 @@
    decrementing the number at point from Vim's normal mode =C-a= and =C-x=
    commands. =speeddating= is very similar, with functions to increment
    and decrement the date at point in various formats.
-   
-   *Note:* Here I'm only binding the =evil-numbers= functions/operators
-   because I've changed their source code to check for a date and call
-   =speeddating= if appropriate. I'm still figuring out which is the
-   best way to replicate that code here.
-   
    [[https://github.com/juliapath/evil-numbers][Evil Numbers]]
    
    [[https://github.com/xuchunyang/emacs-speeddating][Speeddating]]
    #+begin_src emacs-lisp
-     (use-package speeddating
+     (use-package emacs
        :config
-       (use-package evil-numbers
+       (use-package speeddating
+         :commands (speeddating-increase
+                    speeddating-decrease)
          :init
-         (setq evil-numbers-pad-default t))
-       (general-def
-         :states 'normal
-         "C-=" 'evil-numbers/inc-at-pt
-         "C--" 'evil-numbers/dec-at-pt))
+         (general-def
+           :states 'normal
+           "C-+" 'speeddating-increase
+           "C-_" 'speeddating-decrease))
+       (use-package evil-numbers
+         :commands (evil-numbers/inc-at-pt
+                    evil-numbers/dec-at-pt)
+         :init
+         (setq evil-numbers-pad-default t)
+         (general-def
+           :states 'normal
+           "C-=" 'evil-numbers/inc-at-pt
+           "C--" 'evil-numbers/dec-at-pt)))
    #+end_src
    
 ** Evil Snipe
