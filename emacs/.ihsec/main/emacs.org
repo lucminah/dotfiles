@@ -33,29 +33,26 @@
    #+end_src
    
 ** Package Management
-   I'm using a package called =use-package= for package
-   management. Since it's going to be used for configuring pretty much
-   everything in the next blocks, it's necessary to set it up in
-   advance.
+   I'm using =straight.el= alongside =use-package= for package management.
+   
+   [[https://github.com/raxod502/straight.el][straight.el]]
   
    [[https://www.emacswiki.org/emacs/UsePackage][EmacsWiki - Use Package]]
    #+begin_src emacs-lisp
-     (require 'package)
-     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-     (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
-
-     (unless (bound-and-true-p package--initialized)
-       (setq package-enable-at-startup nil)
-       (package-initialize))
-
-     (unless (package-installed-p 'use-package)
-       (package-refresh-contents)
-       (package-install 'use-package))
-
-     (setq use-package-always-ensure t)
-     (setq use-package-enable-imenu-support t)
-
-     (require 'use-package)
+     (defvar bootstrap-version)
+     (let ((bootstrap-file
+            (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+           (bootstrap-version 5))
+       (unless (file-exists-p bootstrap-file)
+         (with-current-buffer
+             (url-retrieve-synchronously
+              "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+              'silent 'inhibit-cookies)
+           (goto-char (point-max))
+           (eval-print-last-sexp)))
+       (load bootstrap-file nil 'nomessage))
+     (setq straight-use-package-by-default t)
+     (straight-use-package 'use-package)
    #+end_src
   
 * Editing
@@ -1001,12 +998,13 @@
         (setq org-agenda-files '("~/storage/org/agenda/"))
         (setq org-agenda-log-mode-items '(closed clock state))
         (use-package evil-org-agenda
-          :ensure nil
+          :straight nil
           :config
           (evil-org-agenda-set-keys))
         (general-def
           :states 'motion
           :keymaps 'org-agenda-mode-map
+          "w" 'org-save-all-org-buffers
           "l" 'org-agenda-log-mode)
         (luc/leader-def
           "ca" 'org-agenda))
@@ -1085,7 +1083,7 @@
 *** Preferences & Keybindings
     #+begin_src emacs-lisp
       (use-package dired
-        :ensure nil
+        :straight nil
         :custom
         (delete-by-moving-to-trash t)
         (dired-listing-switches "-al --group-directories-first")
@@ -1141,7 +1139,7 @@
       (use-package async
         :config
         (use-package dired-async
-          :ensure nil
+          :straight nil
           :after dired
           :config
           (dired-async-mode 1)))
@@ -1173,7 +1171,7 @@
     Configuration for =wdired-mode=.
     #+begin_src emacs-lisp
       (use-package wdired
-        :ensure nil
+        :straight nil
         :after dired
         :init
         (setq wdired-allow-to-change-permissions t)
