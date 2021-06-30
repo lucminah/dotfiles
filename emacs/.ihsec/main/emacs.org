@@ -179,6 +179,7 @@
    decrementing the number at point from Vim's normal mode =C-a= and =C-x=
    commands. =speeddating= is very similar, with functions to increment
    and decrement the date at point in various formats.
+   
    [[https://github.com/juliapath/evil-numbers][Evil Numbers]]
    
    [[https://github.com/xuchunyang/emacs-speeddating][Speeddating]]
@@ -389,9 +390,6 @@
        (setq company-tooltip-idle-delay 0)
        (setq company-selection-wrap-around t)
        :config
-       (general-unbind
-         :keymaps 'company-active-map
-         "<tab>")
        (general-def
          :keymaps 'company-active-map
          "C-h" 'company-complete-selection
@@ -772,7 +770,7 @@
     from my forks. Briefly, the changes to =mpdel= pertain to changing
     the playlist view, and the changes to =libmpdel= to:
     - Use the =albumartist= tag instead of =artist= - just more useful for me most of the time, and makes it more intuitive for navigating from artist -> album -> song, since the album's contents won't be affected by which artist you selected before.
-    - Use =search= and =searchadd= commands instead of =find= and =findadd= - fixes albums appearing empty when opened, which I believe is because =find= commands, when receive an empty string, look for files with that content, in this case, empty, while =search= commands treat the empty string as a wildcard.
+    - Use =search= and =searchadd= commands instead of =find= and =findadd= - fixes albums appearing empty when opened, which I believe is because =find= commands, when receive an empty string, look for files with tags equal to that content, in this case, empty, while =search= commands treat the empty string as a wildcard.
    
     [[https://github.com/mpdel/mpdel][Git repository]]
     #+begin_src emacs-lisp
@@ -928,6 +926,13 @@
        (use-package org
          :config
          (setq org-startup-folded t))
+     #+end_src
+     
+**** Adapt Indentation
+     #+begin_src emacs-lisp
+       (use-package org
+         :config
+         (setq org-adapt-indentation t))
      #+end_src
      
 *** Keybindings
