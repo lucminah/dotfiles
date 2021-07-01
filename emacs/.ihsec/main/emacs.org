@@ -34,6 +34,17 @@
    
 ** Package Management
    I'm using =straight.el= alongside =use-package= for package management.
+   There's a lot of good stuff about these packages, and I definitely
+   encourage you to explore their possibilities beyond what you see
+   here, but for now: =straight.el= makes package management a lot more
+   intuitive and flexible, being able to get specific recipes from
+   specific repositories, and managing those as actual
+   version-controlled repositories instead of tarballs, like
+   =package.el= does. =use-package= provides a very powerful macro for
+   loading packages, granting a lot of freedom related to when to
+   actually load the package, applying configuration and so
+   forth. =straight.el= fortunately integrates with =use-package= out of
+   the box.
    
    [[https://github.com/raxod502/straight.el][straight.el]]
   
@@ -51,15 +62,17 @@
            (goto-char (point-max))
            (eval-print-last-sexp)))
        (load bootstrap-file nil 'nomessage))
+     ;; Like `use-package-always-ensure', but for `straight.el'. The flag
+     ;; `:straight' can be used to set that explicitly, like `:ensure'.
      (setq straight-use-package-by-default t)
+     ;; Install `use-package'
      (straight-use-package 'use-package)
    #+end_src
   
-* Editing
 ** Evil & General Setup
    Vim's modal editing, grammar and keybindings are very much pillars
-   of my text editing. Thankfully, these packages are here to save the
-   day.
+   of my text editing (and now, thanks to Emacs, much
+   more). Thankfully, these packages are here to save the day.
 *** Evil Mode
     The Extensive Vi Layer itself! Here I load Evil and customizing some
     basic variables. For information on the package I'm using for
