@@ -138,6 +138,7 @@
           "ESC" 'keyboard-quit))
     #+end_src
     
+* Editing
 ** Undo Fu
    My preferred undo system. Works by creating checkpoints on the undo
    actions that keep the functionality linear and sensibly delimited,
@@ -924,28 +925,16 @@
          (org-mode . visual-fill-column-mode))
      #+end_src
      
-**** Hide Emphasis Markers
-     Emphasis markers (for *bold*, /italics/, _underline_...) are hidden. It
-     does look a lot better, hoping it doesn't get in the way of
-     editing too much.
+**** Variables
      #+begin_src emacs-lisp
        (use-package org
          :init
+         ;; Headers are folded by default.
+         (setq org-startup-folded t)
+         ;; Indentation adapts to subtree level.
+         (setq org-adapt-indentation t)
+         ;; Hide markers for bold, italis, verbatim...
          (setq org-hide-emphasis-markers t))
-     #+end_src
-     
-**** Startup Folded
-     #+begin_src emacs-lisp
-       (use-package org
-         :config
-         (setq org-startup-folded t))
-     #+end_src
-     
-**** Adapt Indentation
-     #+begin_src emacs-lisp
-       (use-package org
-         :config
-         (setq org-adapt-indentation t))
      #+end_src
      
 *** Keybindings
