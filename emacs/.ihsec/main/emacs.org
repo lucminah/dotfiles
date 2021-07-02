@@ -428,7 +428,7 @@
          "ag" 'counsel-rg)
        (general-def
          :states 'normal
-         "C-s" 'swiper)
+         "C-/" 'swiper)
        (general-unbind
          :keymaps 'ivy-minibuffer-map
          "S-SPC")
@@ -510,7 +510,7 @@
          (load-theme 'doom-dracula t))
        (use-package doom-modeline
          :custom
-         (doom-modeline-window-width-limit 207)
+         (doom-modeline-window-width-limit 154)
          (doom-modeline-icon t)
          (doom-modeline-height 30)
          :init
