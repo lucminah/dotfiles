@@ -1326,11 +1326,17 @@
          "mC" 'compose-mail-other-window))
    #+end_src
 
-** Try Packages
-   Package for trying out packages. Will save and load them on =/tmp/=.
+** Straight
+   Some keybindings for accessing =straight.el= commands. The
+   interactive =straight-use-package= now serves as my command to try
+   out packages.
    #+begin_src emacs-lisp
-     (use-package try
-       :commands try)
+     (use-package straight
+       :init
+       (luc/leader-def
+         "ss" 'straight-use-package
+         "sp" 'straight-pull-package
+         "sP" 'straight-pull-all))
    #+end_src
    
 ** Terminal & Shell
