@@ -716,6 +716,17 @@
          "gr" 'evil-show-registers))
    #+end_src
    
+** History
+   Saving minibuffer histories and additional variables.
+   #+begin_src emacs-lisp
+     (use-package savehist
+       :config
+       (setq history-length 250)
+       (setq history-delete-duplicates t)
+       (setq savehist-additional-variables '(register-alist))
+       (savehist-mode 1))
+   #+end_src
+   
 * Windows & Buffers
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
@@ -814,20 +825,6 @@
          "eN" 'tab-next
          "eP" 'tab-previous
          "it" 'tab-bar-mode))
-   #+end_src
-   
-** Save Hist
-   Saves minibuffer histories, allowing for additional variables, so
-   here I'm using it to keep register and kill ring contents
-   persistent through sessions as well.
-   #+begin_src emacs-lisp
-     (use-package savehist
-       :init
-       (setq history-length 250)
-       (setq savehist-additional-variables '(kill-ring
-                                             register-alist))
-       :config
-       (savehist-mode 1))
    #+end_src
    
 * Applications & Utilities
