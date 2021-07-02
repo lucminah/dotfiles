@@ -81,12 +81,12 @@
     [[https://evil.readthedocs.io/en/latest/index.html][Documentation]]
     #+begin_src emacs-lisp
       (use-package evil
-        :custom
-        (evil-want-keybinding nil)    ;; For playing nice with `evil-collection'
-        (evil-want-Y-yank-to-eol t)   ;; Equivalent to 'map Y y$' in Vim
-        (evil-symbol-word-search t)   ;; * and # will search for symbols, not words.
-        (evil-want-C-u-scroll t)      ;; \
-        (evil-want-C-u-delete t)      ;; -\ I don't use C-u for the universal argument
+        :init
+        (setq evil-want-keybinding nil    ;; For playing nice with `evil-collection'
+              evil-want-Y-yank-to-eol t   ;; Equivalent to 'map Y y$' in Vim
+              evil-symbol-word-search t   ;; * and # will search for symbols, not words.
+              evil-want-C-u-scroll t      ;; \
+              evil-want-C-u-delete t)     ;; -\ I don't use C-u for the universal argument
         :config
         (evil-mode 1)
         (evil-select-search-module 'evil-search-module 'evil-search)
