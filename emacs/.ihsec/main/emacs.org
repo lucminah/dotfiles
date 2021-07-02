@@ -744,6 +744,17 @@
        "eb" 'ibuffer)
    #+end_src
 
+** Switch to Other Buffer
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (defun luc/switch-to-other-buffer ()
+         (interactive)
+         (switch-to-buffer (other-buffer)))
+       (luc/leader-def
+         "<tab>" 'luc/switch-to-other-buffer))
+   #+end_src
+   
 ** Winner
    Undo and redo for window actions. I use this a lot when I need to
    have only one window open for a moment, and then want the layout I
