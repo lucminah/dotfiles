@@ -337,6 +337,68 @@
          "C-l" 'transpose-lines))
    #+end_src
    
+** Keyboard Macros
+   Since Evil macro commands don't play that nicely with Emacs default
+   ones (like =edit-last-kbd-macro=, for example, that doesn't affect
+   the register where the macro was recorded in), I'm interested in
+   creating a setup where I can take advantage of all Emacs has to
+   offer concerning keyboard macros, and for that I'm really changing
+   the way I think about them coming from Vim - no more saving macros
+   to registers and "executing" them back. It actually doesn't feel as
+   much of a loss to me, since I can still access the =kmacro-ring= or
+   name macros if I need to have access to multiple of them at the
+   same time. It's all experimental, I'll see what sorts of problems
+   or new ideas come up as I go.
+*** Custom functions
+    #+begin_src emacs-lisp
+      (use-package emacs
+        :config
+        (defun luc/kmacro-start-or-end-macro (arg)
+          "Start defining macro or, if already doing that, end macro."
+          (interactive "P")
+          (if (or defining-kbd-macro executing-kbd-macro)
+              (kmacro-end-macro arg)
+            (kmacro-start-macro arg)))
+        (defun luc/append-to-last-kbd-macro ()
+          "`kmacro-start-macro' prefixed with 'C-u C-u'."
+          (interactive)
+          (kmacro-start-macro '(16)))
+        (defun luc/kmacro-call-macro-single-undo (count)
+          "`kmacro-call-macro' as a single evil undo step."
+          (interactive "p")
+          (evil-with-single-undo
+            (kmacro-call-macro count t)))
+        (defun luc/counsel-kmacro-single-undo ()
+          "`counsel-kmacro' as a single evil undo step."
+          (interactive)
+          (evil-with-single-undo
+            (counsel-kmacro))))
+    #+end_src
+   
+*** Keybindings
+    #+begin_src emacs-lisp
+      (use-package emacs
+        :config
+        (general-unbind
+          :states 'normal
+          "q"
+          "@")
+        (general-def
+          :states 'normal
+          "q" 'luc/kmacro-start-or-end-macro
+          "Q" 'luc/append-to-last-kbd-macro
+          "@@" 'luc/kmacro-call-macro-single-undo
+          "@e" 'edit-last-kbd-macro
+          "@k" 'luc/counsel-kmacro-single-undo
+          "@a" 'kmacro-add-counter)
+        (luc/leader-def
+          "gn" 'name-last-kbd-macro
+          "gq" 'insert-kbd-macro)
+        (general-def
+          :states 'insert
+          "C-q" 'kmacro-insert-counter))
+    #+end_src
+    
 * Search & Completion
 ** Ivy, Counsel & Swiper
    As my completion framework, I'm using Ivy. On top of it I'm loading
