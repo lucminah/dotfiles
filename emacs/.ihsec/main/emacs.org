@@ -1168,10 +1168,13 @@
    #+begin_src emacs-lisp
      (use-package outline
        :init
-       ;; Access `outline-minor-mode' headings through imenu.
+       ;; `imenu' will match `outline-minor-mode' headings. Sounds
+       ;; reasonable since what makes something a heading matches the
+       ;; points of interest I'd like to jump to, but I'll still look more
+       ;; into configuring this.
        (defun luc/imenu-with-outline-hook ()
-         (add-to-list 'imenu-generic-expression
-                      (list nil (concat "^\\(?:" outline-regexp "\\).*$") 0)))
+         (setq-local imenu-generic-expression
+                     (list (list nil (concat "^\\(?:" outline-regexp "\\).*$") 0))))
        :hook
        (prog-mode . outline-minor-mode)
        (text-mode . outline-minor-mode)
