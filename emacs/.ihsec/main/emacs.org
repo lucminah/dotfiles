@@ -856,7 +856,7 @@
     - Use the =albumartist= tag instead of =artist= - just more useful for me most of the time, and makes it more intuitive for navigating from artist -> album -> song, since the album's contents won't be affected by which artist you selected before.
     - Use =search= and =searchadd= commands instead of =find= and =findadd= - fixes albums appearing empty when opened, which I believe is because =find= commands, when receive an empty string, look for files with tags equal to that content, in this case, empty, while =search= commands treat the empty string as a wildcard.
    
-    [[https://github.com/mpdel/mpdel][Git repository]]
+    [[https://github.com/mpdel/mpdel][Base MPDel repository]]
     #+begin_src emacs-lisp
       (use-package libmpdel
         :straight (libmpdel :type git :host github :repo "mpdel/libmpdel"
@@ -895,6 +895,7 @@
           "m" 'tablist-mark-forward
           "u" 'tablist-unmark-forward
           "t" 'tablist-toggle-marks
+          "U" 'libmpdel-database-update
           "gp" 'mpdel-playlist-open
           "gP" 'mpdel-playlist-open-stored-playlist
           "or" 'mpdel-core-open-artists
