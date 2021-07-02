@@ -1472,6 +1472,16 @@
 ** Languages
    Configuring the development environment for different languages
    (mainly with LSP and DAP).
+*** Emacs Lisp
+    So far, only a package to highlight quoted symbols, makes a lot of
+    sense to me. Looking forward to expanding this section.
+    #+begin_src emacs-lisp
+      (use-package highlight-quoted
+        :hook
+        (emacs-lisp-mode . highlight-quoted-mode)
+        (lisp-interaction-mode . highlight-quoted-mode))
+    #+end_src
+    
 *** C/C++
     Using =clangd=, which is looked for by default. For reference:
     [[https://emacs-lsp.github.io/lsp-mode/page/lsp-clangd/]]
