@@ -838,6 +838,17 @@
          "it" 'tab-bar-mode))
    #+end_src
    
+** Occur
+   Get a buffer with lines from the current buffer that match the
+   expression given. That buffer can even become editable, like
+   =wdired=!
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (luc/leader-def
+         "io" 'occur))
+   #+end_src
+   
 * Applications & Utilities
 ** MPDel
    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
