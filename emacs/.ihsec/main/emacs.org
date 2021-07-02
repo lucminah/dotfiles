@@ -1142,6 +1142,37 @@
            (org-mode . (lambda () (add-hook 'after-save-hook #'luc/auto-tangle-config-files)))))
      #+end_src
      
+** Imenu
+   Jump to points of interest in the buffer.
+   #+begin_src emacs-lisp
+     (use-package imenu
+       :commands (imenu counsel-imenu)
+       :init
+       (luc/leader-def
+         "im" 'counsel-imenu))
+   #+end_src
+   
+** Outline Minor Mode
+   Bring =org-mode= like outline capabilities to other major modes!
+   #+begin_src emacs-lisp
+     (use-package outline
+       :init
+       ;; Access `outline-minor-mode' headings through imenu.
+       (defun luc/imenu-with-outline-hook ()
+         (add-to-list 'imenu-generic-expression
+                      (list nil (concat "^\\(?:" outline-regexp "\\).*$") 0)))
+       :hook
+       (prog-mode . outline-minor-mode)
+       (text-mode . outline-minor-mode)
+       (outline-minor-mode . luc/imenu-with-outline-hook)
+       :config
+       (general-def
+         :keymaps 'outline-minor-mode-map
+         :states 'normal
+         "<tab>" 'outline-cycle
+         "<backtab>" 'outline-cycle-buffer))
+   #+end_src
+   
 ** Dired
    I use =dired= for basically all my file management. Very versatile
    and powerful.
