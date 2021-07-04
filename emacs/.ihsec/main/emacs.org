@@ -451,24 +451,42 @@
    #+end_src
 
 ** Company
-   An auto-completion package. Very comfortable to use and highly
-   customizable.  I do some remapping to use make it so it doesn't
-   interfere with Evil's completion commands (=C-n= and =C-p=).
+   A great auto-completion package. Alongside it I'm using
+   =company-box=, a nice front-end with pretty symbols, pop-up
+   documentation and a stable font for the candidates that doesn't
+   change with =variable-pitch-mode= (that really doesn't look good).
+   
+   I do some remapping to make it more comfortable to use, especially
+   so it doesn't interfere with Evil's completion commands (=C-n= and
+   =C-p=) or any =TAB= commands (jumping, activating snippets,
+   indentation...).
    
    [[https://company-mode.github.io/][Documentation]]
    #+begin_src emacs-lisp
      (use-package company
        :hook
-       (after-init . global-company-mode)
+       (prog-mode . company-mode)
+       (text-mode . company-mode)
+       (outline-mode . company-mode)
        :init
-       (setq company-idle-delay 0)
-       (setq company-minimum-prefix-length 1)
-       (setq company-tooltip-idle-delay 0)
-       (setq company-selection-wrap-around t)
+       (setq company-idle-delay 0
+             company-minimum-prefix-length 1
+             company-tooltip-idle-delay 0
+             company-selection-wrap-around t)
+       (use-package company-box
+         :hook
+         (company-mode . company-box-mode)
+         :init
+         (setq company-box-doc-delay 0))
        :config
+       (general-unbind
+         :keymaps '(company-mode-map company-active-map)
+         "<tab>"
+         "TAB")
        (general-def
          :keymaps 'company-active-map
-         "C-h" 'company-complete-selection
+         "C-h" 'company-abort
+         "C-l" 'company-complete
          "C-j" 'company-select-next
          "C-k" 'company-select-previous
          "C-n" 'evil-complete-next
