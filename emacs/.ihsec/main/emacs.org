@@ -1611,11 +1611,6 @@
      (use-package yasnippet
        :hook 
        (prog-mode . yas-minor-mode)
-       :init
-       (general-def
-         :keymaps 'yas-minor-mode-map
-         :states 'insert
-         "C-l" 'yas-expand)
        :config
        (use-package yasnippet-snippets))
    #+end_src
