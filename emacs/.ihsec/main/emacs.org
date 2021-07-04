@@ -745,6 +745,47 @@
        (savehist-mode 1))
    #+end_src
    
+** Backup & Auto-Save
+   Backup files essentially keep previous versions of a file,
+   different saved stages it has been. =undo-fu-session= seems to be
+   taking care of that for me, but still, I thought I'd at least
+   configure the backup files so they don't clutter directories and I
+   have more control over them.
+   
+   As for auto-save files, they are created automatically after a
+   certain number of inputs to the buffer or seconds passed without
+   any changes, so they keep unsaved versions of the visited file so
+   they can be recovered in the event of a crash - definitely very
+   important.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       ;; Backup
+       (setq make-backup-files t
+             backup-directory-alist `(("." . "~/.emacs.d/backup-files/"))
+             backup-by-copying t
+             delete-old-versions t
+             version-control t
+             kept-old-versions 2
+             kept-new-versions 6)
+       (defun luc/diff-backup-this-file ()
+         "Call `diff-backup' with the current file."
+         (interactive)
+         (diff-backup (buffer-file-name)))
+       ;; Auto-Save
+       (setq auto-save-default t
+             auto-save-timeout 20
+             auto-save-interval 200)
+       ;; Keybindings
+       (general-def
+         :states 'normal
+         "gb" 'luc/diff-backup-this-file
+         "gr" 'revert-buffer
+         "gR" 'recover-this-file)
+       (luc/leader-def
+         "ar" 'recover-session))
+   #+end_src
+   
 * Windows & Buffers
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
