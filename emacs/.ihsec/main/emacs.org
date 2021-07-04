@@ -1504,6 +1504,26 @@
          :no-query t))
    #+end_src
    
+** Keycast
+   Display key combinations pressed and the command those are bound to
+   execute in the modeline. Since I'm using =doom-modeline=, I looked
+   for configuration to make it work properly and found this code
+   [[https://www.emacswiki.org/emacs/KeyCast][here]].
+   
+   [[https://github.com/tarsius/keycast][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package keycast
+       :config
+       (define-minor-mode luc/keycast-mode
+         "Show current command and its key binding in the mode line (working on doom-modeline)."
+         :global t
+         (if luc/keycast-mode
+             (add-hook 'pre-command-hook 'keycast--update t)
+           (remove-hook 'pre-command-hook 'keycast--update)))
+       (add-to-list 'global-mode-string '("" mode-line-keycast " "))
+       (luc/keycast-mode))
+   #+end_src
+   
 * Development
   Building a comfy and powerful development environment.
 ** LSP & DAP Setup
