@@ -1412,15 +1412,16 @@
     editing power I could want.
     
     I also want to be able to simply evaluate a command through the
-    shell without having to pull up the buffer, so here I make a
-    better keybinding for =shell-command=.
+    shell without having to pull up the buffer, so here I make leader
+    keybindings for =shell-command= and =async-shell-command=.
     #+begin_src emacs-lisp
       (use-package shell
         :commands shell
         :init
         (luc/leader-def
           "as" 'shell
-          "!" 'shell-command))
+          "gs" 'shell-command
+          "ga" 'async-shell-command))
     #+end_src
     
 *** Vterm
