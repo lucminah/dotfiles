@@ -461,7 +461,9 @@
    =C-p=) or any =TAB= commands (jumping, activating snippets,
    indentation...).
    
-   [[https://company-mode.github.io/][Documentation]]
+   [[https://company-mode.github.io/][Company documentation]]
+   
+   [[https://github.com/sebastiencs/company-box][Company Box]]
    #+begin_src emacs-lisp
      (use-package company
        :hook
