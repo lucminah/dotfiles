@@ -1165,14 +1165,16 @@
                  "Task without deadline"
                  entry (file+headline "agenda/tasks.org" "Tasks")
                  "* TODO %^{Task}\n SCHEDULED: %^t\n%?")
+                ;; Saving events and dates as deadlines to get an early
+                ;; reminder that they're coming.
                 ("e"
                  "Event"
                  entry (file+headline "agenda/events.org" "Events")
-                 "* %^{Event}\n%^T\n")
+                 "* %^{Event}\nDEADLINE: %^T\n")
                 ("r"
                  "Dates to remember"
                  entry (file+headline "agenda/dates.org" "Dates")
-                 "* %^{Description}\n%^t\n")
+                 "* %^{Description}\n%DEADLINE: ^t\n")
                 ("l"
                  "Link"
                  entry (file+headline "links.org" "Links")
