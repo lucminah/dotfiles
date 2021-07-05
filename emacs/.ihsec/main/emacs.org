@@ -967,7 +967,7 @@
           "m" 'tablist-mark-forward
           "u" 'tablist-unmark-forward
           "t" 'tablist-toggle-marks
-          "U" 'libmpdel-database-update
+          "gu" 'libmpdel-database-update
           "gp" 'mpdel-playlist-open
           "gP" 'mpdel-playlist-open-stored-playlist
           "or" 'mpdel-core-open-artists
