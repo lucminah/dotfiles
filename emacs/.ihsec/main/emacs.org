@@ -1587,6 +1587,8 @@
 *** Emacs Lisp
     So far, only a package to highlight quoted symbols, makes a lot of
     sense to me. Looking forward to expanding this section.
+    
+    [[https://github.com/Fanael/highlight-quoted][Highlight Quoted]]
     #+begin_src emacs-lisp
       (use-package highlight-quoted
         :hook
