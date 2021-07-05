@@ -478,6 +478,7 @@
          (company-mode . company-box-mode)
          :init
          (setq company-box-doc-delay 0))
+       :config
        (general-unbind
          :keymaps '(company-mode-map company-active-map)
          "<tab>"
