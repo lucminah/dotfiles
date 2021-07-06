@@ -475,7 +475,8 @@
        (setq company-idle-delay 0
              company-minimum-prefix-length 1
              company-tooltip-idle-delay 0
-             company-selection-wrap-around t)
+             company-selection-wrap-around t
+             company-abort-on-unique-match nil)
        (use-package company-box
          :hook
          (company-mode . company-box-mode)
@@ -483,12 +484,11 @@
          (setq company-box-doc-delay 0))
        :config
        (general-unbind
-         :keymaps '(company-mode-map company-active-map)
+         :keymaps 'company-active-map
          "<tab>"
          "TAB")
        (general-def
          :keymaps 'company-active-map
-         "C-h" 'company-abort
          "C-l" 'company-complete
          "C-j" 'company-select-next
          "C-k" 'company-select-previous
@@ -498,6 +498,40 @@
          "ac" 'company-mode))
    #+end_src
 
+** YASnippet
+   For expandable snippets - for and while loops, main function
+   definition, if statements... Anything you'd like to have easily
+   printed out and jump to specific parts of it, customized for the
+   current major mode. Pretty easy to change the existing snippets or
+   create your own. The package =yasnippet-snippets= contains a bunch
+   ready to use.
+   
+   I'm using it in conjunction with =company= - right now the
+   keybindings feel right in both keymaps, but I should test it more
+   to make sure. Also gave a keybinding to the =company-yasnippet=
+   function, which gives =company= completion for =yasnippet= snippet
+   candidates, but that requires further testing and experimentation,
+   since so far I've only got it to work when =company= is not active.
+   
+   [[https://github.com/joaotavora/yasnippet][YASnippet]]
+   
+   [[https://github.com/AndreaCrotti/yasnippet-snippets][YASnippet Snippets]]
+   #+begin_src emacs-lisp
+     (use-package yasnippet
+       :hook 
+       (company-mode . yas-minor-mode)
+       :config
+       (general-def
+         :keymaps 'yas-keymap
+         "<tab>" 'yas-next-field-or-maybe-expand
+         "<backtab>" 'yas-prev-field)
+       (general-def
+         :keymaps 'company-mode-map
+         :states 'insert
+         "C-l" 'company-yasnippet)
+       (use-package yasnippet-snippets))
+   #+end_src
+   
 ** Evil Search History
    Keybindings for easily accessing history elements in Evil search.
    #+begin_src emacs-lisp
@@ -1605,24 +1639,6 @@
         :hook ((c-mode c++-mode) . lsp-deferred))
     #+end_src
     
-** YASnippet
-   For snippets of code - for and while loops, main function
-   definition, if statements... Anything you'd like to have easily
-   printed out and jump to part of it, for specific modes. Pretty easy
-   to customize and create your own. The package =yasnippet-snippets=
-   contains a bunch ready to use.
-   
-   [[https://github.com/joaotavora/yasnippet][YASnippet]]
-   
-   [[https://github.com/AndreaCrotti/yasnippet-snippets][YASnippet Snippets]]
-   #+begin_src emacs-lisp
-     (use-package yasnippet
-       :hook 
-       (prog-mode . yas-minor-mode)
-       :config
-       (use-package yasnippet-snippets))
-   #+end_src
-   
 ** Magit & Forge
    =magit= is an amazingly powerful Git front-end. I hadn't known of it
    before, but =forge= allows for working with Git forges (in my case,
