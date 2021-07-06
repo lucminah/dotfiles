@@ -289,8 +289,9 @@
        (setq-default indent-tabs-mode nil)
        (defun luc/evil-indent-whole-buffer ()
          (interactive)
-         (save-excursion
-           (evil-indent (point-min) (point-max))))
+         (evil-with-single-undo
+           (save-excursion
+             (evil-indent (point-min) (point-max)))))
        (luc/leader-def
          "=" 'luc/evil-indent-whole-buffer))
    #+end_src
