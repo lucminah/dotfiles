@@ -467,10 +467,6 @@
    [[https://github.com/sebastiencs/company-box][Company Box]]
    #+begin_src emacs-lisp
      (use-package company
-       :hook
-       (prog-mode . company-mode)
-       (text-mode . company-mode)
-       (outline-mode . company-mode)
        :init
        (setq company-idle-delay 0
              company-minimum-prefix-length 1
@@ -482,6 +478,7 @@
          (company-mode . company-box-mode)
          :init
          (setq company-box-doc-delay 0))
+       (global-company-mode 1)
        :config
        (general-unbind
          :keymaps 'company-active-map
