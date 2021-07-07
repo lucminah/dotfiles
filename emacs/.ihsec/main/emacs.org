@@ -1289,7 +1289,7 @@
 *** Preferences & Keybindings
     #+begin_src emacs-lisp
       (use-package dired
-        :straight nil
+        :straight (:type built-in)
         :custom
         (delete-by-moving-to-trash t)
         (dired-listing-switches "-al --group-directories-first")
@@ -1378,7 +1378,7 @@
     Configuration for =wdired-mode=.
     #+begin_src emacs-lisp
       (use-package wdired
-        :straight nil
+        :straight (:type built-in)
         :after dired
         :init
         (setq wdired-allow-to-change-permissions t)
