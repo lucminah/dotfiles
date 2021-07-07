@@ -1121,14 +1121,7 @@
         :after org
         :hook ((org-mode . evil-org-mode)
                (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation
-                                                                     insert
-                                                                     return
-                                                                     textobjects
-                                                                     additional
-                                                                     shift
-                                                                     todo
-                                                                     heading
-                                                                     calendar))))))
+                                                                     insert))))))
     #+end_src
 
 *** Exporting: Ox-Reveal and Htmlize
