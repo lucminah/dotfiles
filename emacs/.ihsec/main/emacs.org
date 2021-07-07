@@ -1476,7 +1476,11 @@
         (evil-collection-vterm-setup)
         (general-def
           :keymaps 'vterm-mode-map
+          :states 'insert
+          "C-h" 'vterm--self-insert
           "C-l" 'vterm--self-insert
+          "C-e" 'evil-scroll-line-down
+          "C-y" 'evil-scroll-line-up
           "C-j" 'evil-collection-vterm-toggle-send-escape))
     #+end_src
     
