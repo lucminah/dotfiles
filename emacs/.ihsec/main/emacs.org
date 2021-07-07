@@ -1578,7 +1578,9 @@
           :config
           (luc/leader-def-for-keymaps
             :keymaps 'flycheck-mode-map
-            "le" 'flycheck-list-errors))
+            "le" 'flycheck-list-errors
+            "lp" 'flycheck-previous-error
+            "ln" 'flycheck-next-error))
         (luc/leader-def-for-keymaps
           :keymaps 'lsp-mode-map
           "la" 'lsp-execute-code-action
