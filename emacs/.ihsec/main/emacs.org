@@ -1300,6 +1300,7 @@
         :hook
         (dired-mode . dired-hide-details-mode) ;; Don't show full details by default - toggle with
                                                ;;   open paren
+        (dired-mode . hl-line-mode)
         :init
         (general-def
           :keymaps 'dired-mode-map
@@ -1465,6 +1466,7 @@
     #+begin_src emacs-lisp
       (use-package vterm
         :init
+        (evil-set-initial-state 'vterm-mode 'insert)
         (luc/leader-def
           "at" 'vterm)
         :commands vterm
