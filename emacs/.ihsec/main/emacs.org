@@ -473,6 +473,8 @@
              company-tooltip-idle-delay 0
              company-selection-wrap-around t
              company-abort-on-unique-match nil)
+       ;; Modes to disable `company-mode' on.
+       (setq company-global-modes '(not vterm-mode))
        (use-package company-box
          :hook
          (company-mode . company-box-mode)
@@ -1474,6 +1476,7 @@
         (evil-collection-vterm-setup)
         (general-def
           :keymaps 'vterm-mode-map
+          "C-l" 'vterm--self-insert
           "C-j" 'evil-collection-vterm-toggle-send-escape))
     #+end_src
     
