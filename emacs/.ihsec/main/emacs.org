@@ -408,16 +408,27 @@
    much better navigability, substituting I-search with =swiper= and
    remapping some keys for better navigation in the
    =ivy-minibuffer-map=.
-  
-   [[https://github.com/abo-abo/swiper][Git repository]]
+
+   I've made a fork of Ivy to make the keys to quit from the Ivy
+   action selection list fully customizable. Found someone had pretty
+   much the same idea with this [[https://github.com/abo-abo/swiper/pull/2790][PR]], but it's not been merged in months
+   now, so a fork will have to do.
+   
+   [[https://github.com/abo-abo/swiper][Base Ivy repository]]
+
+   [[https://github.com/lucasminah/swiper][My fork]]
    #+begin_src emacs-lisp
      (use-package ivy
+       :straight (swiper :type git :host github :repo "abo-abo/swiper"
+                         :fork (:host github :repo "lucasminah/swiper"))
        :config
        (ivy-mode 1)
-       (use-package counsel)
+       (use-package counsel
+         :straight (counsel :type git :host github :repo "abo-abo/swiper"
+                            :fork (:host github :repo "lucasminah/swiper")))
        (use-package ivy-rich
-         :init
-         (ivy-rich-mode 1))
+         :hook
+         (ivy-mode . ivy-rich-mode))
        (luc/leader-def
          "SPC" 'counsel-M-x
          "r" 'counsel-recentf
@@ -436,11 +447,13 @@
        (general-def
          :states 'insert
          :keymaps 'ivy-minibuffer-map
+         "C-h" 'minibuffer-keyboard-quit
          "C-l" 'ivy-dispatching-done  ;; Access to ivy actions.
          "C-j" 'ivy-next-line
          "C-k" 'ivy-previous-line
          "C-n" 'ivy-next-history-element
          "C-p" 'ivy-previous-history-element)
+       (add-to-list 'ivy-read-action-cancel-keys "C-h")
        (general-def
          :states 'normal
          :keymaps 'ivy-minibuffer-map
