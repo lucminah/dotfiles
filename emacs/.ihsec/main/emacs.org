@@ -464,6 +464,39 @@
          "K" 'ivy-previous-history-element))
    #+end_src
 
+** Fasd
+   [[https://github.com/clvv/fasd][fasd]] is a command line utility that keeps track of visited files
+   and directories and ranks them based on how frequently and how
+   recently you've been there. When I learned about it I really liked
+   the idea, but most of my file browsing is done in Emacs, of course,
+   so it alone wouldn't cut it. Fortunately there is an Emacs package
+   for it!
+
+   I didn't like everything about the package by default though, since
+   it would always prompt me to select from a list, which isn't as
+   slick as just typing a small query and jumping straight to what I
+   want, so I made a fork of it. The main different is just that, it
+   will prompt for a query and take the first result =fasd= provides. If
+   a list is desired, simply pass the new argument =LIST= as =t=.
+
+   [[https://github.com/emacsmirror/fasd][Base emacs-fasd Git repository]]
+
+   [[https://github.com/lucasminah/fasd][My fork]]
+   #+begin_src emacs-lisp
+     (use-package fasd
+       :straight (fasd :type git :host github :repo "emacsmirror/fasd"
+                       :fork (:type git :repo "lucasminah/fasd"))
+       :init
+       (defun luc/fasd-find-select ()
+         "`fasd-find-file' promps for selection from list of results."
+         (interactive)
+         (fasd-find-file nil nil t))
+       (luc/leader-def
+         "af" 'fasd-find-file
+         "aF" 'luc/fasd-find-select)
+       (global-fasd-mode 1))
+   #+end_src
+   
 ** Company
    A great auto-completion package. Alongside it I'm using
    =company-box=, a nice front-end with pretty symbols, pop-up
