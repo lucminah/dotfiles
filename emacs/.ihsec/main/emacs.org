@@ -1009,6 +1009,10 @@
     - Use =search= and =searchadd= commands instead of =find= and =findadd= - fixes albums appearing empty when opened, which I believe is because =find= commands, when receive an empty string, look for files with tags equal to that content, in this case, empty, while =search= commands treat the empty string as a wildcard.
    
     [[https://github.com/mpdel/mpdel][Base MPDel repository]]
+
+    [[https://github.com/lucasminah/libmpdel][My fork of libmpdel]]
+
+    [[https://github.com/lucasminah/mpdel][My fork of mpdel]]
     #+begin_src emacs-lisp
       (use-package libmpdel
         :straight (libmpdel :type git :host github :repo "mpdel/libmpdel"
