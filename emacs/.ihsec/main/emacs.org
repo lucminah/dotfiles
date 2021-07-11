@@ -65,6 +65,8 @@
      ;; Like `use-package-always-ensure', but for `straight.el'. The flag
      ;; `:straight' can be used to set that explicitly, like `:ensure'.
      (setq straight-use-package-by-default t)
+     ;; Clone over SSH.
+     (setq straight-vc-git-default-protocol 'ssh)
      ;; Install `use-package'
      (straight-use-package 'use-package)
    #+end_src
