@@ -232,8 +232,7 @@
    as an operator (say, when it's used as the motion for a =c= command),
    while the exclusive commands (like =t/t=) are bound to nothing in the
    normal state and =x/X= as an operator. For now I've settled on
-   binding the exclusive commands to =gh/gH= in the normal state, may
-   try something new later.
+   binding the exclusive commands to =\= and =|= in the normal state.
    
    On top of that, Snipe has its own versions of =f/F/t/T/;/,= that work
    just like the basic ones but with highlighting for matches and are
@@ -250,8 +249,8 @@
        (general-def
          :states 'normal
          :keymaps 'evil-snipe-mode-map
-         "gh" 'evil-snipe-x
-         "gH" 'evil-snipe-X)
+         "\\" 'evil-snipe-x
+         "|" 'evil-snipe-X)
        :config
        (evil-snipe-mode 1)
        ;; Use Snipe's versions of f/F/t/T/;/,
