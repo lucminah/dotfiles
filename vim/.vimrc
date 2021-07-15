@@ -18,8 +18,6 @@ set path+=**                      " :find looks through all files in cwd and its
 let mapleader=" "                 " <Leader> key
 set statusline=%F[%{&ff}]%h%r%y%m%=%c,%l/%L\ %P
 
-language en_US.UTF-8
-
 " Enables
 syntax enable
 filetype plugin indent on
