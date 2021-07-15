@@ -7,7 +7,7 @@ dwmbar &
 mpdupdate &
 flameshot &
 xrdb ~/.Xresources &
-/usr/lib/notification-daemon-1.0/notification-daemon &
+dunst &
 unclutter --timeout 1 &
 xmodmap -e "keycode any = Tab" &
 xwallpaper --zoom ~/storage/Pictures/wallpapers/eva-wallpaper-05-crop.jpg &
