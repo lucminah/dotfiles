@@ -1000,20 +1000,24 @@
    Lots of jumping commands for moving quickly and precisely. In this
    case I'm using Evil's versions of Avy commands so they act as Evil
    motions.
+
+   Evil's =z= bindings do a lot related to outline closing and opening,
+   but I feel =outline-cycle= bound to =TAB= is all I need, so I'm willing
+   to use some of these keybindings for =avy= motions - they're very
+   powerful so I want them pretty easy to hit.
    #+begin_src emacs-lisp
      (use-package evil
-       :config
-       (luc/leader-def
-         "jw" 'evil-avy-goto-word-or-subword-1
-         "jW" 'evil-avy-goto-symbol-1
-         "ja" 'evil-avy-goto-word-1-above
-         "jb" 'evil-avy-goto-word-1-below
-         "jk" 'evil-avy-goto-line-above
-         "ji" 'evil-avy-goto-char-in-line
-         "jl" 'evil-avy-goto-line
-         "jj" 'evil-avy-goto-line-below
-         "jc" 'evil-avy-goto-char
-         "jC" 'evil-avy-goto-char-2))
+       :init
+       (general-def
+         :states 'normal
+         :keymaps 'override
+         "zw" 'evil-avy-goto-word-or-subword-1
+         "zs" 'evil-avy-goto-symbol-1
+         "zk" 'evil-avy-goto-line-above
+         "zl" 'evil-avy-goto-line
+         "zj" 'evil-avy-goto-line-below
+         "zc" 'evil-avy-goto-char-2
+         "zx" 'evil-avy-goto-char))
    #+end_src
    
 * Applications & Utilities
