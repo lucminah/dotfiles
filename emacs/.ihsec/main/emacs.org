@@ -1634,6 +1634,16 @@
        (luc/keycast-mode))
    #+end_src
    
+** Sudo Edit
+   For editing files as the super user.
+   #+begin_src emacs-lisp
+     (use-package sudo-edit
+       :commands sudo-edit
+       :init
+       (luc/leader-def
+         "gS" 'sudo-edit))
+   #+end_src
+   
 * Development
   Building a comfy and powerful development environment.
 ** LSP & DAP Setup
