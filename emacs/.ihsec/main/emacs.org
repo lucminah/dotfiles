@@ -434,7 +434,7 @@
          "SPC" 'counsel-M-x
          "r" 'counsel-recentf
          "f" 'counsel-find-file
-         "z" 'counsel-fzf
+         "af" 'counsel-fzf
          "d" 'counsel-dired
          "b" 'counsel-switch-buffer
          "B" 'counsel-switch-buffer-other-window
@@ -493,8 +493,8 @@
          (interactive)
          (fasd-find-file nil nil t))
        (luc/leader-def
-         "af" 'fasd-find-file
-         "aF" 'luc/fasd-find-select)
+         "z" 'fasd-find-file
+         "Z" 'luc/fasd-find-select)
        (global-fasd-mode 1))
    #+end_src
    
