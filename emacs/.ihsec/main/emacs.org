@@ -336,7 +336,7 @@
          :states 'normal
          "C-t" 'transpose-words
          "C-q" 'transpose-chars
-         "C-l" 'transpose-lines))
+         "C-y" 'transpose-lines))
    #+end_src
    
 ** Keyboard Macros
@@ -940,6 +940,29 @@
          :states 'normal
          "gj" 'evil-better-visual-line-next-line
          "gk" 'evil-better-visual-line-previous-line))
+   #+end_src
+   
+** Beginning and end of line
+   Some Vim bindings that always mildly annoyed me were =0/$= and
+   =^/g_=. Moving to the beginning and end of line or first and last
+   non-blank character in the line are very useful motions, yet their
+   bindings are not that comfortable to hit.
+   
+   =C-h= and =C-l= are, by default, Emacs commands for describing (already
+   taken care of by my leader keybindings starting with =SPC h=) and
+   cycling the position of the pointer in the screen (already taken
+   care of by Evil's =zz=, =zt= and =zb=), so they seem like prime
+   candidates to these useful navigation commands, alongside their
+   capital counterparts.
+   #+begin_src emacs-lisp
+     (use-package evil
+       :config
+       (general-def
+         :states 'normal
+         "C-h" 'evil-beginning-of-line
+         "C-S-h" 'evil-first-non-blank
+         "C-l" 'evil-end-of-line
+         "C-S-l" 'evil-last-non-blank))
    #+end_src
    
 ** Moving to last line in buffer
