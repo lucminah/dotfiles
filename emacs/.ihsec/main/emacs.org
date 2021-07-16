@@ -422,6 +422,8 @@
      (use-package ivy
        :straight (swiper :type git :host github :repo "abo-abo/swiper"
                          :fork (:host github :repo "lucasminah/swiper"))
+       :init
+       (setq ivy-use-selectable-prompt t)
        :config
        (ivy-mode 1)
        (use-package counsel
