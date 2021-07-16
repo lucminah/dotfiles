@@ -1573,11 +1573,13 @@
        (outline-mode . flyspell-mode)
        (text-mode . flyspell-mode)
        :config
+       (general-def
+         :states 'normal
+         "z;" 'flyspell-auto-correct-word)
        (luc/leader-def
          "is" 'flyspell-buffer
-         "iS" 'flyspell-mode
-         "id" 'ispell-change-dictionary
-         "ic" 'flyspell-auto-correct-word))
+         "if" 'flyspell-mode
+         "id" 'ispell-change-dictionary))
    #+end_src
    
 ** PDF Tools
