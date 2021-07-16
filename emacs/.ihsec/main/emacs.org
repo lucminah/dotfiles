@@ -961,25 +961,6 @@
        (advice-add #'end-of-buffer :after #'luc/beginning-of-this-or-previous-line))
    #+end_src
    
-** Tabs
-   Not something I have really used in Emacs, but I'm feeling like
-   trying it for a while, so here are some keybindings for controlling
-   tabs. I'm still counting on Evil's =gt/gT= for switching between
-   those.
-   #+begin_src emacs-lisp
-     (use-package emacs
-       :config
-       (luc/leader-def
-         "et" 'tab-new
-         "eq" 'tab-close
-         "eo" 'tab-close-other
-         "ej" 'tab-select      ;; Requires number argument
-         "eU" 'tab-undo
-         "eN" 'tab-next
-         "eP" 'tab-previous
-         "it" 'tab-bar-mode))
-   #+end_src
-   
 ** Occur
    Get a buffer with lines from the current buffer that match the
    expression given. That buffer can even become editable, like
