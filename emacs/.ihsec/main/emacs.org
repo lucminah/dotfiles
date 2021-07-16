@@ -452,6 +452,7 @@
          "C-l" 'ivy-dispatching-done  ;; Access to ivy actions.
          "C-j" 'ivy-next-line
          "C-k" 'ivy-previous-line
+         "C-;" 'ivy-immediate-done
          "C-n" 'ivy-next-history-element
          "C-p" 'ivy-previous-history-element)
        (add-to-list 'ivy-read-action-cancel-keys "C-h")
