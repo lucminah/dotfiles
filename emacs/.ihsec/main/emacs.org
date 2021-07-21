@@ -132,7 +132,7 @@
         ;; For local keybindings.
         (general-create-definer luc/leader-def-for-keymaps
           :states '(normal visual motion)
-          :prefix "SPC")
+          :prefix "SPC"))
     #+end_src
     
 * Editing
