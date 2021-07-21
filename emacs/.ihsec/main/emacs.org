@@ -549,7 +549,7 @@
    of =describe-variable= will include actions to find references to,
    set and customize that variable, among others.
 
-   Among it's most interesting action, in my opinion, is "export",
+   Among its most interesting actions, in my opinion, is "export",
    which creates a buffer in the appropriate major mode with the
    current minibuffer candidates that can be acted upon, kept for
    reference, used as an index (if exporting candidates from a line
