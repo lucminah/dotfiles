@@ -8,6 +8,7 @@ mpdupdate &
 flameshot &
 xrdb ~/.Xresources &
 dunst &
+mpd-notification &
 unclutter --timeout 1 &
 xmodmap -e "keycode any = Tab" &
 xwallpaper --zoom ~/storage/Pictures/wallpapers/eva-wallpaper-05-crop.jpg &
