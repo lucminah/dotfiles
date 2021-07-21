@@ -117,11 +117,10 @@
 
     [[https://github.com/noctuid/general.el][Git repository]]
 
-    Here I created a couple definers that I'll use for many keybindings
-    going forward. For the sake of organization, I created one for global
-    and one for local keybindings, both using =SPC= as a prefix.  Other than
-    that, I assign the =keyboard-quit= function to =ESC= when in the normal
-    state.
+    Here I created a couple definers that I'll use for many
+    keybindings going forward. For the sake of organization, I created
+    one for global and one for local keybindings, both using =SPC= as a
+    prefix.
     #+begin_src emacs-lisp
       (use-package general
         :config
@@ -134,10 +133,6 @@
         (general-create-definer luc/leader-def-for-keymaps
           :states '(normal visual motion)
           :prefix "SPC")
-        (general-def
-          :states 'normal
-          :keymaps 'override
-          "ESC" 'keyboard-quit))
     #+end_src
     
 * Editing
@@ -370,11 +365,11 @@
           (interactive "p")
           (evil-with-single-undo
             (kmacro-call-macro count t)))
-        (defun luc/counsel-kmacro-single-undo ()
-          "`counsel-kmacro' as a single evil undo step."
-          (interactive)
+        (defun luc/consult-kmacro-single-undo (arg)
+          "`consult-kmacro' as a single evil undo step."
+          (interactive "p")
           (evil-with-single-undo
-            (counsel-kmacro))))
+            (consult-kmacro arg))))
     #+end_src
    
 *** Keybindings
@@ -391,7 +386,7 @@
           "Q" 'luc/append-to-last-kbd-macro
           "@@" 'luc/kmacro-call-macro-single-undo
           "@e" 'edit-last-kbd-macro
-          "@k" 'luc/counsel-kmacro-single-undo
+          "@k" 'luc/consult-kmacro-single-undo
           "@a" 'kmacro-add-counter)
         (luc/leader-def
           "gn" 'name-last-kbd-macro
@@ -401,73 +396,206 @@
           "C-q" 'kmacro-insert-counter))
     #+end_src
     
-* Search & Completion
-** Ivy, Counsel & Swiper
-   As my completion framework, I'm using Ivy. On top of it I'm loading
-   Ivy Rich, for getting details on each option for selection. Also
-   setting up keybindings for the Counsel versions of commands for
-   much better navigability, substituting I-search with =swiper= and
-   remapping some keys for better navigation in the
-   =ivy-minibuffer-map=.
-
-   I've made a fork of Ivy to make the keys to quit from the Ivy
-   action selection list fully customizable. Found someone had pretty
-   much the same idea with this [[https://github.com/abo-abo/swiper/pull/2790][PR]], but it's not been merged in months
-   now, so a fork will have to do.
-   
-   [[https://github.com/abo-abo/swiper][Base Ivy repository]]
-
-   [[https://github.com/lucasminah/swiper][My fork]]
+* Minibuffer & Completion
+** Basic minibuffer commands
+   Emacs minibuffer commands I use all the time, including an
+   alternative keybinding for =execute-extended-command=.
    #+begin_src emacs-lisp
-     (use-package ivy
-       :straight (swiper :type git :host github :repo "abo-abo/swiper"
-                         :fork (:host github :repo "lucasminah/swiper"))
+     (use-package emacs
        :init
-       (setq ivy-use-selectable-prompt t)
-       :config
-       (ivy-mode 1)
-       (use-package counsel
-         :straight (counsel :type git :host github :repo "abo-abo/swiper"
-                            :fork (:host github :repo "lucasminah/swiper")))
-       (use-package ivy-rich
-         :hook
-         (ivy-mode . ivy-rich-mode))
+       (general-def
+         :keymaps 'override
+         :states '(normal visual motion)
+         "C-SPC" 'execute-extended-command)
+       (general-def
+         :keymaps 'minibuffer-local-map
+         :states 'normal
+         "<escape>" 'minibuffer-keyboard-quit)
        (luc/leader-def
-         "SPC" 'counsel-M-x
-         "r" 'counsel-recentf
-         "f" 'counsel-find-file
-         "af" 'counsel-fzf
-         "d" 'counsel-dired
-         "b" 'counsel-switch-buffer
-         "B" 'counsel-switch-buffer-other-window
-         "ag" 'counsel-rg)
-       (general-def
-         :states 'normal
-         "C-/" 'swiper)
-       (general-unbind
-         :keymaps 'ivy-minibuffer-map
-         "S-SPC")
-       (general-def
-         :states 'insert
-         :keymaps 'ivy-minibuffer-map
-         "C-h" 'minibuffer-keyboard-quit
-         "C-l" 'ivy-dispatching-done  ;; Access to ivy actions.
-         "C-j" 'ivy-next-line
-         "C-k" 'ivy-previous-line
-         "C-;" 'ivy-immediate-done
-         "C-n" 'ivy-next-history-element
-         "C-p" 'ivy-previous-history-element)
-       (add-to-list 'ivy-read-action-cancel-keys "C-h")
-       (general-def
-         :states 'normal
-         :keymaps 'ivy-minibuffer-map
-         "o" 'ivy-dispatching-done
-         "j" 'ivy-next-line
-         "k" 'ivy-previous-line
-         "J" 'ivy-next-history-element
-         "K" 'ivy-previous-history-element))
+         "SPC" 'execute-extended-command
+         "f" 'find-file
+         "d" 'dired))
    #+end_src
+   
+** Vertico
+   A completion UI that aims to have full compatibility with built-in
+   Emacs completion commands. This stability really shines through,
+   making it pretty easy to configure and maintain and integrate with
+   other packages.
 
+   [[https://github.com/minad/vertico][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package vertico
+       :init
+       ;; I'd like minibuffer completion with TAB.
+       (setq tab-always-indent 'complete)
+       (setq enable-recursive-minibuffers t)
+       (setq vertico-cycle t)
+       (general-def
+         :keymaps 'vertico-map
+         :states 'insert
+         "C-k" 'vertico-previous
+         "C-j" 'vertico-next
+         "C-l" 'vertico-exit)
+       (general-def
+         :keymaps 'vertico-map
+         :states 'normal
+         "k" 'vertico-previous
+         "j" 'vertico-next
+         "l" 'vertico-exit)
+       (vertico-mode 1))
+   #+end_src
+   
+** Marginalia
+   Adds useful annotations to minibuffer selection candidates, such as
+   the first line of function docstrings, value of a variable or
+   permission details of a file, for example.
+   
+   [[https://github.com/minad/marginalia][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package marginalia
+       :init
+       (marginalia-mode 1))
+   #+end_src
+   
+** Consult
+   A collection of commands based on the =completing-read= function that
+   substitute built-in functions such as =imenu= and brings new
+   functionality and integration through commands like =consult-find=.
+
+   [[https://github.com/minad/consult][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package consult
+       :hook
+       ;; Use `consult-completion-in-region' if Vertico is enabled.
+       (vertico-mode . (lambda ()
+                         (setq completion-in-region-function
+                               (if vertico-mode
+                                   #'consult-completion-in-region
+                                 #'completion--in-region))))
+       :init
+       ;; I use `fd' instead of `find'.
+       (setq consult-find-command "fd --color=never --hidden ARG OPTS")
+       (luc/leader-def
+         "b" 'consult-buffer
+         "l" 'consult-line
+         "af" 'consult-find
+         "ag" 'consult-ripgrep
+         "gi" 'consult-imenu
+         "go" 'consult-outline
+         "gf" 'consult-focus-lines)
+       :config
+       ;; Loading previews only when explicitly choosing to with a
+       ;; keybinding. Significantly improves speed of these commands,
+       ;; specially ones that use external programs such as `grep'.
+       (consult-customize
+        consult-ripgrep consult-git-grep consult-grep
+        consult-bookmark consult-recent-file consult-xref
+        consult--source-file consult--source-project-file consult--source-bookmark
+        :preview-key (kbd "C-o")))
+   #+end_src
+   
+** Orderless
+   A completion style that allows for very flexible matching,
+   specially out of order (components "file" and "find" in this order
+   would still match =find-file=, for example). It's also customizable
+   through the use of different matching styles (regular expressions,
+   literals, prefixes...) and dispatchers, functions that can change
+   the matching style and its behavior on the fly. Here I define some
+   of these dispatchers that check the suffix of the symbol to
+   determine it should be read as a literal, for example.
+
+   I'm setting the =basic= completion style as the primary one because
+   loading a massive =orderless= list of matches in something like
+   =company-mode= can really add latency sometimes, which is not
+   comfortable. Through the use of the dispatchers and separators,
+   it's possible to explicitly jump into the =orderless= style when I
+   want, so it's not a big deal, but I'd still like to evolve my setup
+   to a point where I can get rid of the =basic= style. I'm also setting
+   a category override so that I can have filename expansion when in
+   that context through the =partial-completion= style.
+
+   [[https://github.com/oantolin/orderless][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package orderless
+       :init
+       (defun luc/orderless-strict-leading-initialism-dispatcher (pattern _index _total)
+         (when (string-suffix-p "|" pattern)
+           `(orderless-strict-leading-initialism . ,(substring pattern 0 -1))))
+     
+       (defun luc/orderless-literal-dispatcher (pattern _index _total)
+         (when (string-suffix-p "=" pattern)
+           `(orderless-literal . ,(substring pattern 0 -1))))
+     
+       (defun luc/orderless-start-with-regexp-dispatcher (pattern _index _total)
+         (when (string-suffix-p "+" pattern)
+           `(orderless-regexp . ,(substring (concat "^" pattern) 0 -1))))
+     
+       (setq completion-styles '(basic orderless)
+             completion-category-defaults nil
+             completion-category-overrides '((file (styles . (partial-completion)))))
+       (setq orderless-component-separator "[ #]"
+             orderless-matching-styles '(orderless-literal orderless-prefixes orderless-regexp)
+             orderless-style-dispatchers '(luc/orderless-start-with-regexp-dispatcher
+                                           luc/orderless-strict-leading-initialism-dispatcher
+                                           luc/orderless-literal-dispatcher)))
+   #+end_src
+   
+** Embark
+   Adds the concept of "acting" on something, primarily minibuffer
+   selection candidates, but things like the symbol at point are also
+   valid targets. In different contexts, acting will have different
+   actions available. For example, calling =embark-act= on a candidate
+   of =describe-variable= will include actions to find references to,
+   set and customize that variable, among others.
+
+   Among it's most interesting action, in my opinion, is "export",
+   which creates a buffer in the appropriate major mode with the
+   current minibuffer candidates that can be acted upon, kept for
+   reference, used as an index (if exporting candidates from a line
+   filtering command, for example).
+
+   Here I set global keybindings for important Embark commands,
+   primarily =embark-act=, of course, but also =embark-dwim= which runs
+   the default action on the target and =embark-export=, since I use it
+   so much. Embark is a really interesting package I'm excited to keep
+   on expanding for my needs.
+
+   [[https://github.com/oantolin/embark][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package embark
+       :init
+       (general-def
+         :keymaps 'override
+         :states '(insert normal visual emacs motion)
+         "C-;" 'embark-act
+         "C-," 'embark-dwim
+         "C-." 'embark-export)
+       (use-package embark-consult
+         :after (embark consult)
+         :demand t
+         :hook
+         (embark-collect-mode . consult-preview-at-point-mode)))
+   #+end_src
+   
+** Minibuffer History
+   Saving minibuffer histories and additional variables, along some
+   keybindings for easy navigation.
+   #+begin_src emacs-lisp
+     (use-package savehist
+       :init
+       (general-def
+         :keymaps 'minibuffer-local-map
+         :states 'insert
+         "C-p" 'previous-history-element
+         "C-n" 'next-history-element)
+       :config
+       (setq history-length 250)
+       (setq history-delete-duplicates t)
+       (setq savehist-additional-variables '(register-alist))
+       (savehist-mode 1))
+   #+end_src
+   
 ** Fasd
    [[https://github.com/clvv/fasd][fasd]] is a command line utility that keeps track of visited files
    and directories and ranks them based on how frequently and how
@@ -501,6 +629,23 @@
        (global-fasd-mode 1))
    #+end_src
    
+** Prescient
+   A package for filtering and sorting completion candidates. I don't
+   want its filtering to interfere with my completion styles, but the
+   sorting (based on frequency and recency, like =fasd=) is really
+   neat. This package is the library that is meant to be used by its
+   implementations for other packages such as =company=, so I'll set
+   that in the appropriate section. Here I load the =prescient= library
+   and activate =prescient-persist-mode=, which will make the stats for
+   sorting persist through Emacs sessions.
+
+   [[https://github.com/raxod502/prescient.el][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package prescient
+       :config
+       (prescient-persist-mode 1))
+   #+end_src
+   
 ** Company
    A great auto-completion package. Alongside it I'm using
    =company-box=, a nice front-end with pretty symbols, pop-up
@@ -517,20 +662,35 @@
    [[https://github.com/sebastiencs/company-box][Company Box]]
    #+begin_src emacs-lisp
      (use-package company
+       :after orderless
+       :hook
+       (prog-mode . company-mode)
+       (outline-mode . company-mode)
+       (text-mode . company-mode)
+       (shell-mode . company-mode)
        :init
+       ;; Highlight orderless matches with one face (can't have multiple
+       ;; ones so far)
+       (defun luc/company-orderless-match-one-face (fn &rest args)
+         (let ((orderless-match-faces [completions-common-part]))
+           (apply fn args)))
+       (advice-add 'company-capf--candidates :around #'luc/company-orderless-match-one-face)
+     
+       ;; Prescient ordering of candidates.
+       (use-package company-prescient
+         :config
+         (company-prescient-mode t))
+     
        (setq company-idle-delay 0
              company-minimum-prefix-length 1
              company-tooltip-idle-delay 0
              company-selection-wrap-around t
              company-abort-on-unique-match nil)
-       ;; Modes to disable `company-mode' on.
-       (setq company-global-modes '(not vterm-mode))
        (use-package company-box
          :hook
          (company-mode . company-box-mode)
          :init
-         (setq company-box-doc-delay 0))
-       (global-company-mode 1)
+         (setq company-box-doc-delay 0.2))
        :config
        (general-unbind
          :keymaps 'company-active-map
@@ -538,6 +698,7 @@
          "TAB")
        (general-def
          :keymaps 'company-active-map
+         "C-h" 'company-abort
          "C-l" 'company-complete
          "C-j" 'company-select-next
          "C-k" 'company-select-previous
@@ -579,23 +740,6 @@
          :states 'insert
          "C-l" 'company-yasnippet)
        (use-package yasnippet-snippets))
-   #+end_src
-   
-** Evil Search History
-   Keybindings for easily accessing history elements in Evil search.
-   #+begin_src emacs-lisp
-     (use-package evil
-       :config
-       (general-def
-         :keymaps 'evil-ex-search-keymap
-         :states 'insert
-         "C-n" 'next-history-element
-         "C-p" 'previous-history-element)
-       (general-def
-         :keymaps 'evil-ex-search-keymap
-         :states 'normal
-         "J" 'next-history-element
-         "K" 'previous-history-element))
    #+end_src
    
 * Interface & Interactions
@@ -677,14 +821,14 @@
    #+end_src
    
 ** Bookmarks
-   A keybinding for accessing =counsel-bookmark=. It can be used for
+   A keybinding for accessing =consult-bookmark=. It can be used for
    setting and jumping to bookmarks so, pretty useful.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
        (setq bookmark-file "~/.ihsec/main/bookmarks")
        (luc/leader-def
-         "ab" 'counsel-bookmark))
+         "ab" 'consult-bookmark))
    #+end_src
    
 ** Rainbow Delimiters
@@ -720,16 +864,14 @@
    [[https://github.com/Wilfred/helpful][Git repository]]
    #+begin_src emacs-lisp
      (use-package helpful
-       :custom
-       (counsel-describe-function-function #'helpful-callable)
-       (counsel-describe-variable-function #'helpful-variable)
        :config
        (luc/leader-def
          "hh" 'helpful-at-point
          "hm" 'describe-mode
          "hk" 'helpful-key
-         "hv" 'counsel-describe-variable
-         "hf" 'counsel-describe-function
+         "hv" 'helpful-variable
+         "hf" 'helpful-function
+         "hF" 'helpful-callable
          "hc" 'helpful-command))
    #+end_src
    
@@ -818,17 +960,6 @@
        :config
        (luc/leader-def
          "gr" 'evil-show-registers))
-   #+end_src
-   
-** History
-   Saving minibuffer histories and additional variables.
-   #+begin_src emacs-lisp
-     (use-package savehist
-       :config
-       (setq history-length 250)
-       (setq history-delete-duplicates t)
-       (setq savehist-additional-variables '(register-alist))
-       (savehist-mode 1))
    #+end_src
    
 ** Backup & Auto-Save
@@ -995,7 +1126,7 @@
      (use-package emacs
        :config
        (luc/leader-def
-         "io" 'occur))
+         "gu" 'occur))
    #+end_src
    
 ** Avy
@@ -1259,12 +1390,12 @@
 *** Org Capture
     For quickly 'capturing' something in Org files. I mostly use it
     for adding items to the agenda, but have templates for other uses
-    as well. Counsel also has its version of it.
+    as well.
     #+begin_src emacs-lisp
       (use-package org
         :config
         (luc/leader-def
-          "cc" 'counsel-org-capture)
+          "cc" 'org-capture)
         (setq org-capture-templates
               '(("d"
                  "Task with deadline"
@@ -1340,25 +1471,18 @@
    Jump to points of interest in the buffer.
    #+begin_src emacs-lisp
      (use-package imenu
-       :commands (imenu counsel-imenu)
+       :commands (imenu consult-imenu)
        :init
        (luc/leader-def
-         "im" 'counsel-imenu))
+         "im" 'consult-imenu))
    #+end_src
    
 ** Outline Minor Mode
    Bring =org-mode= like outline capabilities to other major modes!
    #+begin_src emacs-lisp
      (use-package outline
-       :init
-       ;; `imenu' will match `outline-minor-mode' headings. Still doesn't
-       ;; work quite as I'd like it to, but for now it will do.
-       (defun luc/imenu-with-outline-hook ()
-         (add-to-list 'imenu-generic-expression
-                      (list "Headings" (concat "^\\(?:" outline-regexp "\\).*$") 0)))
        :hook
        (prog-mode . outline-minor-mode)
-       (outline-minor-mode . luc/imenu-with-outline-hook)
        :config
        (general-def
          :keymaps 'outline-minor-mode-map
@@ -1674,17 +1798,19 @@
         :init
         (use-package flycheck ;; Syntax checker
           :config
+          (use-package consult-flycheck)
           (luc/leader-def-for-keymaps
             :keymaps 'flycheck-mode-map
-            "le" 'flycheck-list-errors
-            "lp" 'flycheck-previous-error
-            "ln" 'flycheck-next-error))
+            "jc" 'consult-flycheck
+            "je" 'flycheck-list-errors
+            "jp" 'flycheck-previous-error
+            "jn" 'flycheck-next-error))
         (luc/leader-def-for-keymaps
           :keymaps 'lsp-mode-map
-          "la" 'lsp-execute-code-action
-          "ld" 'lsp-find-declaration
-          "lr" 'lsp-rename
-          "lf" 'lsp-find-references))
+          "ja" 'lsp-execute-code-action
+          "jd" 'lsp-find-declaration
+          "jr" 'lsp-rename
+          "jf" 'lsp-find-references))
     #+end_src
    
 *** LSP UI
@@ -1732,6 +1858,14 @@
     #+begin_src emacs-lisp
       (use-package cpp
         :hook ((c-mode c++-mode) . lsp-deferred))
+    #+end_src
+    
+*** Python
+    Using =pylsp=, which is looked for by default. For reference:
+    https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/    
+    #+begin_src emacs-lisp
+      (use-package python
+        :hook (python-mode . lsp-deferred))
     #+end_src
     
 ** Magit & Forge
