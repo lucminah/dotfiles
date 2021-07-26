@@ -629,23 +629,6 @@
        (global-fasd-mode 1))
    #+end_src
    
-** Prescient
-   A package for filtering and sorting completion candidates. I don't
-   want its filtering to interfere with my completion styles, but the
-   sorting (based on frequency and recency, like =fasd=) is really
-   neat. This package is the library that is meant to be used by its
-   implementations for other packages such as =company=, so I'll set
-   that in the appropriate section. Here I load the =prescient= library
-   and activate =prescient-persist-mode=, which will make the stats for
-   sorting persist through Emacs sessions.
-
-   [[https://github.com/raxod502/prescient.el][Git repository]]
-   #+begin_src emacs-lisp
-     (use-package prescient
-       :config
-       (prescient-persist-mode 1))
-   #+end_src
-   
 ** Company
    A great auto-completion package. Alongside it I'm using
    =company-box=, a nice front-end with pretty symbols, pop-up
@@ -675,12 +658,6 @@
          (let ((orderless-match-faces [completions-common-part]))
            (apply fn args)))
        (advice-add 'company-capf--candidates :around #'luc/company-orderless-match-one-face)
-     
-       ;; Prescient ordering of candidates.
-       (use-package company-prescient
-         :config
-         (company-prescient-mode t))
-     
        (setq company-idle-delay 0
              company-minimum-prefix-length 1
              company-tooltip-idle-delay 0
