@@ -1845,6 +1845,13 @@
         :hook (python-mode . lsp-deferred))
     #+end_src
     
+*** Java
+    #+begin_src emacs-lisp
+      (use-package lsp-java
+        :hook
+        (java-mode . lsp))
+    #+end_src
+    
 ** Magit & Forge
    =magit= is an amazingly powerful Git front-end. I hadn't known of it
    before, but =forge= allows for working with Git forges (in my case,
