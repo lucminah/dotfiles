@@ -984,7 +984,7 @@
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
    commands. Some other relevant keybindings (such as for
-   =counsel-switch-buffer=) were set in [[*Ivy, Counsel & Swiper][Ivy, Counsel & Swiper]].
+   =consult-buffer=) were set in "Minibuffer & Completion".
    #+begin_src emacs-lisp
      (luc/leader-def
        "w" 'save-buffer
@@ -1165,14 +1165,7 @@
           :hook
           (mpdel-tablist-mode . turn-off-evil-snipe-mode)
           :init
-          (evil-collection-mpdel-setup)
-          (use-package ivy-mpdel
-            :config
-            ;; I used the other `ivy-mpdel' functions as a base for this new one.
-            (defun luc/ivy-mpdel-albums ()
-              "Select music from a list of albums."
-              (interactive)
-              (ivy-mpdel-list 'albums)))))
+          (evil-collection-mpdel-setup)))
     #+end_src
    
 *** Keybindings
@@ -1195,9 +1188,7 @@
           "gp" 'mpdel-playlist-open
           "gP" 'mpdel-playlist-open-stored-playlist
           "or" 'mpdel-core-open-artists
-          "ol" 'mpdel-core-open-albums
-          "sl" 'luc/ivy-mpdel-albums
-          "sr" 'ivy-mpdel-list)
+          "ol" 'mpdel-core-open-albums)
         (luc/leader-def
           "mp" 'mpdel-playlist-open))
     #+end_src
