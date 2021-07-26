@@ -303,7 +303,7 @@
        :commands aggressive-indent-mode
        :init
        (luc/leader-def
-         "ii" 'aggressive-indent-mode))
+         "ia" 'aggressive-indent-mode))
    #+end_src
    
 ** Hungry Delete
@@ -676,13 +676,13 @@
        (general-def
          :keymaps 'company-active-map
          "C-h" 'company-abort
-         "C-l" 'company-complete
+         "C-l" 'company-complete-selection
          "C-j" 'company-select-next
          "C-k" 'company-select-previous
          "C-n" 'evil-complete-next
          "C-p" 'evil-complete-previous)
        (luc/leader-def
-         "ac" 'company-mode))
+         "ic" 'company-mode))
    #+end_src
 
 ** YASnippet
