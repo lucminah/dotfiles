@@ -417,6 +417,45 @@
          "d" 'dired))
    #+end_src
    
+** Consult
+   A collection of commands based on the =completing-read= function that
+   substitute built-in functions such as =imenu= and brings new
+   functionality and integration through commands like =consult-find=.
+
+   [[https://github.com/minad/consult][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package consult
+       :hook
+       ;; Use `consult-completion-in-region' if Vertico is enabled.
+       (vertico-mode . (lambda ()
+                         (setq completion-in-region-function
+                               (if vertico-mode
+                                   #'consult-completion-in-region
+                                 #'completion--in-region))))
+       :init
+       ;; I'd like minibuffer completion with TAB.
+       (setq tab-always-indent 'complete)
+       ;; I use `fd' instead of `find'.
+       (setq consult-find-command "fd --color=never --hidden ARG OPTS")
+       (luc/leader-def
+         "b" 'consult-buffer
+         "l" 'consult-line
+         "af" 'consult-find
+         "ag" 'consult-ripgrep
+         "gi" 'consult-imenu
+         "go" 'consult-outline
+         "gf" 'consult-focus-lines)
+       :config
+       ;; Loading previews only when explicitly choosing to with a
+       ;; keybinding. Significantly improves speed of these commands,
+       ;; specially ones that use external programs such as `grep'.
+       (consult-customize
+        consult-ripgrep consult-git-grep consult-grep
+        consult-bookmark consult-recent-file consult-xref
+        consult--source-file consult--source-project-file consult--source-bookmark
+        :preview-key (kbd "C-o")))
+   #+end_src
+   
 ** Vertico
    A completion UI that aims to have full compatibility with built-in
    Emacs completion commands. This stability really shines through,
@@ -427,8 +466,6 @@
    #+begin_src emacs-lisp
      (use-package vertico
        :init
-       ;; I'd like minibuffer completion with TAB.
-       (setq tab-always-indent 'complete)
        (setq enable-recursive-minibuffers t)
        (setq vertico-cycle t)
        (general-def
@@ -456,43 +493,6 @@
      (use-package marginalia
        :init
        (marginalia-mode 1))
-   #+end_src
-   
-** Consult
-   A collection of commands based on the =completing-read= function that
-   substitute built-in functions such as =imenu= and brings new
-   functionality and integration through commands like =consult-find=.
-
-   [[https://github.com/minad/consult][Git repository]]
-   #+begin_src emacs-lisp
-     (use-package consult
-       :hook
-       ;; Use `consult-completion-in-region' if Vertico is enabled.
-       (vertico-mode . (lambda ()
-                         (setq completion-in-region-function
-                               (if vertico-mode
-                                   #'consult-completion-in-region
-                                 #'completion--in-region))))
-       :init
-       ;; I use `fd' instead of `find'.
-       (setq consult-find-command "fd --color=never --hidden ARG OPTS")
-       (luc/leader-def
-         "b" 'consult-buffer
-         "l" 'consult-line
-         "af" 'consult-find
-         "ag" 'consult-ripgrep
-         "gi" 'consult-imenu
-         "go" 'consult-outline
-         "gf" 'consult-focus-lines)
-       :config
-       ;; Loading previews only when explicitly choosing to with a
-       ;; keybinding. Significantly improves speed of these commands,
-       ;; specially ones that use external programs such as `grep'.
-       (consult-customize
-        consult-ripgrep consult-git-grep consult-grep
-        consult-bookmark consult-recent-file consult-xref
-        consult--source-file consult--source-project-file consult--source-bookmark
-        :preview-key (kbd "C-o")))
    #+end_src
    
 ** Orderless
