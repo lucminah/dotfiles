@@ -671,6 +671,7 @@
        :config
        (general-unbind
          :keymaps 'company-active-map
+         "<return>"
          "<tab>"
          "TAB")
        (general-def
