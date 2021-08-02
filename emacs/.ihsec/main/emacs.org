@@ -643,49 +643,55 @@
    [[https://company-mode.github.io/][Company documentation]]
    
    [[https://github.com/sebastiencs/company-box][Company Box]]
-   #+begin_src emacs-lisp
-     (use-package company
-       :after orderless
-       :hook
-       (prog-mode . company-mode)
-       (outline-mode . company-mode)
-       (text-mode . company-mode)
-       (shell-mode . company-mode)
-       :init
-       ;; Highlight orderless matches with one face (can't have multiple
-       ;; ones so far)
-       (defun luc/company-orderless-match-one-face (fn &rest args)
-         (let ((orderless-match-faces [completions-common-part]))
-           (apply fn args)))
-       (advice-add 'company-capf--candidates :around #'luc/company-orderless-match-one-face)
-       (setq company-idle-delay 0
-             company-minimum-prefix-length 1
-             company-tooltip-idle-delay 0
-             company-selection-wrap-around t
-             company-abort-on-unique-match nil)
-       (use-package company-box
-         :hook
-         (company-mode . company-box-mode)
-         :init
-         (setq company-box-doc-delay 0.2))
-       :config
-       (general-unbind
-         :keymaps 'company-active-map
-         "<return>"
-         "<tab>"
-         "TAB")
-       (general-def
-         :keymaps 'company-active-map
-         "C-h" 'company-abort
-         "C-l" 'company-complete-selection
-         "C-j" 'company-select-next
-         "C-k" 'company-select-previous
-         "C-n" 'evil-complete-next
-         "C-p" 'evil-complete-previous)
-       (luc/leader-def
-         "ic" 'company-mode))
-   #+end_src
-
+*** Setup
+    #+begin_src emacs-lisp
+      (use-package company
+        :after orderless
+        :hook
+        (prog-mode . company-mode)
+        (outline-mode . company-mode)
+        (text-mode . company-mode)
+        (shell-mode . company-mode)
+        :init
+        ;; Highlight orderless matches with one face (can't have multiple
+        ;; ones so far)
+        (defun luc/company-orderless-match-one-face (fn &rest args)
+          (let ((orderless-match-faces [completions-common-part]))
+            (apply fn args)))
+        (advice-add 'company-capf--candidates :around #'luc/company-orderless-match-one-face)
+        (setq company-idle-delay 0
+              company-minimum-prefix-length 1
+              company-tooltip-idle-delay 0
+              company-selection-wrap-around t
+              company-abort-on-unique-match nil)
+        (use-package company-box
+          :hook
+          (company-mode . company-box-mode)
+          :init
+          (setq company-box-doc-delay 0.2)))
+    #+end_src
+    
+*** Keybindings
+    #+begin_src emacs-lisp
+      (use-package company
+        :config
+        (general-unbind
+          :keymaps 'company-active-map
+          "<return>"
+          "<tab>"
+          "TAB")
+        (general-def
+          :keymaps 'company-active-map
+          "C-h" 'company-abort
+          "C-l" 'company-complete-selection
+          "C-j" 'company-select-next
+          "C-k" 'company-select-previous
+          "C-n" 'evil-complete-next
+          "C-p" 'evil-complete-previous)
+        (luc/leader-def
+          "ic" 'company-mode))
+    #+end_src
+    
 ** YASnippet
    For expandable snippets - for and while loops, main function
    definition, if statements... Anything you'd like to have easily
