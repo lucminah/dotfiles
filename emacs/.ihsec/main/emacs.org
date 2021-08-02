@@ -1155,12 +1155,11 @@
 ** MPDel
    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
    use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
-   client experience better (there's even an [[https://gitea.petton.fr/mpdel/ivy-mpdel.git][ivy package]] that
-   integrates with it, and that's always good news!). I already have
-   global keybindings in my window manager for managing toggling the
-   playing/paused state, going forwards and backwards in the
-   playlist, controlling volume, etc. So this should be used mostly
-   just for searching and playlist management.
+   client experience better. I already have global keybindings in my
+   window manager for managing toggling the playing/paused state,
+   going forwards and backwards in the playlist, controlling volume,
+   etc. So this should be used mostly just for searching and playlist
+   management.
 *** Setup
     I've made some changes to the source code of =libmpdel= and =mpdel= to
     accommodate certain needs of mine, so I'm loading these packages
