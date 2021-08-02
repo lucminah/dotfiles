@@ -1234,233 +1234,6 @@
         (set-face-attribute 'mpdel-playlist-current-song-face nil :weight 'bold))
     #+end_src
     
-** Org Mode
-   An amazing organization tool. I'm using it to write this very file,
-   which really facilitates checking and updating the configuration,
-   but there's a lot more to it as well.
-   
-   [[https://orgmode.org/manual/][Org Manual]]
-*** Preferences
-    Changing the look and feel of =org-mode=, for maximum organization
-    power.
-**** Header Font Sizes
-     #+begin_src emacs-lisp
-       (use-package org
-         :config
-         (dolist (face '((org-level-1 . 1.1)
-                         (org-level-2 . 1.05)
-                         (org-level-3 . 1.0)
-                         (org-level-4 . 1.0)
-                         (org-level-5 . 1.0)
-                         (org-level-6 . 1.0)
-                         (org-level-7 . 1.0)
-                         (org-level-8 . 1.0)))
-           (set-face-attribute (car face) nil :height (cdr face))))
-     #+end_src
-     
-**** Variable Pitch Mode 
-     Different font pitches for different contexts.
-     #+begin_src emacs-lisp
-       (use-package org
-         :config
-         (defun luc/set-my-face-attributes ()
-           (set-face-attribute 'fixed-pitch nil :font "UbuntuMono-13")
-           (set-face-attribute 'default nil :inherit 'fixed-pitch)
-           (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-           (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
-           (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
-           (set-face-attribute 'org-meta-line nil :inherit 'fixed-pitch))
-         :hook
-         (org-mode . luc/set-my-face-attributes)
-         (org-mode . variable-pitch-mode))
-     #+end_src
-     
-**** Ellipsis & Org Bullets
-     Header markers are bullets and expansion markers are little
-     triangles. A lot cleaner.
-     #+begin_src emacs-lisp
-       (use-package org
-         :config
-         (setq org-ellipsis " ▾")
-         (use-package
-           org-bullets
-           :custom
-           (org-bullets-bullet-list '("◉" "●" "○" "●" "○" "●" "○"))
-           :hook (org-mode . org-bullets-mode)))
-         #+end_src
-     
-**** Visual Line Mode
-     For visual line wrapping at words.
-     #+begin_src emacs-lisp
-       (use-package org
-         :hook (org-mode . visual-line-mode))
-     #+end_src
-     
-**** Visual Fill Column
-     For centering text in the buffer.
-     
-     [[https://github.com/joostkremers/visual-fill-column][Git repository]]
-     #+begin_src emacs-lisp
-       (use-package visual-fill-column
-         :init
-         (setq visual-fill-column-width 100)
-         (setq visual-fill-column-center-text 1)
-         :hook
-         (org-mode . visual-fill-column-mode))
-     #+end_src
-     
-**** Variables
-     #+begin_src emacs-lisp
-       (use-package org
-         :init
-         ;; Headers are folded by default.
-         (setq org-startup-folded t)
-         ;; Indentation adapts to subtree level.
-         (setq org-adapt-indentation t)
-         ;; Hide markers for bold, italis, verbatim...
-         (setq org-hide-emphasis-markers t))
-     #+end_src
-     
-*** Keybindings
-    More Evil keybindings for Org Mode.
-    
-    [[https://github.com/Somelauw/evil-org-mode][Git repository]]
-    #+begin_src emacs-lisp
-      (use-package evil-org
-        :after org
-        :hook ((org-mode . evil-org-mode)
-               (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation
-                                                                     insert))))))
-    #+end_src
-
-*** Exporting: Ox-Reveal and Htmlize
-    Org is pretty easy to export to different formats (by default, =C-c
-    C-e= will bring up Org Export Dispatcher with many options). For
-    better visualization in HTML (including =reveal.js= presentations),
-    these packages really come in handy.
-    
-    [[https://github.com/hexmode/ox-reveal][Ox Reveal]]
-    
-    [[https://github.com/hniksic/emacs-htmlize][Htmlize]]
-    #+begin_src emacs-lisp
-      (use-package ox-reveal
-        :init
-        (setq org-reveal-mathjax t))
-
-      (use-package htmlize
-        :commands htmlize-file)
-    #+end_src
-
-*** Org Agenda
-    I use this daily to manage my schedule, check deadlines, remember
-    dates and keep track of my daily routine. Thankfully =evil-org= can
-    bring more Evil keybindings to it as well.
-    
-    There's a keybinding for toggling =log-mode= in the agenda because
-    repeated tasks (from the daily routine, for example) only show up
-    there when I mark them as =DONE=, along with the timestamp for when
-    I completed them.
-    #+begin_src emacs-lisp
-      (use-package org
-        :hook
-        (org-agenda-mode . hl-line-mode)
-        :config
-        (setq org-directory "~/storage/org/")
-        (setq org-agenda-files '("~/storage/org/agenda/"))
-        (setq org-agenda-log-mode-items '(closed clock state))
-        (use-package evil-org-agenda
-          :straight nil
-          :config
-          (evil-org-agenda-set-keys))
-        (general-def
-          :states 'motion
-          :keymaps 'org-agenda-mode-map
-          "w" 'org-save-all-org-buffers
-          "l" 'org-agenda-log-mode)
-        (luc/leader-def
-          "ca" 'org-agenda))
-    #+end_src
-    
-*** Org Capture
-    For quickly 'capturing' something in Org files. I mostly use it
-    for adding items to the agenda, but have templates for other uses
-    as well.
-    #+begin_src emacs-lisp
-      (use-package org
-        :config
-        (luc/leader-def
-          "cc" 'org-capture)
-        (setq org-capture-templates
-              '(("d"
-                 "Task with deadline"
-                 entry (file+headline "agenda/deadlines.org" "Deadlines")
-                 "* TODO %^{Task}\nSCHEDULED: %^t DEADLINE: %^t")
-                ("t"
-                 "Task without deadline"
-                 entry (file+headline "agenda/tasks.org" "Tasks")
-                 "* TODO %^{Task}\n SCHEDULED: %^t\n%?")
-                ;; Saving events and dates as deadlines to get an early
-                ;; reminder that they're coming.
-                ("e"
-                 "Event"
-                 entry (file+headline "agenda/events.org" "Events")
-                 "* %^{Event}\nDEADLINE: %^T\n")
-                ("r"
-                 "Dates to remember"
-                 entry (file+headline "agenda/dates.org" "Dates")
-                 "* %^{Description}\n%DEADLINE: ^t\n")
-                ("l"
-                 "Link"
-                 entry (file+headline "links.org" "Links")
-                 "* [[%x][%^{Description}]]\n%U")
-                ("i"
-                 "Idea/thought"
-                 entry (file+headline "thoughts.org" "Ideas & Thoughts")
-                 "* %?\n%U"))))
-    #+end_src
-    
-*** Org Babel
-    For managing code blocks in Org files.
-**** Automatic tangling
-     =org-babel-tangle= writes the contents of the source blocks of an
-     Org file into a destination file. Since I'm using it to write to
-     configuration files, I'd like that function to be called every
-     time I save the corresponding Org file.
-
-     Here I make it so =org-babel-tangle= is added to the
-     =after-save-hook= on Org files that match my specification. For
-     that, I create a variable that holds a list of my Org
-     configuration files (so far only this one) and a function to make
-     the check.
-     #+begin_src emacs-lisp
-       (use-package emacs
-         :config
-         (defvar luc/org-config-dir (expand-file-name "~/dotfiles")
-           "Directory containing org files to be tangled to automatically.")
-       
-         (defun luc/auto-tangle-config-files ()
-           "Tangle the current org file, if in `luc/org-config-dir'."
-           (when (member (buffer-file-name)
-                         (directory-files-recursively luc/org-config-dir "\.org$"))
-             (let ((org-confirm-babel-evaluate nil))
-               (org-babel-tangle))))
-       
-         (use-package org
-           :hook
-           (org-mode . (lambda () (add-hook 'after-save-hook #'luc/auto-tangle-config-files)))))
-     #+end_src
-     
-**** Languages
-     Specifying the languages Org Babel should be able to execute and
-     get results from in code blocks.
-     #+begin_src emacs-lisp
-       (use-package org
-         :init
-         (org-babel-do-load-languages
-          'org-babel-load-languages '((python . t)
-                                      (shell . t))))
-     #+end_src
-     
 ** Imenu
    Jump to points of interest in the buffer.
    #+begin_src emacs-lisp
@@ -1775,6 +1548,275 @@
          "gS" 'sudo-edit))
    #+end_src
    
+* Org Mode
+  An amazing organization tool. I'm using it to write this very file,
+  which really facilitates checking and updating the configuration,
+  but there's a lot more to it as well.
+   
+  [[https://orgmode.org/manual/][Org Manual]]
+** Preferences
+   Changing the look and feel of =org-mode=, for maximum organization
+   power.
+*** Header Font Sizes
+    #+begin_src emacs-lisp
+      (use-package org
+        :config
+        (dolist (face '((org-level-1 . 1.1)
+                        (org-level-2 . 1.05)
+                        (org-level-3 . 1.0)
+                        (org-level-4 . 1.0)
+                        (org-level-5 . 1.0)
+                        (org-level-6 . 1.0)
+                        (org-level-7 . 1.0)
+                        (org-level-8 . 1.0)))
+          (set-face-attribute (car face) nil :height (cdr face))))
+    #+end_src
+     
+*** Variable Pitch Mode 
+    Different font pitches for different contexts.
+    #+begin_src emacs-lisp
+      (use-package org
+        :config
+        (defun luc/set-my-face-attributes ()
+          (set-face-attribute 'fixed-pitch nil :font "UbuntuMono-13")
+          (set-face-attribute 'default nil :inherit 'fixed-pitch)
+          (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+          (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+          (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
+          (set-face-attribute 'org-meta-line nil :inherit 'fixed-pitch))
+        :hook
+        (org-mode . luc/set-my-face-attributes)
+        (org-mode . variable-pitch-mode))
+    #+end_src
+     
+*** Ellipsis & Org Bullets
+    Header markers are bullets and expansion markers are little
+    triangles. A lot cleaner.
+    #+begin_src emacs-lisp
+      (use-package org
+        :config
+        (setq org-ellipsis " ▾")
+        (use-package
+          org-bullets
+          :custom
+          (org-bullets-bullet-list '("◉" "●" "○" "●" "○" "●" "○"))
+          :hook (org-mode . org-bullets-mode)))
+        #+end_src
+     
+*** Visual Line Mode
+    For visual line wrapping at words.
+    #+begin_src emacs-lisp
+      (use-package org
+        :hook (org-mode . visual-line-mode))
+    #+end_src
+     
+*** Visual Fill Column
+    For centering text in the buffer.
+     
+    [[https://github.com/joostkremers/visual-fill-column][Git repository]]
+    #+begin_src emacs-lisp
+      (use-package visual-fill-column
+        :init
+        (setq visual-fill-column-width 100)
+        (setq visual-fill-column-center-text 1)
+        :hook
+        (org-mode . visual-fill-column-mode))
+    #+end_src
+     
+*** Variables
+    #+begin_src emacs-lisp
+      (use-package org
+        :init
+        ;; Headers are folded by default.
+        (setq org-startup-folded t)
+        ;; Indentation adapts to subtree level.
+        (setq org-adapt-indentation t)
+        ;; Hide markers for bold, italis, verbatim...
+        (setq org-hide-emphasis-markers t))
+    #+end_src
+     
+** Evil Org
+   More Evil keybindings for Org Mode.
+    
+   [[https://github.com/Somelauw/evil-org-mode][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package evil-org
+       :after org
+       :hook ((org-mode . evil-org-mode)
+              (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation
+                                                                    insert))))))
+   #+end_src
+
+** Exporting: Ox-Reveal and Htmlize
+   Org is pretty easy to export to different formats (by default, =C-c
+   C-e= will bring up Org Export Dispatcher with many options). For
+   better visualization in HTML (including =reveal.js= presentations),
+   these packages really come in handy.
+    
+   [[https://github.com/hexmode/ox-reveal][Ox Reveal]]
+    
+   [[https://github.com/hniksic/emacs-htmlize][Htmlize]]
+   #+begin_src emacs-lisp
+     (use-package ox-reveal
+       :init
+       (setq org-reveal-mathjax t))
+
+     (use-package htmlize
+       :commands htmlize-file)
+   #+end_src
+
+** Org Agenda
+   I use this daily to manage my schedule, check deadlines, remember
+   dates and keep track of my daily routine. Thankfully =evil-org= can
+   bring more Evil keybindings to it as well.
+    
+   There's a keybinding for toggling =log-mode= in the agenda because
+   repeated tasks (from the daily routine, for example) only show up
+   there when I mark them as =DONE=, along with the timestamp for when
+   I completed them.
+   #+begin_src emacs-lisp
+     (use-package org
+       :hook
+       (org-agenda-mode . hl-line-mode)
+       :config
+       (setq org-directory "~/storage/org")
+       (setq org-agenda-files '("~/storage/org/agenda"))
+       (setq org-agenda-log-mode-items '(closed clock state))
+       (use-package evil-org-agenda
+         :straight nil
+         :config
+         (evil-org-agenda-set-keys))
+       (general-def
+         :states 'motion
+         :keymaps 'org-agenda-mode-map
+         "w" 'org-save-all-org-buffers
+         "l" 'org-agenda-log-mode)
+       (luc/leader-def
+         "ca" 'org-agenda))
+   #+end_src
+    
+** Org Capture
+   For quickly 'capturing' something in Org files. I mostly use it
+   for adding items to the agenda, but have templates for other uses
+   as well.
+   #+begin_src emacs-lisp
+     (use-package org
+       :config
+       (luc/leader-def
+         "cc" 'org-capture)
+       (setq org-capture-templates
+             '(("d"
+                "Task with deadline"
+                entry (file+headline "agenda/deadlines.org" "Deadlines")
+                "* TODO %^{Task}\nSCHEDULED: %^t DEADLINE: %^t")
+               ("t"
+                "Task without deadline"
+                entry (file+headline "agenda/tasks.org" "Tasks")
+                "* TODO %^{Task}\n SCHEDULED: %^t\n%?")
+               ;; Saving events and dates as deadlines to get an early
+               ;; reminder that they're coming.
+               ("e"
+                "Event"
+                entry (file+headline "agenda/events.org" "Events")
+                "* %^{Event}\nDEADLINE: %^T\n")
+               ("r"
+                "Dates to remember"
+                entry (file+headline "agenda/dates.org" "Dates")
+                "* %^{Description}\n%DEADLINE: ^t\n")
+               ("l"
+                "Link"
+                entry (file+headline "links.org" "Links")
+                "* [[%x][%^{Description}]]\n%U")
+               ("i"
+                "Idea/thought"
+                entry (file+headline "thoughts.org" "Ideas & Thoughts")
+                "* %?\n%U"))))
+   #+end_src
+    
+** Org Babel
+   For managing code blocks in Org files.
+*** Automatic tangling
+    =org-babel-tangle= writes the contents of the source blocks of an
+    Org file into a destination file. Since I'm using it to write to
+    configuration files, I'd like that function to be called every
+    time I save the corresponding Org file.
+
+    Here I make it so =org-babel-tangle= is added to the
+    =after-save-hook= on Org files that match my specification. For
+    that, I create a variable that holds a list of my Org
+    configuration files (so far only this one) and a function to make
+    the check.
+    #+begin_src emacs-lisp
+      (use-package emacs
+        :config
+        (defvar luc/org-config-dir (expand-file-name "~/dotfiles")
+          "Directory containing org files to be tangled to automatically.")
+       
+        (defun luc/auto-tangle-config-files ()
+          "Tangle the current org file, if in `luc/org-config-dir'."
+          (when (member (buffer-file-name)
+                        (directory-files-recursively luc/org-config-dir "\.org$"))
+            (let ((org-confirm-babel-evaluate nil))
+              (org-babel-tangle))))
+       
+        (use-package org
+          :hook
+          (org-mode . (lambda () (add-hook 'after-save-hook #'luc/auto-tangle-config-files)))))
+    #+end_src
+     
+*** Languages
+    Specifying the languages Org Babel should be able to execute and
+    get results from in code blocks.
+    #+begin_src emacs-lisp
+      (use-package org
+        :init
+        (org-babel-do-load-languages
+         'org-babel-load-languages '((python . t)
+                                     (shell . t))))
+    #+end_src
+     
+** Org Roam
+   A very interesting tool for managing notes in Org Mode, creating a
+   database of links between them. I just started playing around with
+   it, and definitely recommend reading about it, it's pretty
+   impressive - hope I can make the most of it.
+
+   [[https://github.com/org-roam/org-roam][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package org-roam
+       :init
+       (setq org-roam-v2-ack t)
+       (setq org-roam-directory (concat org-directory "/roam"))
+       (setq org-roam-dailies-directory "daily")
+       (setq org-roam-dailies-capture-templates 
+             '(("d" "default" entry
+                "* %<%H:%M>\n%?"
+                :if-new (file+head "%<%Y-%m-%d>.org"
+                                   "#+title: %<%A, %d %B %Y>\n#+filetags: :journal:\n\n"))))
+       :config
+       (org-roam-setup)
+       (general-def
+         :states 'insert
+         :keymaps 'org-mode-map
+         "C-c i" 'org-roam-node-insert)
+       (luc/leader-def
+         "cn" 'org-roam-dailies-goto-next-note
+         "cp" 'org-roam-dailies-goto-previous-note
+         "cf" 'org-roam-node-find
+         "cv" 'org-roam-capture
+         "cx" 'org-roam-ref-add
+         "cX" 'org-roam-ref-remove
+         "cg" 'org-roam-tag-add
+         "cG" 'org-roam-tag-remove
+         "cl" 'org-roam-alias-add
+         "cL" 'org-roam-alias-remove
+         "cb" 'org-roam-buffer-toggle
+         "ct" 'org-roam-dailies-goto-today
+         "cT" 'org-roam-dailies-capture-today
+         "cd" 'org-roam-dailies-goto-date
+         "cD" 'org-roam-dailies-capture-date))
+   #+end_src
+    
 * Development
   Building a comfy and powerful development environment.
 ** LSP & DAP Setup
