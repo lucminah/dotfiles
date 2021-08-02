@@ -981,6 +981,26 @@
          "ar" 'recover-session))
    #+end_src
    
+** Fcitx
+   [[https://fcitx-im.org/wiki/Fcitx_5][Fcitx]] is the input method framework I use for managing different
+   keyboard layouts and language specific input. This package provides
+   automatic disabling of the Fcitx input method (and possibly
+   others - check final section in the repo's README) in certain
+   contexts where it doesn't make sense to use them. For me, when I
+   use it to type in Japanese, it's not really useful to have Fcitx
+   enabled in the normal state, for example - just makes all
+   keybindings unusable, since none of them use Japanese
+   characters. All of its functionalities are well explained in the
+   repo.
+
+   [[https://github.com/cute-jumper/fcitx.el][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package fcitx
+       :init
+       (fcitx-aggressive-setup)
+       (setq fcitx-use-dbus t))
+   #+end_src
+   
 * Windows & Buffers
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
