@@ -257,7 +257,14 @@
    once you see it in action, you'll know what it does. Pretty
    intuitive.
    #+begin_src emacs-lisp
-     (use-package emacs
+     (use-package elec-pair
+       :init
+       (defun luc/electric-pair-inhibit (char)
+         (if (char-equal char ?<) t
+           (electric-pair-default-inhibit char)))
+       :hook
+       (org-mode . (lambda () (setq-local electric-pair-inhibit-predicate
+                                          #'luc/electric-pair-inhibit)))
        :config
        (electric-pair-mode 1))
    #+end_src
@@ -1627,6 +1634,8 @@
     #+begin_src emacs-lisp
       (use-package org
         :init
+        ;; For expanding blocks from snippets.
+        (require 'org-tempo)
         ;; Headers are folded by default.
         (setq org-startup-folded t)
         ;; Indentation adapts to subtree level.
