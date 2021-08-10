@@ -353,6 +353,7 @@
    name macros if I need to have access to multiple of them at the
    same time. It's all experimental, I'll see what sorts of problems
    or new ideas come up as I go.
+   
 *** Custom functions
     #+begin_src emacs-lisp
       (use-package emacs
@@ -685,6 +686,7 @@
         (general-unbind
           :keymaps 'company-active-map
           "<return>"
+          "RET"
           "<tab>"
           "TAB")
         (general-def
