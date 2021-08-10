@@ -1454,6 +1454,8 @@
       (use-package vterm
         :init
         (evil-set-initial-state 'vterm-mode 'insert)
+        ;; Place cursor in the prompt line when coming back to insert state.
+        (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point)
         (luc/leader-def
           "at" 'vterm)
         :commands vterm
@@ -1461,11 +1463,16 @@
         (evil-collection-vterm-setup)
         (general-def
           :keymaps 'vterm-mode-map
+          :states 'normal
+          "o" 'evil-collection-vterm-insert
+          "O" 'evil-collection-vterm-insert
+          "C-e" 'evil-scroll-line-down
+          "C-y" 'evil-scroll-line-up)
+        (general-def
+          :keymaps 'vterm-mode-map
           :states 'insert
           "C-h" 'vterm--self-insert
           "C-l" 'vterm--self-insert
-          "C-e" 'evil-scroll-line-down
-          "C-y" 'evil-scroll-line-up
           "C-j" 'evil-collection-vterm-toggle-send-escape))
     #+end_src
     
