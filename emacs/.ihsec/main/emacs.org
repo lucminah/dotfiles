@@ -600,7 +600,7 @@
        :config
        (setq history-length 250)
        (setq history-delete-duplicates t)
-       (setq savehist-additional-variables '(register-alist))
+       (setq savehist-additional-variables '(register-alist kmacro-ring))
        (savehist-mode 1))
    #+end_src
    
