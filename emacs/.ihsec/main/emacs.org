@@ -1524,7 +1524,8 @@
        :config
        (general-def
          :states 'normal
-         "z;" 'flyspell-auto-correct-word)
+         "z;" 'flyspell-auto-correct-word
+         "zp" 'flyspell-auto-correct-previous-word)
        (luc/leader-def
          "is" 'flyspell-buffer
          "if" 'flyspell-mode
