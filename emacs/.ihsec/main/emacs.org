@@ -126,12 +126,14 @@
         :config
         ;; For global keybindings.
         (general-create-definer luc/leader-def
-          :states '(normal visual motion)
+          :states '(normal insert visual motion)
           :keymaps 'override
+          :global-prefix "C-SPC"
           :prefix "SPC")
         ;; For local keybindings.
         (general-create-definer luc/leader-def-for-keymaps
-          :states '(normal visual motion)
+          :states '(normal insert visual motion)
+          :global-prefix "C-SPC"
           :prefix "SPC"))
     #+end_src
     
@@ -411,10 +413,6 @@
    #+begin_src emacs-lisp
      (use-package emacs
        :init
-       (general-def
-         :keymaps 'override
-         :states '(normal visual motion)
-         "C-SPC" 'execute-extended-command)
        (general-def
          :keymaps 'minibuffer-local-map
          :states 'normal
