@@ -1943,11 +1943,18 @@
     #+end_src
     
 *** Python
-    Using =pylsp=, which is looked for by default. For reference:
-    https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/    
+    Using =mspyls=. For reference:
+    https://emacs-lsp.github.io/lsp-python-ms/    
     #+begin_src emacs-lisp
-      (use-package python
-        :hook (python-mode . lsp-deferred))
+      (use-package lsp-python-ms
+        :ensure t
+        :init
+        (setq lsp-python-ms-auto-install-server t)
+        (setq lsp-python-ms-executable
+              "~/.emacs.d/.cache/lsp/mspyls/Microsoft.Python.LanguageServer")
+        :hook (python-mode . (lambda ()
+                                (require 'lsp-python-ms)
+                                (lsp-deferred))))
     #+end_src
     
 *** Java
