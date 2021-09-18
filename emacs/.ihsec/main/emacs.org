@@ -1964,6 +1964,15 @@
         (java-mode . lsp))
     #+end_src
     
+*** Lua
+    #+begin_src emacs-lisp
+      (use-package lua-mode
+        :after lsp
+        :config
+        :magic ("%LUA" . lua-mode)
+        :hook (lua-mode . lsp-deferred))
+    #+end_src
+    
 ** Magit & Forge
    =magit= is an amazingly powerful Git front-end. I hadn't known of it
    before, but =forge= allows for working with Git forges (in my case,
