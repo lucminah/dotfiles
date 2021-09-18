@@ -850,6 +850,15 @@
          "ir" 'rainbow-mode))
    #+end_src
 
+** Whitespace Mode
+   For showing whitespace in the buffer.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :init
+       (luc/leader-def
+         "iw" 'whitespace-mode))
+   #+end_src
+
 ** Help
    Emacs is great at discoverability. Here I set keybindings for help
    ("describe") commands, and load the =helpful= package for better help
