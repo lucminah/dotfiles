@@ -1212,6 +1212,30 @@
           (evil-collection-mpdel-setup)))
     #+end_src
    
+*** Custom Functions
+    #+begin_src emacs-lisp
+      (use-package emacs
+        :config
+        (defun luc/mpdel-consult-search-albums ()
+          (interactive)
+          (progn
+            (unless (get-buffer "*mpdel-All albums*")
+              (mpdel-core-open-albums))
+            (switch-to-buffer "*mpdel-All albums*")
+            (beginning-of-buffer)
+            (consult-line)
+            (tablist-find-entry)))
+        (defun luc/mpdel-consult-search-artists ()
+          (interactive)
+          (progn
+            (unless (get-buffer "*mpdel-All artists*")
+              (mpdel-core-open-artists))
+            (switch-to-buffer "*mpdel-All artists*")
+            (beginning-of-buffer)
+            (consult-line)
+            (tablist-find-entry))))
+    #+end_src
+    
 *** Keybindings
     #+begin_src emacs-lisp
       (use-package mpdel
@@ -1232,7 +1256,9 @@
           "gp" 'mpdel-playlist-open
           "gP" 'mpdel-playlist-open-stored-playlist
           "or" 'mpdel-core-open-artists
-          "ol" 'mpdel-core-open-albums)
+          "sr" 'luc/mpdel-consult-search-artists
+          "ol" 'mpdel-core-open-albums
+          "sl" 'luc/mpdel-consult-search-albums)
         (luc/leader-def
           "mp" 'mpdel-playlist-open))
     #+end_src
