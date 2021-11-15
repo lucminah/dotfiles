@@ -1023,7 +1023,9 @@
      (use-package fcitx
        :init
        (fcitx-aggressive-setup)
-       (setq fcitx-use-dbus t))
+       (setq fcitx-use-dbus t)
+       :config
+       (fcitx-evil-turn-on))
    #+end_src
    
 * Windows & Buffers
