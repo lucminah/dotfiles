@@ -1,6 +1,6 @@
 [Hotkey]
 # 入力メソッドのオンオフ
-TriggerKey=SUPER_; SUPER_;
+TriggerKey=SUPER_;
 # アクティブでない時だけその他のトリガーキーを使用する
 # Available Value:
 # True False
@@ -37,7 +37,7 @@ SwitchKey=Disabled
 # 入力メソッドの切換をホットキーで
 # Available Value:
 # True False
-#IMSwitchKey=True
+IMSwitchKey=False
 # 入力メソッドの切換にオフも含む
 # Available Value:
 # True False
