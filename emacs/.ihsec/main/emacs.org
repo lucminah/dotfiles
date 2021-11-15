@@ -1713,7 +1713,7 @@
                                                                     insert))))))
    #+end_src
 
-** Exporting: Ox-Reveal and Htmlize
+** Exporting
    Org is pretty easy to export to different formats (by default, =C-c
    C-e= will bring up Org Export Dispatcher with many options). For
    better visualization in HTML (including =reveal.js= presentations),
@@ -1723,12 +1723,16 @@
     
    [[https://github.com/hniksic/emacs-htmlize][Htmlize]]
    #+begin_src emacs-lisp
-     (use-package ox-reveal
-       :init
-       (setq org-reveal-mathjax t))
-
-     (use-package htmlize
-       :commands htmlize-file)
+     (use-package emacs
+       :config
+       (use-package org
+         :init
+         (load-library "org-macro"))
+       (use-package ox-reveal
+         :init
+         (setq org-reveal-mathjax t))
+       (use-package htmlize
+         :commands htmlize-file))
    #+end_src
 
 ** Org Agenda
