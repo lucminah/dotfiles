@@ -1943,6 +1943,8 @@
         (luc/leader-def-for-keymaps
           :keymaps 'lsp-mode-map
           "ja" 'lsp-execute-code-action
+          "jt" 'treemacs
+          "jl" 'lsp-treemacs-errors-list
           "jd" 'lsp-find-declaration
           "jr" 'lsp-rename
           "jf" 'lsp-find-references))
