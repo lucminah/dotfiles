@@ -835,6 +835,21 @@
          "ab" 'consult-bookmark))
    #+end_src
    
+** Rainbow Identifiers
+   Color codes text symbols. I find this functionality to really fit
+   for the way I like navigating and interacting with code, especially
+   for recognizing variables.
+   
+   [[https://github.com/Fanael/rainbow-identifiers][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package rainbow-identifiers
+       :hook
+       (prog-mode . rainbow-identifiers-mode)
+       :config
+       (luc/leader-def
+         "it" 'rainbow-identifiers-mode))
+   #+end_src
+   
 ** Rainbow Delimiters
    Bracket pairs have matching colors.
    
