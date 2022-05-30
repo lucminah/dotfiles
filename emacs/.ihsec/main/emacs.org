@@ -433,6 +433,7 @@
        (luc/leader-def
          "b" 'consult-buffer
          "l" 'consult-line
+         "r" 'consult-recent-file
          "af" 'consult-find
          "ag" 'consult-ripgrep
          "gi" 'consult-imenu
