@@ -763,6 +763,28 @@
          "ib" 'hide-mode-line-mode))
    #+end_src
    
+** Prettify Symbols
+   For pretty looking symbols, such as =>==, =<==, =lambda=, etc. It depends
+   on the major mode.)
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :hook
+       (prog-mode . prettify-symbols-mode))
+   #+end_src
+   
+** Beacon
+   Highlights the cursor when jumping around with it.
+
+   [[https://github.com/Malabarba/beacon][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package beacon
+       :init
+       (beacon-mode 1)
+       :config
+       (luc/leader-def
+         "ij" 'beacon-mode))
+   #+end_src
+   
 ** TTY Faces
    Here I change some face attributes for when using =emacs[client] [-nw|-t|--tty]=.
    #+begin_src emacs-lisp
