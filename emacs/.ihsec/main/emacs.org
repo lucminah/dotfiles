@@ -1066,6 +1066,7 @@
        "w" 'save-buffer
        "k" 'kill-current-buffer
        "q" 'delete-window
+       "eo" 'delete-other-windows
        "ev" 'split-window-horizontally
        "es" 'split-window-vertically
        "en" 'switch-to-next-buffer
