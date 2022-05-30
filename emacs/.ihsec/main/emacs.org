@@ -330,19 +330,6 @@
        (global-hungry-delete-mode))
    #+end_src
    
-** Transpose
-   A really cool Emacs editing feature for switching around or
-   'transposing' text objects.
-   #+begin_src emacs-lisp
-     (use-package emacs
-       :config
-       (general-def
-         :states 'normal
-         "C-t" 'transpose-words
-         "C-q" 'transpose-chars
-         "C-y" 'transpose-lines))
-   #+end_src
-   
 ** Keyboard Macros
    Since Evil macro commands don't play that nicely with Emacs default
    ones (like =edit-last-kbd-macro=, for example, that doesn't affect
