@@ -968,7 +968,10 @@
        :commands hl-line-mode
        :init
        (luc/leader-def
-         "il" 'hl-line-mode))
+         "il" 'hl-line-mode)
+       :hook
+       (prog-mode . hl-line-mode)
+       (conf-mode . hl-line-mode))
    #+end_src
    
 ** Highlight Search
