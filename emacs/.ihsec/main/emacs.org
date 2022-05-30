@@ -1670,7 +1670,7 @@
     #+begin_src emacs-lisp
       (use-package org
         :config
-        (defun luc/set-my-face-attributes ()
+        (defun luc/set-my-org-face-attributes ()
           (set-face-attribute 'fixed-pitch nil :font "UbuntuMono-13")
           (set-face-attribute 'default nil :inherit 'fixed-pitch)
           (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
@@ -1678,7 +1678,7 @@
           (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
           (set-face-attribute 'org-meta-line nil :inherit 'fixed-pitch))
         :hook
-        (org-mode . luc/set-my-face-attributes)
+        (org-mode . luc/set-my-org-face-attributes)
         (org-mode . variable-pitch-mode))
     #+end_src
      
