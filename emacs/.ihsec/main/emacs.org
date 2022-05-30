@@ -1571,7 +1571,7 @@
           ("k" evil-window-increase-height "height++")
           ("q" nil "quit" :exit t))
         (luc/leader-def
-          "es" 'luc/hydra-window-scale/body))
+          "ec" 'luc/hydra-window-scale/body))
     #+end_src
     
 ** Ispell & Flyspell
