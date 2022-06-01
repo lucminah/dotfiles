@@ -1420,6 +1420,8 @@
         :after dired
         :init
         (setq dired-open-extensions '(("mkv" . "mpv")
+                                      ("webm" . "mpv")
+                                      ("avi" . "mpv")
                                       ("mp4" . "mpv"))))
     #+end_src
     
