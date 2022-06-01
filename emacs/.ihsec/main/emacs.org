@@ -1509,7 +1509,7 @@
     keybindings for =shell-command= and =async-shell-command=.
     #+begin_src emacs-lisp
       (use-package shell
-        :commands shell
+        :commands (shell shell-command async-shell-command)
         :init
         (luc/leader-def
           "as" 'shell
