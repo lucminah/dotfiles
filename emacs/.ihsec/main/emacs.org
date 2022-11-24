@@ -1746,11 +1746,23 @@
           "C-l" 'vterm--self-insert
           "C-j" 'evil-collection-vterm-toggle-send-escape))
     #+end_src
-    
+
+** Calc
+   The built-in calculator. It's actually the most powerful one I've
+   used. Comes in pretty handy, for complex or quick calculations.
+
+   #+begin_src emacs-lisp
+     (use-package calc
+       :config
+       (luc/leader-def
+         "," 'calc
+         "." 'quick-calc))
+   #+end_src
+
 ** Hydra
    A package for grouping quick bindings together for a particular
    task. It's a lot easier to understand just seeing an example.
-   
+
    [[https://github.com/abo-abo/hydra][Git repository]]
 *** Scaling windows
     Scaling with =[count] C-w [+/-/</>]= doesn't feel very comfortable,
@@ -1771,7 +1783,7 @@
         (luc/leader-def
           "ec" 'luc/hydra-window-scale/body))
     #+end_src
-    
+
 ** Ispell & Flyspell
    =ispell= is a built-in spellchecking package, and =flyspell-mode= is
    used to highlight misspelled words. I had to install =aspell-en=
@@ -1793,11 +1805,11 @@
          "if" 'flyspell-mode
          "id" 'ispell-change-dictionary))
    #+end_src
-   
+
 ** PDF Tools
    My use for this so far have been simply reading PDF files, and it
    works very well.
-   
+
    [[https://github.com/politza/pdf-tools][Git repository]]
    #+begin_src emacs-lisp
      (use-package pdf-tools
@@ -1806,15 +1818,15 @@
        (pdf-view-mode . (lambda () (pdf-view-fit-page-to-window)))
        :config
        (pdf-tools-install
-         :no-query t))
+        :no-query t))
    #+end_src
-   
+
 ** Keycast
    Display key combinations pressed and the command those are bound to
    execute in the modeline. Since I'm using =doom-modeline=, I looked
    for configuration to make it work properly and found this code
    [[https://www.emacswiki.org/emacs/KeyCast][here]].
-   
+
    [[https://github.com/tarsius/keycast][Git repository]]
    #+begin_src emacs-lisp
      (use-package keycast
@@ -1828,7 +1840,7 @@
        (add-to-list 'global-mode-string '("" mode-line-keycast " "))
        (luc/keycast-mode))
    #+end_src
-   
+
 ** Sudo Edit
    For editing files as the super user.
    #+begin_src emacs-lisp
@@ -1838,12 +1850,12 @@
        (luc/leader-def
          "gS" 'sudo-edit))
    #+end_src
-   
+
 * Org Mode
   An amazing organization tool. I'm using it to write this very file,
   which really facilitates checking and updating the configuration,
   but there's a lot more to it as well.
-   
+
   [[https://orgmode.org/manual/][Org Manual]]
 ** Preferences
    Changing the look and feel of =org-mode=, for maximum organization
@@ -1862,8 +1874,8 @@
                         (org-level-8 . 1.0)))
           (set-face-attribute (car face) nil :height (cdr face))))
     #+end_src
-     
-*** Variable Pitch Mode 
+
+*** Variable Pitch Mode
     Different font pitches for different contexts.
     #+begin_src emacs-lisp
       (use-package org
@@ -1879,7 +1891,7 @@
         (org-mode . luc/set-my-org-face-attributes)
         (org-mode . variable-pitch-mode))
     #+end_src
-     
+
 *** Ellipsis & Org Bullets
     Header markers are bullets and expansion markers are little
     triangles. A lot cleaner.
@@ -1892,18 +1904,18 @@
           :custom
           (org-bullets-bullet-list '("◉" "●" "○" "●" "○" "●" "○"))
           :hook (org-mode . org-bullets-mode)))
-        #+end_src
-     
+    #+end_src
+
 *** Visual Line Mode
     For visual line wrapping at words.
     #+begin_src emacs-lisp
       (use-package org
         :hook (org-mode . visual-line-mode))
     #+end_src
-     
+
 *** Visual Fill Column
     For centering text in the buffer.
-     
+
     [[https://github.com/joostkremers/visual-fill-column][Git repository]]
     #+begin_src emacs-lisp
       (use-package visual-fill-column
@@ -1913,7 +1925,7 @@
         :hook
         (org-mode . visual-fill-column-mode))
     #+end_src
-     
+
 *** Variables
     #+begin_src emacs-lisp
       (use-package org
