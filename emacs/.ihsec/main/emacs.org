@@ -1251,30 +1251,25 @@
          "gj" 'evil-better-visual-line-next-line
          "gk" 'evil-better-visual-line-previous-line))
    #+end_src
-   
+
 ** Beginning and end of line
    Some Vim bindings that always mildly annoyed me were =0/$= and
    =^/g_=. Moving to the beginning and end of line or first and last
    non-blank character in the line are very useful motions, yet their
-   bindings are not that comfortable to hit.
-   
-   =C-h= and =C-l= are, by default, Emacs commands for describing (already
-   taken care of by my leader keybindings starting with =SPC h=) and
-   cycling the position of the pointer in the screen (already taken
-   care of by Evil's =zz=, =zt= and =zb=), so they seem like prime
-   candidates to these useful navigation commands, alongside their
-   capital counterparts.
+   bindings are not that comfortable to hit. Thankfully I can easily
+   remap those here.
    #+begin_src emacs-lisp
      (use-package evil
        :config
        (general-def
+         :keymaps 'override
          :states 'normal
-         "C-h" 'evil-beginning-of-line
-         "C-S-h" 'evil-first-non-blank
-         "C-l" 'evil-end-of-line
-         "C-S-l" 'evil-last-non-blank))
+         "gh" 'evil-beginning-of-line
+         "gH" 'evil-first-non-blank
+         "gl" 'evil-end-of-line
+         "gL" 'evil-last-non-blank))
    #+end_src
-   
+
 ** Moving to last line in buffer
    In =evil-mode=, Vim's =G= key is associated with the motion
    =evil-goto-line=, which calls Emacs's =end-of-buffer= when without
@@ -1294,7 +1289,7 @@
          (beginning-of-line (and (looking-at-p "^$") 0)))
        (advice-add #'end-of-buffer :after #'luc/beginning-of-this-or-previous-line))
    #+end_src
-   
+
 ** Occur
    Get a buffer with lines from the current buffer that match the
    expression given. That buffer can even become editable, like
@@ -1305,7 +1300,7 @@
        (luc/leader-def
          "gu" 'occur))
    #+end_src
-   
+
 ** Avy
    Lots of jumping commands for moving quickly and precisely. In this
    case I'm using Evil's versions of Avy commands so they act as Evil
@@ -1318,6 +1313,15 @@
    #+begin_src emacs-lisp
      (use-package evil
        :init
+       (general-unbind
+         :states 'normal
+         "zw"
+         "zs"
+         "zk"
+         "zl"
+         "zj"
+         "zc"
+         "zx")
        (general-def
          :states 'normal
          "zw" 'evil-avy-goto-word-or-subword-1
