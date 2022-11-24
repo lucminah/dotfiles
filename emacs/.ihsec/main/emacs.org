@@ -673,43 +673,6 @@
           (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)))
     #+end_src
 
-** Embark
-   Adds the concept of "acting" on something, primarily minibuffer
-   selection candidates, but things like the symbol at point are also
-   valid targets. In different contexts, acting will have different
-   actions available. For example, calling =embark-act= on a candidate
-   of =describe-variable= will include actions to find references to,
-   set and customize that variable, among others.
-
-   Among its most interesting actions, in my opinion, is "export",
-   which creates a buffer in the appropriate major mode with the
-   current minibuffer candidates that can be acted upon, kept for
-   reference, used as an index (if exporting candidates from a line
-   filtering command, for example).
-
-   Here I set global keybindings for important Embark commands,
-   primarily =embark-act=, of course, but also =embark-dwim= which runs
-   the default action on the target and =embark-export=, since I use it
-   so much. Embark is a really interesting package I'm excited to keep
-   on expanding for my needs.
-
-   [[https://github.com/oantolin/embark][Git repository]]
-   #+begin_src emacs-lisp
-     (use-package embark
-       :init
-       (general-def
-         :keymaps 'override
-         :states '(insert normal visual emacs motion)
-         "C-;" 'embark-act
-         "C-," 'embark-dwim
-         "C-." 'embark-export)
-       (use-package embark-consult
-         :after (embark consult)
-         :demand t
-         :hook
-         (embark-collect-mode . consult-preview-at-point-mode)))
-   #+end_src
-   
 ** Minibuffer History
    Saving minibuffer histories and additional variables, along some
    keybindings for easy navigation.
@@ -727,7 +690,7 @@
        (setq savehist-additional-variables '(register-alist kmacro-ring))
        (savehist-mode 1))
    #+end_src
-   
+
 ** Fasd
    [[https://github.com/clvv/fasd][fasd]] is a command line utility that keeps track of visited files
    and directories and ranks them based on how frequently and how
@@ -760,110 +723,12 @@
          "Z" 'luc/fasd-find-select)
        (global-fasd-mode 1))
    #+end_src
-   
-** Company
-   A great auto-completion package. Alongside it I'm using
-   =company-box=, a nice front-end with pretty symbols, pop-up
-   documentation and a stable font for the candidates that doesn't
-   change with =variable-pitch-mode= (that really doesn't look good).
-   
-   I do some remapping to make it more comfortable to use, especially
-   so it doesn't interfere with Evil's completion commands (=C-n= and
-   =C-p=) or any =TAB= commands (jumping, activating snippets,
-   indentation...).
-   
-   [[https://company-mode.github.io/][Company documentation]]
-   
-   [[https://github.com/sebastiencs/company-box][Company Box]]
-*** Setup
-    #+begin_src emacs-lisp
-      (use-package company
-        :after orderless
-        :hook
-        (prog-mode . company-mode)
-        (outline-mode . company-mode)
-        (text-mode . company-mode)
-        (shell-mode . company-mode)
-        :init
-        ;; Highlight orderless matches with one face (can't have multiple
-        ;; ones so far)
-        (defun luc/company-orderless-match-one-face (fn &rest args)
-          (let ((orderless-match-faces [completions-common-part]))
-            (apply fn args)))
-        (advice-add 'company-capf--candidates :around #'luc/company-orderless-match-one-face)
-        (setq company-idle-delay 0
-              company-minimum-prefix-length 1
-              company-tooltip-idle-delay 0
-              company-selection-wrap-around t
-              company-abort-on-unique-match nil)
-        (use-package company-box
-          :hook
-          (company-mode . company-box-mode)
-          :init
-          (setq company-box-doc-delay 0.2)))
-    #+end_src
-    
-*** Keybindings
-    #+begin_src emacs-lisp
-      (use-package company
-        :config
-        (general-unbind
-          :keymaps 'company-active-map
-          "<return>"
-          "RET"
-          "<tab>"
-          "TAB")
-        (general-def
-          :keymaps 'company-active-map
-          "C-h" 'company-abort
-          "C-l" 'company-complete-selection
-          "C-j" 'company-select-next
-          "C-k" 'company-select-previous
-          "C-n" 'evil-complete-next
-          "C-p" 'evil-complete-previous)
-        (luc/leader-def
-          "ic" 'company-mode))
-    #+end_src
-    
-** YASnippet
-   For expandable snippets - for and while loops, main function
-   definition, if statements... Anything you'd like to have easily
-   printed out and jump to specific parts of it, customized for the
-   current major mode. Pretty easy to change the existing snippets or
-   create your own. The package =yasnippet-snippets= contains a bunch
-   ready to use.
-   
-   I'm using it in conjunction with =company= - right now the
-   keybindings feel right in both keymaps, but I should test it more
-   to make sure. Also gave a keybinding to the =company-yasnippet=
-   function, which gives =company= completion for =yasnippet= snippet
-   candidates, but that requires further testing and experimentation,
-   since so far I've only got it to work when =company= is not active.
-   
-   [[https://github.com/joaotavora/yasnippet][YASnippet]]
-   
-   [[https://github.com/AndreaCrotti/yasnippet-snippets][YASnippet Snippets]]
-   #+begin_src emacs-lisp
-     (use-package yasnippet
-       :hook 
-       (company-mode . yas-minor-mode)
-       :config
-       (general-def
-         :keymaps 'yas-keymap
-         "<tab>" 'yas-next-field-or-maybe-expand
-         "<backtab>" 'yas-prev-field)
-       (general-def
-         :keymaps 'company-mode-map
-         :states 'insert
-         "C-l" 'company-yasnippet)
-       (use-package yasnippet-snippets))
-   #+end_src
-   
+
 * Interface & Interactions
 ** Theme, Modeline & Default Font
    Trying out some Doom themes and the Doom modeline. Looking pretty
    good.
-  
+
    [[https://github.com/hlissner/emacs-doom-themes][Doom themes]]
 
    [[https://github.com/seagle0128/doom-modeline][Doom modeline]]
