@@ -2237,14 +2237,187 @@
         :magic ("%LUA" . lua-mode)
         :hook (lua-mode . lsp-deferred))
     #+end_src
-    
+
+*** R
+    Here I'm using non-LSP packages for editing R and R-markdown. Also
+    set a keybinding so I can cycle within markdown headers, like in
+    =org-mode=.
+
+    [[https://github.com/emacs-ess/ESS][ESS]]
+
+    [[https://github.com/polymode/poly-R][Poly-R]]
+    #+begin_src emacs-lisp
+      (use-package ess
+        :config
+        (use-package poly-R)
+        (general-def
+          :states 'normal
+          :keymaps 'markdown-mode-map
+          "TAB" 'markdown-cycle))
+    #+end_src
+
+*** Yaml
+    For editing =alacritty.yml=.
+    #+begin_src emacs-lisp
+      (use-package yaml-mode)
+    #+end_src
+
+** Live Coding
+   For writing code that makes music!
+*** SuperCollider
+    The =scel= package really needed some help, especially for
+    evaluating code. Fortunately =sclang-helper= really does what it
+    offers!
+    I've also made custom changes to the code that I should upload
+    sometime.
+
+    [[https://github.com/supercollider/scel][scel]] | [[https://github.com/yilin-zhang/sclang-helper][sclang-helper]]
+    #+begin_src emacs-lisp
+      (use-package emacs
+        :magic ("%SC" . sclang-mode)
+        :init
+        ;; So that the pulses when evaluating code go away on their own.
+        (setq pulse-flag t)
+        ;; Load path to scel, got installed together with SuperCollider.
+        (add-to-list 'load-path "/usr/local/share/SuperCollider/Extensions/scide_scel/")
+        (require 'sclang)
+        (use-package sclang-helper
+          :straight (sclang-helper :type git :host github :repo "yilin-zhang/sclang-helper")
+          :hook (sclang-mode . sclang-helper-mode))
+        (luc/leader-def
+          "sc" 'sclang-start)
+        (general-def
+          :keymaps 'sclang-helper-mode-map
+          :states '(normal insert)
+          "C-<return>" 'sclang-helper-auto-eval
+          "S-<return>" 'sclang-helper-eval-region-or-line)
+        (luc/leader-def-for-keymaps
+          :keymaps 'sclang-helper-mode-map
+          "st" 'sclang-helper-show-tree
+          "sm" 'sclang-helper-show-meter
+          "sf" 'sclang-helper-show-freqscope))
+    #+end_src
+
+*** TidalCycles
+    Also with some custom changes to the source code.
+
+    [[https://tidalcycles.org/docs/getting-started/editor/Emacs/][Reference in the Tidal website]]
+    #+begin_src emacs-lisp
+      (use-package emacs
+        :config
+        (add-to-list 'load-path "~/tidal/el")
+        (use-package haskell-mode)
+        (require 'tidal)
+        (luc/leader-def
+          "st" 'run-tidal)
+        (general-def
+          :keymaps 'tidal-mode-map
+          :states '(insert normal)
+          "C-c 1" 'tidal-run-d1
+          "C-c 2" 'tidal-run-d2
+          "C-c 3" 'tidal-run-d3
+          "C-c 4" 'tidal-run-d4
+          "C-c 5" 'tidal-run-d5
+          "C-c 6" 'tidal-run-d6
+          "C-c 7" 'tidal-run-d7
+          "C-c 8" 'tidal-run-d8
+          "C-c 9" 'tidal-run-d9
+          "C-c C-c 1" 'tidal-stop-d1
+          "C-c C-c 2" 'tidal-stop-d2
+          "C-c C-c 3" 'tidal-stop-d3
+          "C-c C-c 4" 'tidal-stop-d4
+          "C-c C-c 5" 'tidal-stop-d5
+          "C-c C-c 6" 'tidal-stop-d6
+          "C-c C-c 7" 'tidal-stop-d7
+          "C-c C-c 8" 'tidal-stop-d8
+          "C-c C-c 9" 'tidal-stop-d9))
+    #+end_src
+
+** Web Mode
+   Very powerful package for web development in general. I use it to manage JavaScript, TypeScript, HTML, CSS
+
+   #+begin_src emacs-lisp
+     (use-package web-mode
+       :mode ("\\.html\\'"
+              "\\.ts\\'"
+              "\\.tsx\\'"
+              "\\.css\\'"
+              "\\.scss\\'"
+              "\\.mjs\\'"
+              "\\.json\\'"
+              "\\.js\\'"
+              "\\.jsx\\'")
+       :init
+       (use-package prettier-js)
+       (setq web-mode-content-types-alist
+             '(("jsx" . "\\.[c|m]js[x]?\\'")))
+       (setq web-mode-snippets nil)
+       (setq web-mode-markup-indent-offset 2)
+       (setq web-mode-code-indent-offset 2)
+       (setq web-mode-css-indent-offset 2)
+       ;; SCSS mode inherits this
+       (setq css-indent-offset 2)
+       ;; LSP needs to recognize '.mjs'
+       (use-package lsp-mode
+         :config
+         (add-to-list 'lsp-language-id-configuration (cons ".*\\.mjs" "javascript"))
+         (add-to-list 'lsp-language-id-configuration (cons ".*\\.scss" "scss"))
+         (add-to-list 'lsp-language-id-configuration (cons 'scss-mode "scss")))
+       :hook
+       (web-mode . lsp-deferred)
+       (web-mode . (lambda ()
+                     (let ((buffer-name-var (buffer-name)))
+                       (when
+                           (or
+                            (string-match-p "\\.tsx\\'" buffer-name-var)
+                            (string-match-p "\\.css\\'" buffer-name-var)
+                            (string-match-p "\\.scss\\'" buffer-name-var)
+                            (string-match-p "\\.js\\'" buffer-name-var)
+                            (string-match-p "\\.mjs\\'" buffer-name-var)
+                            (string-match-p "\\.jsx\\'" buffer-name-var)
+                            (string-match-p "\\.json\\'" buffer-name-var))
+                         (prettier-js-mode))))))
+   #+end_src
+
+** Projectile
+   For managing projects. Pretty useful to have versions of commands
+   that know the project file structure to act on.
+
+   [[https://github.com/bbatsov/projectile][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package projectile
+       :init
+       (use-package rg)
+       (use-package ripgrep
+         :init
+         (setq ripgrep--base-arguments '("--no-heading"
+                                         "--line-number"
+                                         "--with-filename"
+                                         "--hidden")))
+       ;; Had to clone manually - some problem with straight process.
+       (use-package consult-projectile)
+       (projectile-global-mode t)
+       :config
+       (luc/leader-def
+         "pc" 'consult-projectile
+         "pp" 'projectile-switch-project
+         "pd" 'projectile-dired
+         "pD" 'projectile-dired-other-window
+         "pf" 'projectile-find-file-dwim
+         "pF" 'projectile-find-file-dwim-other-window
+         "pr" 'projectile-ripgrep
+         "ps" 'projectile-run-shell
+         "pgs" 'projectile-run-shell-command-in-root
+         "pga" 'projectile-run-async-shell-command-in-root))
+   #+end_src
+
 ** Magit & Forge
    =magit= is an amazingly powerful Git front-end. I hadn't known of it
    before, but =forge= allows for working with Git forges (in my case,
    Github) from inside Emacs. Even more awesome!
-   
+
    [[https://magit.vc/][Magit Website]]
-   
+
    [[https://magit.vc/manual/forge/][Forge Manual]]
    #+begin_src emacs-lisp
      (use-package magit
@@ -2253,10 +2426,9 @@
        (luc/leader-def
          "am" 'magit-status
          "ay" 'magit-clone))
-       :config
-       (use-package forge
-         :custom-face
-         ;; For correcting error "Invalid face box".
-         (forge-topic-label ((t :box (:line-width -1 :style released-button)))))
+     :config
+     (use-package forge
+       :custom-face
+       ;; For correcting error "Invalid face box".
+       (forge-topic-label ((t :box (:line-width -1 :style released-button)))))
    #+end_src
-
