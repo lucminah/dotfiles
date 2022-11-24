@@ -1,10 +1,10 @@
 st.termname:   xst-256color
 ! st.opacity:    204
 st.opacity:    134
-st.font:       Ubuntu Mono:size=13:antialias=true:autohint=true
+st.font:       Ubuntu Mono Nerd Font:size=13:antialias=true:autohint=true
 
 ! Available cursor values: 2 4 6 7 = █ _ | ☃ ( 1 3 5 are blinking versions)
-! st.cursorshape:        2
+st.cursorshape:        6
 st.boxdraw: 1
 
 ! XFT
@@ -15,30 +15,63 @@ Xft.hintstyle:  hintslight
 Xft.lcdfilter:  lcddefault
 Xft.rgba:       rgb
 
+
+
+! Doom Vibrant
+background: #0f0f22
+foreground: #dfdfdf
+cursorfg:   #51afef
+cursorbg:   #111111
+
+color0:     #101010
+color1:     #ff665c
+color2:     #7bc275
+color3:     #fcce7b
+color4:     #51afef
+color5:     #c57bdb
+color6:     #5cefff
+color7:     #757B80
+
+color8:     #484854
+color9:     #e69055
+color10:    #99bb66
+color11:    #ecbe7b
+color12:    #2257A0
+color13:    #c678dd
+color14:    #6a8fbf
+color15:    #dfdfdf
+
+
+
+
 ! Dracula
-background:   #282a36
-foreground:   #f8f8f2
-cursorfg:     #bd93f9
-cursorbg:     #000000
+! background:   #282a36
+! foreground:   #f8f8f2
+! cursorfg:     #bd93f9
+! cursorbg:     #000000
 
-color0: #000000
-color1: #ff5555
-color2: #50fa7b
-color3: #f1fa8c
-color4: #bd93f9
-color5: #ff79c6
-color6: #8be9fd
-color7: #bbbbbb
+! color0: #000000
+! color1: #ff5555
+! color2: #50fa7b
+! color3: #f1fa8c
+! color4: #bd93f9
+! color5: #ff79c6
+! color6: #8be9fd
+! color7: #bbbbbb
 
-! st.color8:   #4d4d4d
-color8:   #44475a
-color9:   #ff6e67
-color10:  #5af78e
-color11:  #f4f99d
-color12:  #caa9fa
-color13:  #ff92d0
-color14:  #9aedfe
-color15:  #e6e6e6
+! ! st.color8:   #4d4d4d
+! color8:   #44475a
+! color9:   #ff6e67
+! color10:  #5af78e
+! color11:  #f4f99d
+! color12:  #caa9fa
+! color13:  #ff92d0
+! color14:  #9aedfe
+! color15:  #e6e6e6
+
+
+
+
 
 ! st.color8:  #44475a
 ! st.color9:  #ff5555
