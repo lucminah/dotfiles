@@ -1332,8 +1332,43 @@
          "zc" 'evil-avy-goto-char-2
          "zx" 'evil-avy-goto-char))
    #+end_src
-   
+
+** Scratch buffers
+   Creation of scratch buffers for the major mode of the current
+   buffer.
+
+   [[https://codeberg.org/emacs-weirdware/scratch][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package scratch
+       :config
+       (luc/leader-def
+         "gh" 'scratch))
+   #+end_src
+
 * Applications & Utilities
+** Equake
+   A package for creating a Quake style drop-down terminal that runs
+   inside of Emacs, with some additional functionality for managing
+   multiple terminal buffers of different types. Haven't configured it
+   much, but it comes in handy, even in unexpected ways, like opening
+   =mpdel= in it and using it as a drop-down playlist editor!
+
+   [[https://github.com/emacsmirror/equake][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package dash
+       :config
+       (use-package equake
+         :config
+         ;; prevent accidental frame closure:
+         (advice-add #'save-buffers-kill-terminal :before-while #'equake-kill-emacs-advice)
+         (setq equake-default-shell 'vterm)
+         (setq equake-available-shells
+               '("shell"
+                 "vterm"
+                 "rash"
+                 "eshell"))))
+   #+end_src
+
 ** MPDel
    Experimenting with this [[https://www.musicpd.org/][MPD]] client that runs in Emacs. I usually
    use [[https://github.com/ncmpcpp/ncmpcpp][NCMPCPP]], but I'm curious about how Emacs could make the music
@@ -1349,7 +1384,7 @@
     the playlist view, and the changes to =libmpdel= to:
     - Use the =albumartist= tag instead of =artist= - just more useful for me most of the time, and makes it more intuitive for navigating from artist -> album -> song, since the album's contents won't be affected by which artist you selected before.
     - Use =search= and =searchadd= commands instead of =find= and =findadd= - fixes albums appearing empty when opened, which I believe is because =find= commands, when receive an empty string, look for files with tags equal to that content, in this case, empty, while =search= commands treat the empty string as a wildcard.
-   
+
     [[https://github.com/mpdel/mpdel][Base MPDel repository]]
 
     [[https://github.com/lucasminah/libmpdel][My fork of libmpdel]]
@@ -1366,10 +1401,11 @@
           :commands mpdel-playlist-open
           :hook
           (mpdel-tablist-mode . turn-off-evil-snipe-mode)
+          (mpdel-tablist-mode . hide-mode-line-mode)
           :init
           (evil-collection-mpdel-setup)))
     #+end_src
-   
+
 *** Custom Functions
     #+begin_src emacs-lisp
       (use-package emacs
@@ -1393,7 +1429,7 @@
             (consult-line)
             (tablist-find-entry))))
     #+end_src
-    
+
 *** Keybindings
     #+begin_src emacs-lisp
       (use-package mpdel
@@ -1420,7 +1456,7 @@
         (luc/leader-def
           "mp" 'mpdel-playlist-open))
     #+end_src
-    
+
 *** Aesthetics
     #+begin_src emacs-lisp
       (use-package mpdel
