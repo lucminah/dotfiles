@@ -215,32 +215,33 @@
            "C-=" 'evil-numbers/inc-at-pt
            "C--" 'evil-numbers/dec-at-pt)))
    #+end_src
-   
+
 ** Evil Snipe
    Extends Evil's character search capabilities, adding a new motion
    that allows for two character searching. Think of Evil's =f/F/t/T=
    commands, but you give those a two character long string as a
    search term.
-   
+
    By default, the inclusive commands (like =f/F=) are bound to =s/S= in
    the normal state (finally some good use for those chords!) and =z/Z=
    as an operator (say, when it's used as the motion for a =c= command),
    while the exclusive commands (like =t/t=) are bound to nothing in the
    normal state and =x/X= as an operator. For now I've settled on
    binding the exclusive commands to =\= and =|= in the normal state.
-   
+
    On top of that, Snipe has its own versions of =f/F/t/T/;/,= that work
    just like the basic ones but with highlighting for matches and are
    also more customizable (for example, changing the scope of the
    search, which I haven't messed around with yet). Overall a great
    addition to Evil's vocabulary.
-   
+
    [[https://github.com/hlissner/evil-snipe][Git repository]]
    #+begin_src emacs-lisp
      (use-package evil-snipe
        :init
        ;; Keep the repeat motions to ; and ,
-       (setq evil-snipe-repeat-keys nil)
+       (setq evil-snipe-repeat-keys nil
+             evil-snipe-scope 'visible)
        (general-def
          :states 'normal
          :keymaps 'evil-snipe-mode-map
