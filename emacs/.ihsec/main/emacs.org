@@ -2163,30 +2163,48 @@
     mode for editing Lisp that plays nice with all the parenthesis)
     with =lispyville= (an additional mode that works with lispy for Evil
     users).
-    
+
     [[https://github.com/Fanael/highlight-quoted][Highlight Quoted]]
-    
+
     [[https://github.com/abo-abo/lispy][Lispy]]
-    
+
     [[https://github.com/noctuid/lispyville][Lispyville]]
-    
+
     #+begin_src emacs-lisp
       (use-package emacs
         :config
         (use-package highlight-quoted
           :hook
           (emacs-lisp-mode . highlight-quoted-mode)
+          (scheme-mode . highlight-quoted-mode)
           (lisp-mode . highlight-quoted-mode))
-        (use-package lispy
+        :config
+        (use-package lispyville
           :hook
-          (emacs-lisp-mode . lispy-mode)
-          (lisp-mode . lispy-mode)
+          (emacs-lisp-mode . lispyville-mode)
+          (scheme-mode . lispyville-mode)
+          (lisp-mode . lispyville-mode)
           :config
-          (use-package lispyville
-            :hook
-            (lispy-mode . lispyville-mode))))
+          (general-def
+            :keymaps 'lispyville-mode-map
+            :states 'normal
+            ">" 'lispyville->
+            "<" 'lispyville-<)))
     #+end_src
-    
+
+**** Common Lisp
+     #+begin_src emacs-lisp
+       (use-package sly
+         :hook (common-lisp-mode . sly-mode))
+     #+end_src
+
+**** Scheme
+     #+begin_src emacs-lisp
+       (use-package geiser
+         :config
+         (use-package geiser-guile))
+     #+end_src
+
 *** C/C++
     Using =clangd=, which is looked for by default. For reference:
     [[https://emacs-lsp.github.io/lsp-mode/page/lsp-clangd/]]
@@ -2194,33 +2212,23 @@
       (use-package cpp
         :hook ((c-mode c++-mode) . lsp-deferred))
     #+end_src
-    
+
 *** Python
     Using =mspyls=. For reference:
-    https://emacs-lsp.github.io/lsp-python-ms/    
+    https://emacs-lsp.github.io/lsp-python-ms/
     #+begin_src emacs-lisp
-      (use-package lsp-python-ms
-        :ensure t
-        :init
-        (setq lsp-python-ms-auto-install-server t)
-        (setq lsp-python-ms-executable
-              "~/.emacs.d/.cache/lsp/mspyls/Microsoft.Python.LanguageServer")
-        ;; (setq lsp-python-ms-python-executable
-        ;;       "/usr/bin/python2")
-        ;; (setq doom-modeline-env-python-executable
-        ;;       "/usr/bin/python2")
-        :hook (python-mode . (lambda ()
-                               (require 'lsp-python-ms)
-                               (lsp-deferred))))
+      (use-package emacs
+        :hook
+        (python-mode . lsp-deferred))
     #+end_src
-    
+
 *** Java
     #+begin_src emacs-lisp
       (use-package lsp-java
         :hook
         (java-mode . lsp))
     #+end_src
-    
+
 *** Lua
     #+begin_src emacs-lisp
       (use-package lua-mode
