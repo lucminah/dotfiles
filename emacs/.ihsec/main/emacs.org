@@ -735,59 +735,124 @@
    #+begin_src emacs-lisp
      (use-package emacs
        :config
-       (setq display-time-string-forms
-             '((propertize (concat " " dayname "," day "/" month " " 24-hours ":" minutes " "))))
-       (display-time-mode 1)
+       (column-number-mode 1)
+       (use-package modus-themes
+         :init
+         (setq modus-themes-mode-line 'borderless
+               modus-themes-region 'bg-only
+               modus-themes-completions nil
+               modus-themes-bold-constructs t
+               modus-themes-slanted-constructs t
+               modus-themes-paren-match 'intense-bold
+               modus-themes-syntax nil
+               modus-themes-headings '((t . rainbow))
+               modus-themes-org-blocks 'gray-background
+               modus-themes-scale-headings t))
+       (set-face-attribute 'font-lock-comment-face nil :italic t)
+       (set-face-attribute 'font-lock-builtin-face nil :italic t)
+       (set-face-attribute 'font-lock-keyword-face nil :bold t)
+       (set-face-attribute 'font-lock-constant-face nil :bold t)
+       (set-face-attribute 'font-lock-type-face nil :bold t)
        (use-package doom-themes
+         :custom
+         (doom-themes-enable-italic t)
+         (doom-themes-enable-bold t)
          :config
-         (load-theme 'doom-dracula t))
+         (setq doom-ayu-dark-brighter-comments t
+               doom-ayu-dark-comment-bg nil)
+         (load-theme 'doom-ayu-dark t))
        (use-package doom-modeline
          :custom
+         (doom-modeline-buffer-encoding nil)
          (doom-modeline-window-width-limit 154)
          (doom-modeline-icon t)
-         (doom-modeline-height 30)
+         (doom-modeline-height 25)
          :init
          (doom-modeline-mode 1))
        ;; Making this the default font for this and future frames
-       (add-to-list 'default-frame-alist '(font . "UbuntuMono-13")))
+       (add-to-list 'default-frame-alist '(font . "UbuntuMonoNerdFont-13")))
+   #+end_src
+
+** Solaire Mode
+   For differentiating between "real" file editing buffers from
+   "unreal" popups, terminals and the like, by making the background
+   brighter or darker in a very aesthetically pleasing way.
+   For some reason it didn't load properly when using =emacsclient -c=,
+   so I'm using this little =server-after-make-frame= hack to get it to
+   work.
+
+   [[https://github.com/hlissner/emacs-solaire-mode][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (use-package solaire-mode
+         :defer t
+         :init
+         (luc/leader-def
+           "io" 'solaire-mode))
+       :hook
+       (server-after-make-frame . (lambda ()
+                                    (when (not (bound-and-true-p solaire-global-mode))
+                                      (progn
+                                        (solaire-global-mode +1)
+                                        (add-to-list
+                                         'solaire-mode-themes-to-face-swap
+                                         'doom-dracula)
+                                        (solaire-mode-swap-faces-maybe)
+                                        (when (string-equal (buffer-name) "*dashboard*")
+                                          (revert-buffer)))))))
+   #+end_src
+
+** (Non) Blinking Cursor
+   Disable cursor blinking. I find it kind of distracting.
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :config
+       (blink-cursor-mode 0))
    #+end_src
 
 ** Hide Mode Line
    Sometimes I just need to clean the screen that bit more by hiding
    the modeline. Thankfully, this package provides a minor mode for
    that, so I can toggle it pretty easily.
-   
+
    [[https://github.com/hlissner/emacs-hide-mode-line][Git repository]]
    #+begin_src emacs-lisp
      (use-package hide-mode-line
-       :commands hide-mode-line-mode
+       :commands (hide-mode-line-mode
+                  global-hide-mode-line-mode)
        :init
        (luc/leader-def
-         "ib" 'hide-mode-line-mode))
+         "ib" 'hide-mode-line-mode
+         "iB" 'global-hide-mode-line-mode))
    #+end_src
-   
+
 ** Prettify Symbols
    For pretty looking symbols, such as =>==, =<==, =lambda=, etc. It depends
    on the major mode.)
    #+begin_src emacs-lisp
      (use-package emacs
        :hook
-       (prog-mode . prettify-symbols-mode))
+       (prog-mode . prettify-symbols-mode)
+       (prog-mode . luc/set-my-pretty-symbols)
+       :config
+       (defun luc/set-my-pretty-symbols ()
+         (add-to-list 'prettify-symbols-alist '("function" . ?ƒ))))
    #+end_src
-   
+
 ** Beacon
    Highlights the cursor when jumping around with it.
 
    [[https://github.com/Malabarba/beacon][Git repository]]
    #+begin_src emacs-lisp
      (use-package beacon
-       :init
-       (beacon-mode 1)
+       ;; :init
+       ;; (beacon-mode 1)
        :config
        (luc/leader-def
          "ij" 'beacon-mode))
    #+end_src
-   
+
 ** TTY Faces
    Here I change some face attributes for when using =emacs[client] [-nw|-t|--tty]=.
    #+begin_src emacs-lisp
@@ -801,13 +866,15 @@
            (set-face-background 'default "unspecified-bg" frame)))
        (add-to-list 'after-make-frame-functions 'luc/tty-set-face-attributes))
    #+end_src
-   
+
 ** Dashboard
    A nice starting buffer for Emacs.
-   
+
    [[https://github.com/emacs-dashboard/emacs-dashboard][Git repository]]
    #+begin_src emacs-lisp
      (use-package dashboard
+       :init
+       (use-package all-the-icons)
        :config
        (dashboard-setup-startup-hook)
        (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
@@ -826,7 +893,7 @@
             "Browse homepage"
             (lambda (&rest _) (browse-url "https://github.com/")))))))
    #+end_src
-   
+
 ** Bookmarks
    A keybinding for accessing =consult-bookmark=. It can be used for
    setting and jumping to bookmarks so, pretty useful.
@@ -837,12 +904,12 @@
        (luc/leader-def
          "ab" 'consult-bookmark))
    #+end_src
-   
+
 ** Rainbow Identifiers
    Color codes text symbols. I find this functionality to really fit
    for the way I like navigating and interacting with code, especially
    for recognizing variables.
-   
+
    [[https://github.com/Fanael/rainbow-identifiers][Git repository]]
    #+begin_src emacs-lisp
      (use-package rainbow-identifiers
@@ -852,10 +919,10 @@
        (luc/leader-def
          "it" 'rainbow-identifiers-mode))
    #+end_src
-   
+
 ** Rainbow Delimiters
    Bracket pairs have matching colors.
-   
+
    [[https://github.com/Fanael/rainbow-delimiters][Git repository]]
    #+begin_src emacs-lisp
      (use-package rainbow-delimiters
@@ -865,7 +932,7 @@
 
 ** Rainbow Mode
    Hex codes in text have their background colored.
-   
+
    [[https://github.com/emacsmirror/rainbow-mode][Git repository]]
    #+begin_src emacs-lisp
      (use-package rainbow-mode
@@ -876,6 +943,17 @@
        :init
        (luc/leader-def
          "ir" 'rainbow-mode))
+   #+end_src
+
+** Show Paren Mode
+   When the cursor is on a paren, highlight its match.
+
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :hook
+       (prog-mode . show-paren-mode)
+       :init
+       (setq show-paren-delay 0))
    #+end_src
 
 ** Whitespace Mode
@@ -891,7 +969,7 @@
    Emacs is great at discoverability. Here I set keybindings for help
    ("describe") commands, and load the =helpful= package for better help
    buffers.
-   
+
    [[https://github.com/Wilfred/helpful][Git repository]]
    #+begin_src emacs-lisp
      (use-package helpful
@@ -905,7 +983,7 @@
          "hF" 'helpful-callable
          "hc" 'helpful-command))
    #+end_src
-   
+
 ** Debug on Error
    Hopefully helps getting a backtrace to the cause of errors, or just
    getting rid of freezing from =error on process filter=.
@@ -919,7 +997,7 @@
              (setq-local debug-on-error nil)
            (setq-local debug-on-error t))))
    #+end_src
-   
+
 ** Y/N Prompts
    Please, ask me "y/n" instead of "yes or no".
    #+begin_src emacs-lisp
@@ -927,7 +1005,7 @@
        :config
        (defalias 'yes-or-no-p 'y-or-n-p))
    #+end_src
-   
+
 ** Finding and reloading configuration
    I visit this file and reload =init.el= quite a lot.  Only makes sense
    to make a couple keybindings for that.
@@ -950,7 +1028,7 @@
        (luc/leader-def
          "cr" 'luc/config-reload))
    #+end_src
-   
+
 ** Relative Line Numbers
    Display absolute number for current line, relative number for other
    lines.
