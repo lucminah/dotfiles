@@ -11,7 +11,7 @@
   configuration). I'm currently using =ihsec=, a package for switching
   Emacs configurations easily, so my Emacs files are actually in
   =~/.ihsec/main/= (main is just the name I gave this configuration).
-  
+
   After running =org-babel-tangle= and loading the generated
   =early-init.el= and =init.el=, you should have a copy of my Emacs
   configuration. I hope you find this helpful to your own Emacs
@@ -31,7 +31,7 @@
      (tooltip-mode -1)
      (set-fringe-mode 5)
    #+end_src
-   
+
 ** Package Management
    I'm using =straight.el= alongside =use-package= for package management.
    There's a lot of good stuff about these packages, and I definitely
@@ -45,9 +45,9 @@
    actually load the package, applying configuration and so
    forth. =straight.el= fortunately integrates with =use-package= out of
    the box.
-   
+
    [[https://github.com/raxod502/straight.el][straight.el]]
-  
+
    [[https://www.emacswiki.org/emacs/UsePackage][EmacsWiki - Use Package]]
    #+begin_src emacs-lisp
      (defvar bootstrap-version)
@@ -70,7 +70,7 @@
      ;; Install `use-package'
      (straight-use-package 'use-package)
    #+end_src
-  
+
 ** Evil & General Setup
    Vim's modal editing, grammar and keybindings are very much pillars
    of my text editing (and now, thanks to Emacs, much
@@ -79,7 +79,7 @@
     The Extensive Vi Layer itself! Here I load Evil and customizing some
     basic variables. For information on the package I'm using for
     undo-redo actions and setting here as my undo system, see [[*Undo Fu][Undo Fu]].
-  
+
     [[https://evil.readthedocs.io/en/latest/index.html][Documentation]]
     #+begin_src emacs-lisp
       (use-package evil
@@ -98,7 +98,7 @@
 *** Evil Collection
     Brings Evil keybindings to many, many different parts of Emacs,
     usually through a setup function. Saves me a lot of rebinding trouble.
-   
+
     [[htTps://github.com/emacs-evil/evil-collection][Git repository]]
     #+begin_src emacs-lisp
       (use-package evil-collection
@@ -126,17 +126,15 @@
         :config
         ;; For global keybindings.
         (general-create-definer luc/leader-def
-          :states '(normal insert visual motion)
+          :states '(normal visual motion)
           :keymaps 'override
-          :global-prefix "C-SPC"
           :prefix "SPC")
         ;; For local keybindings.
         (general-create-definer luc/leader-def-for-keymaps
-          :states '(normal insert visual motion)
-          :global-prefix "C-SPC"
+          :states '(normal visual motion)
           :prefix "SPC"))
     #+end_src
-    
+
 * Editing
 ** Undo Fu
    My preferred undo system. Works by creating checkpoints on the undo
@@ -152,7 +150,7 @@
    I'm also using =undo-fu-session=, which makes it possible to have a
    persistent change history of files between sessions. The history
    saving is made automatically when writing to the file.
-   
+
    [[https://gitlab.com/ideasman42/emacs-undo-fu-session][Undo Fu Session]]
    #+begin_src emacs-lisp
      (use-package undo-fu
@@ -192,9 +190,9 @@
    decrementing the number at point from Vim's normal mode =C-a= and =C-x=
    commands. =speeddating= is very similar, with functions to increment
    and decrement the date at point in various formats.
-   
+
    [[https://github.com/juliapath/evil-numbers][Evil Numbers]]
-   
+
    [[https://github.com/xuchunyang/emacs-speeddating][Speeddating]]
    #+begin_src emacs-lisp
      (use-package emacs
@@ -329,7 +327,14 @@
        :config
        (global-hungry-delete-mode))
    #+end_src
-   
+
+** Delete trailing whitespace before saving
+   #+begin_src emacs-lisp
+     (use-package emacs
+       :hook
+       (before-save . delete-trailing-whitespace))
+   #+end_src
+
 ** Keyboard Macros
    Since Evil macro commands don't play that nicely with Emacs default
    ones (like =edit-last-kbd-macro=, for example, that doesn't affect
