@@ -1939,10 +1939,19 @@
         ;; Hide markers for bold, italis, verbatim...
         (setq org-hide-emphasis-markers t))
     #+end_src
-     
+
+*** Display Inline Images
+    #+begin_src emacs-lisp
+      (use-package org
+        :config
+        (defun luc/org-show-all-inline-images ()
+          (interactive)
+          (org-display-inline-images t t)))
+    #+end_src
+
 ** Evil Org
    More Evil keybindings for Org Mode.
-    
+
    [[https://github.com/Somelauw/evil-org-mode][Git repository]]
    #+begin_src emacs-lisp
      (use-package evil-org
@@ -1957,9 +1966,9 @@
    C-e= will bring up Org Export Dispatcher with many options). For
    better visualization in HTML (including =reveal.js= presentations),
    these packages really come in handy.
-    
+
    [[https://github.com/hexmode/ox-reveal][Ox Reveal]]
-    
+
    [[https://github.com/hniksic/emacs-htmlize][Htmlize]]
    #+begin_src emacs-lisp
      (use-package emacs
@@ -1978,7 +1987,7 @@
    I use this daily to manage my schedule, check deadlines, remember
    dates and keep track of my daily routine. Thankfully =evil-org= can
    bring more Evil keybindings to it as well.
-    
+
    There's a keybinding for toggling =log-mode= in the agenda because
    repeated tasks (from the daily routine, for example) only show up
    there when I mark them as =DONE=, along with the timestamp for when
@@ -2003,7 +2012,7 @@
        (luc/leader-def
          "ca" 'org-agenda))
    #+end_src
-    
+
 ** Org Capture
    For quickly 'capturing' something in Org files. I mostly use it
    for adding items to the agenda, but have templates for other uses
@@ -2041,7 +2050,7 @@
                 entry (file+headline "thoughts.org" "Ideas & Thoughts")
                 "* %?\n%U"))))
    #+end_src
-    
+
 ** Org Babel
    For managing code blocks in Org files.
 *** Automatic tangling
@@ -2060,19 +2069,19 @@
         :config
         (defvar luc/org-config-dir (expand-file-name "~/dotfiles")
           "Directory containing org files to be tangled to automatically.")
-       
+
         (defun luc/auto-tangle-config-files ()
           "Tangle the current org file, if in `luc/org-config-dir'."
           (when (member (buffer-file-name)
                         (directory-files-recursively luc/org-config-dir "\.org$"))
             (let ((org-confirm-babel-evaluate nil))
               (org-babel-tangle))))
-       
+
         (use-package org
           :hook
           (org-mode . (lambda () (add-hook 'after-save-hook #'luc/auto-tangle-config-files)))))
     #+end_src
-     
+
 *** Languages
     Specifying the languages Org Babel should be able to execute and
     get results from in code blocks.
@@ -2083,7 +2092,7 @@
          'org-babel-load-languages '((python . t)
                                      (shell . t))))
     #+end_src
-     
+
 ** Org Roam
    A very interesting tool for managing notes in Org Mode, creating a
    database of links between them. I just started playing around with
