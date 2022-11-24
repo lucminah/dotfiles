@@ -483,10 +483,9 @@
                                    #'consult-completion-in-region
                                  #'completion--in-region))))
        :init
-       ;; I'd like minibuffer completion with TAB.
-       (setq tab-always-indent 'complete)
        ;; I use `fd' instead of `find'.
-       (setq consult-find-command "fd --color=never --hidden ARG OPTS")
+       (setq consult-find-command "fd --color=never --hidden ARG OPTS"
+             consult-ripgrep-args "rg --null --hidden --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
        (luc/leader-def
          "b" 'consult-buffer
          "l" 'consult-line
@@ -503,10 +502,10 @@
        (consult-customize
         consult-ripgrep consult-git-grep consult-grep
         consult-bookmark consult-recent-file consult-xref
-        consult--source-file consult--source-project-file consult--source-bookmark
+        consult-project-buffer consult-bookmark
         :preview-key (kbd "C-o")))
    #+end_src
-   
+
 ** Vertico
    A completion UI that aims to have full compatibility with built-in
    Emacs completion commands. This stability really shines through,
@@ -533,65 +532,147 @@
          "l" 'vertico-exit)
        (vertico-mode 1))
    #+end_src
-   
+
 ** Marginalia
    Adds useful annotations to minibuffer selection candidates, such as
    the first line of function docstrings, value of a variable or
    permission details of a file, for example.
-   
+
    [[https://github.com/minad/marginalia][Git repository]]
    #+begin_src emacs-lisp
      (use-package marginalia
        :init
        (marginalia-mode 1))
    #+end_src
-   
+
 ** Orderless
    A completion style that allows for very flexible matching,
    specially out of order (components "file" and "find" in this order
    would still match =find-file=, for example). It's also customizable
    through the use of different matching styles (regular expressions,
    literals, prefixes...) and dispatchers, functions that can change
-   the matching style and its behavior on the fly. Here I define some
-   of these dispatchers that check the suffix of the symbol to
-   determine it should be read as a literal, for example.
+   the matching style and its behavior on the fly.
 
-   I'm setting the =basic= completion style as the primary one because
-   loading a massive =orderless= list of matches in something like
-   =company-mode= can really add latency sometimes, which is not
-   comfortable. Through the use of the dispatchers and separators,
-   it's possible to explicitly jump into the =orderless= style when I
-   want, so it's not a big deal, but I'd still like to evolve my setup
-   to a point where I can get rid of the =basic= style. I'm also setting
-   a category override so that I can have filename expansion when in
-   that context through the =partial-completion= style.
+   The most interesting component for me though, is the
+   separator. Here I'm using the "basic" completion by default, and it
+   would only fallback to orderless in case there's no match. But if I
+   want to jump straight into orderless, I can simply add the
+   separator. When using =vertico=, this isn't that necessary since
+   typing spaces there will do the same thing. The real power comes
+   from using this with =corfu= (in the next section) to have completion
+   in the buffer, while leveraging orderless for all its power.
 
    [[https://github.com/oantolin/orderless][Git repository]]
    #+begin_src emacs-lisp
      (use-package orderless
        :init
-       (defun luc/orderless-strict-leading-initialism-dispatcher (pattern _index _total)
-         (when (string-suffix-p "|" pattern)
-           `(orderless-strict-leading-initialism . ,(substring pattern 0 -1))))
-     
-       (defun luc/orderless-literal-dispatcher (pattern _index _total)
-         (when (string-suffix-p "=" pattern)
-           `(orderless-literal . ,(substring pattern 0 -1))))
-     
        (defun luc/orderless-start-with-regexp-dispatcher (pattern _index _total)
          (when (string-suffix-p "+" pattern)
            `(orderless-regexp . ,(substring (concat "^" pattern) 0 -1))))
-     
+
        (setq completion-styles '(basic orderless)
              completion-category-defaults nil
              completion-category-overrides '((file (styles . (partial-completion)))))
-       (setq orderless-component-separator "[ #]"
-             orderless-matching-styles '(orderless-literal orderless-prefixes orderless-regexp)
-             orderless-style-dispatchers '(luc/orderless-start-with-regexp-dispatcher
-                                           luc/orderless-strict-leading-initialism-dispatcher
-                                           luc/orderless-literal-dispatcher)))
+       (setq orderless-component-separator "[ |]"
+             orderless-matching-styles '(orderless-literal orderless-prefixes)
+             orderless-style-dispatchers '(luc/orderless-start-with-regexp-dispatcher)))
    #+end_src
-   
+
+** Corfu
+   A package for completion.  As opposed to my previous choice,
+   =company=, =corfu= is made to be very minimal in its own functionality,
+   and can be expanded with other packages. I feel it's also faster,
+   and the customization options make it fit in with my style of
+   editing better.
+
+   [[https://github.com/minad/corfu][Git repository]]
+
+*** Base configuration
+    #+begin_src emacs-lisp
+      (use-package corfu
+        :custom
+        (corfu-cycle t)
+        (corfu-auto t)
+        (corfu-auto-prefix 1)
+        (corfu-auto-delay 0)
+        (corfu-separator ?\|)
+        (corfu-quit-at-boundary 'separator)
+        (corfu-quit-no-match 'separator)
+        (corfu-preview-current nil)
+        (corfu-preselect-first t)
+        (corfu-on-exact-match nil)
+        (corfu-echo-documentation t)
+        :init
+        (setq completion-cycle-threshold nil
+              tab-always-indent 'complete)
+        (luc/leader-def
+          "ic" 'corfu-mode)
+        (general-def
+          :keymaps 'corfu-map
+          :states 'insert
+          "C-l" 'corfu-insert
+          "C-n" 'evil-complete-next
+          "C-p" 'evil-complete-previous
+          "C-SPC" 'corfu-insert-separator)
+        (general-unbind
+          :keymaps 'corfu-map
+          "TAB"
+          "<tab>"
+          "RET"
+          "<return>"))
+    #+end_src
+
+*** Extending
+    Using =pcmpl-args= to expand shell command completion capabilities,
+    =corfu-doc= to show documentation in a little frame (like
+    =company-box=), =kind-icon= for icons, and =cape= for more completion
+    functions.
+
+    [[https://github.com/JonWaltman/pcmpl-args.el][pcmpl-args.el]] |[[https://github.com/galeo/corfu-doc][corfu-doc]] | [[https://github.com/jdtsmith/kind-icon][kind-icon]] | [[https://github.com/minad/cape][Cape]] |
+
+    #+begin_src emacs-lisp
+      (use-package corfu
+        :init
+        (use-package pcmpl-args)
+        (use-package corfu-doc
+          :hook
+          (corfu-mode . corfu-doc-mode)
+          :init
+          (general-def
+            :keymaps 'corfu-map
+            :states 'insert
+            "M-p" 'corfu-doc-scroll-up
+            "M-n" 'corfu-doc-scroll-down))
+        (defun corfu-enable-in-minibuffer ()
+          "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+          (when (where-is-internal #'completion-at-point (list (current-local-map)))
+            (corfu-mode 1)))
+        (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+        (global-corfu-mode)
+        :config
+        (use-package kind-icon
+          :init
+          (setq kind-icon-default-face 'corfu-default)
+          :config
+          (use-package cape
+            :init
+            (setq cape-dabbrev-min-length 1)
+            (general-def
+              :states 'insert
+              "C-x C-l" 'cape-line
+              "C-x C-f" 'cape-file
+              "C-x C-]" 'cape-symbol
+              "C-x C-p" 'cape-dabbrev
+              "C-x C-n" 'cape-dabbrev
+              "C-x C-h" 'cape-history)
+            :init
+            (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+            (add-to-list 'completion-at-point-functions #'cape-file)
+            (add-to-list 'completion-at-point-functions #'cape-history)
+            (add-to-list 'completion-at-point-functions #'cape-ispell))
+          (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)))
+    #+end_src
+
 ** Embark
    Adds the concept of "acting" on something, primarily minibuffer
    selection candidates, but things like the symbol at point are also
