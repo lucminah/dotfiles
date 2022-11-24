@@ -252,7 +252,55 @@
        ;; Use Snipe's versions of f/F/t/T/;/,
        (evil-snipe-override-mode 1))
    #+end_src
-   
+
+** Evil Multi Edit
+   Something like multiple cursors, but it actually marks similar
+   editing regions that then have changes mirrored across each
+   occurrence. It's leveraging the built-in =iedit-mode= and integrating
+   it in Evil, in a way that feels very natural no use.
+
+   [[https://github.com/hlissner/evil-multiedit][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package evil-multiedit
+       :config
+       (general-def
+         :states '(normal insert)
+         "C-;" 'evil-multiedit-match-all
+         "C-k" 'evil-multiedit-match-and-prev
+         "C-j" 'evil-multiedit-match-and-next)
+       (luc/leader-def
+         "ae" 'evil-multiedit-restore)
+       (general-def
+         :states 'visual
+         "R" 'evil-multiedit-match-all)
+       (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
+   #+end_src
+
+** Evil MC
+   Another multiple cursors package, but with different use
+   cases. Those honestly doesn't seem that common compared to the use
+   cases of =evil-multi-edit=, but I still keep this package around and
+   hopefully I can configure it more sometime.
+
+   [[https://github.com/gabesoft/evil-mc][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package evil-mc
+       :config
+       (global-evil-mc-mode 1))
+   #+end_src
+
+** Evil Matchit
+   For expanding the use of Evil's =%= operator, matching not only
+   brackets, parens or quotes, but also things like HTML tags,
+   beginning and end of expressions, and more.
+
+   [[https://github.com/redguardtoo/evil-matchit][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package evil-matchit
+       :config
+       (global-evil-matchit-mode))
+   #+end_src
+
 ** Electric Pairs
    Matching pairs are 'electric'. Isn't the easiest to explain, but
    once you see it in action, you'll know what it does. Pretty
@@ -289,6 +337,9 @@
    lot.
    #+begin_src emacs-lisp
      (use-package emacs
+       :hook
+       (fundamental-mode . (lambda () (setq indent-tabs-mode nil)))
+       (prog-mode . (lambda () (setq indent-tabs-mode nil)))
        :config
        (setq-default indent-tabs-mode nil)
        (defun luc/evil-indent-whole-buffer ()
@@ -299,12 +350,12 @@
        (luc/leader-def
          "=" 'luc/evil-indent-whole-buffer))
    #+end_src
-   
+
 ** Aggressive Indent
    This will actively prevent you from messing indentation up, hence
    aggressive indent. Can feel /too/ aggressive at times, so I only load
    it when I choose to explicitly.
-   
+
    [[https://github.com/Malabarba/aggressive-indent-mode][Git repository]]
    #+begin_src emacs-lisp
      (use-package aggressive-indent
@@ -313,11 +364,11 @@
        (luc/leader-def
          "ia" 'aggressive-indent-mode))
    #+end_src
-   
+
 ** Hungry Delete
    When deleting whitespace characters, delete all preceding
    whitespace characters.
-   
+
    [[https://github.com/nflath/hungry-delete][Git repository]]
    #+begin_src emacs-lisp
      (use-package hungry-delete
@@ -348,7 +399,7 @@
    name macros if I need to have access to multiple of them at the
    same time. It's all experimental, I'll see what sorts of problems
    or new ideas come up as I go.
-   
+
 *** Custom functions
     #+begin_src emacs-lisp
       (use-package emacs
@@ -374,7 +425,7 @@
           (evil-with-single-undo
             (consult-kmacro arg))))
     #+end_src
-   
+
 *** Keybindings
     #+begin_src emacs-lisp
       (use-package emacs
@@ -398,7 +449,7 @@
           :states 'insert
           "C-q" 'kmacro-insert-counter))
     #+end_src
-    
+
 * Minibuffer & Completion
 ** Basic minibuffer commands
    Emacs minibuffer commands I use all the time, including an
@@ -415,7 +466,7 @@
          "f" 'find-file
          "d" 'dired))
    #+end_src
-   
+
 ** Consult
    A collection of commands based on the =completing-read= function that
    substitute built-in functions such as =imenu= and brings new
