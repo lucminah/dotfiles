@@ -1464,14 +1464,54 @@
         (mpdel-tablist-mode . hl-line-mode)
         (mpdel-tablist-mode . display-line-numbers-mode)
         :init
-        (set-face-attribute 'mpdel-tablist-song-name-face nil :foreground "#50fa7b")
-        (set-face-attribute 'mpdel-tablist-track-face nil :foreground "#8be9fd")
-        (set-face-attribute 'mpdel-tablist-album-face nil :foreground "#bd93f9")
-        (set-face-attribute 'mpdel-tablist-artist-face nil :foreground "#bd93f9")
-        (set-face-attribute 'mpdel-tablist-date-face nil :foreground "#8be9fd")
-        (set-face-attribute 'mpdel-playlist-current-song-face nil :weight 'bold))
+        (set-face-attribute 'mpdel-tablist-song-name-face nil
+                            :inherit 'font-lock-string-face)
+        (set-face-attribute 'mpdel-tablist-track-face nil
+                            :inherit 'font-lock-constant-face)
+        (set-face-attribute 'mpdel-tablist-album-face nil
+                            :inherit 'font-lock-builtin-face)
+        (set-face-attribute 'mpdel-tablist-artist-face nil
+                            :inherit 'font-lock-builtin-face)
+        (set-face-attribute 'mpdel-tablist-date-face nil
+                            :inherit 'font-lock-constant-face)
+        (set-face-attribute 'mpdel-playlist-current-song-face nil
+                            :weight 'bold))
     #+end_src
-    
+
+** Denote
+   A package for managing notes, using a very interesting naming
+   convention that makes marking and finding notes pretty easy. I'm
+   mainly using it to keep a journal.
+
+   [[https://github.com/protesilaos/denote][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package denote
+       :straight (:type git :host github :repo "protesilaos/denote")
+       :init
+       (require 'denote-dired)
+       (setq denote-directory (expand-file-name "~/notes")
+             denote-file-type nil ;; Use Org Mode for note files.
+             denote-front-matter-date-format 'org-timestamp
+             denote-known-keywords '("journal" "random")
+             denote-dired-directories (list denote-directory
+                                            (thread-last
+                                                denote-directory
+                                              (expand-file-name "journal"))))
+       (defun luc/denote-journal ()
+         (interactive)
+         (let ((denote-directory (thread-last
+                                     denote-directory
+                                   (expand-file-name "journal"))))
+           (denote
+            (format-time-string "%A %e %B %Y" (time-add nil (-  (* 24 (* 60 60)))))
+            (denote--keywords-prompt))))
+       (luc/leader-def
+         "cj" 'luc/denote-journal
+         "cn" 'denote)
+       :hook
+       (dired-mode . denote-dired-mode-in-directories))
+   #+end_src
+
 ** Imenu
    Jump to points of interest in the buffer.
    #+begin_src emacs-lisp
@@ -1481,31 +1521,23 @@
        (luc/leader-def
          "im" 'consult-imenu))
    #+end_src
-   
-** Outline Minor Mode
-   Bring =org-mode= like outline capabilities to other major modes!
+
+** Origami
+   Package for folding/unfolding regions of text. I found it works better than =outline-minor-mode=.
+
+   [[https://github.com/gregsexton/origami.el][Git repository]]
    #+begin_src emacs-lisp
-     (use-package outline
+     (use-package origami
        :hook
-       (prog-mode . outline-minor-mode)
+       (prog-mode . origami-mode)
        :config
-       ;; I don't use the evil-fold commands, so I'll clear these
-       ;; keybindings so they are free for other uses.
-       (general-unbind
-         :keymaps '(outline-minor-mode-map outline-mode-map)
-         :states 'normal
-         "zp"
-         "zl"
-         "zk"
-         "zu"
-         "ze")
        (general-def
-         :keymaps 'outline-minor-mode-map
+         :keymaps 'origami-mode-map
          :states 'normal
-         "<tab>" 'outline-cycle
-         "<backtab>" 'outline-cycle-buffer))
+         "<tab>" 'origami-toggle-node
+         "<backtab>" 'origami-toggle-all-nodes))
    #+end_src
-   
+
 ** Dired
    I use =dired= for basically all my file management. Very versatile
    and powerful.
