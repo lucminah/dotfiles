@@ -947,7 +947,6 @@
 
 ** Show Paren Mode
    When the cursor is on a paren, highlight its match.
-
    #+begin_src emacs-lisp
      (use-package emacs
        :hook
@@ -1037,12 +1036,9 @@
        :config
        (setq display-line-numbers-type 'relative)
        (luc/leader-def
-         "in" 'display-line-numbers-mode)
-       :hook
-       (prog-mode . display-line-numbers-mode)
-       (conf-mode . display-line-numbers-mode))
+         "in" 'display-line-numbers-mode))
    #+end_src
-   
+
 ** Highlight Current Line
    #+begin_src emacs-lisp
      (use-package hl-line
@@ -1054,7 +1050,7 @@
        (prog-mode . hl-line-mode)
        (conf-mode . hl-line-mode))
    #+end_src
-   
+
 ** Highlight Search
    Search matches will remain highlighted until disabled with this
    keybinding.
@@ -1064,7 +1060,7 @@
        (luc/leader-def
          "ih" 'evil-ex-nohighlight))
    #+end_src
-   
+
 ** Evil Show Registers
    Keybinding for quickly getting Evil register values.
    #+begin_src emacs-lisp
@@ -1073,14 +1069,14 @@
        (luc/leader-def
          "gr" 'evil-show-registers))
    #+end_src
-   
+
 ** Backup & Auto-Save
    Backup files essentially keep previous versions of a file,
    different saved stages it has been. =undo-fu-session= seems to be
    taking care of that for me, but still, I thought I'd at least
    configure the backup files so they don't clutter directories and I
    have more control over them.
-   
+
    As for auto-save files, they are created automatically after a
    certain number of inputs to the buffer or seconds passed without
    any changes, so they keep unsaved versions of the visited file so
@@ -1114,7 +1110,7 @@
        (luc/leader-def
          "ar" 'recover-session))
    #+end_src
-   
+
 ** Fcitx
    [[https://fcitx-im.org/wiki/Fcitx_5][Fcitx]] is the input method framework I use for managing different
    keyboard layouts and language specific input. This package provides
@@ -1136,7 +1132,7 @@
        :config
        (fcitx-evil-turn-on))
    #+end_src
-   
+
 * Windows & Buffers
 ** Basic keybindings
    Creating comfortable keybindings for common buffer/window related
@@ -1155,17 +1151,14 @@
        "eb" 'ibuffer)
    #+end_src
 
-** Switch to Other Buffer
+** Evil Split
    #+begin_src emacs-lisp
      (use-package emacs
        :config
-       (defun luc/switch-to-other-buffer ()
-         (interactive)
-         (switch-to-buffer (other-buffer)))
-       (luc/leader-def
-         "<tab>" 'luc/switch-to-other-buffer))
+       (setq evil-split-window-below t)
+       (setq evil-vsplit-window-right t))
    #+end_src
-   
+
 ** Winner
    Undo and redo for window actions. I use this a lot when I need to
    have only one window open for a moment, and then want the layout I
