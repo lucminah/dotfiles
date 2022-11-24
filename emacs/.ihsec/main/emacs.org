@@ -1172,17 +1172,66 @@
          "er" 'winner-redo))
    #+end_src
 
+** Popper
+   Package for managing popup buffers - toggling their visibility and
+   cycling between them, mainly. Extremely useful to keep from
+   cluttering frames with many windows opening transient buffers. I
+   plan to add more configuration to configure the placement of
+   windows, including popups, with other packages sometime.
+
+   [[https://github.com/karthink/popper][Git repository]]
+   #+begin_src emacs-lisp
+     (use-package popper
+       :init
+       (setq
+        popper-mode-line '(:eval (propertize " POP " 'face 'mode-line-emphasis))
+        popper-display-control t
+        popper-reference-buffers '(compilation-mode
+                                   comint-mode
+                                   Man-mode
+                                   eshell-mode
+                                   helpful-mode
+                                   occur-mode
+                                   shell-mode
+                                   term-mode
+                                   treemacs-mode
+                                   vterm-mode
+                                   "^\\*Messages\\*"
+                                   "^\\*Org Src"
+                                   "^\\*Warnings\\*"
+                                   "^\\*Backtrace\\*"
+                                   "^\\*evil-registers\\*"
+                                   "^\\*Apropos\\*"
+                                   "^\\*Completions\\*"
+                                   "^\\*Compile-Log\\*"
+                                   "\\*Shell Command Output\\*"
+                                   "\\*Async Shell Command\\*"
+                                   "\\*Shell Command\\*"
+                                   "[Oo]utput\\*"))
+       (popper-mode t)
+       :config
+       (general-def
+         :keymaps 'override
+         :states '(insert normal visual emacs motion)
+         "M-;" 'popper-toggle-latest
+         "M-," 'popper-cycle
+         "M-." 'popper-toggle-type))
+   #+end_src
+
 ** Scrolling
    I want my cursor to only move the screen one line at a time when on
    the edges.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
-       (setq scroll-step 1)
-       (setq scroll-conservatively 10000)
-       (setq auto-window-vscroll nil))
+       (setq auto-window-hscroll nil
+             auto-window-vscroll nil
+             scroll-step 1
+             scroll-conservatively 101
+             scroll-down-aggressively 0
+             scroll-up-aggressively 0))
    #+end_src
-   
+
 ** Better visual line navigation
    I always thought the visual line motion commands felt a bit clunky
    by default on Evil. Fortunately, =evil-better-visual-line= makes
