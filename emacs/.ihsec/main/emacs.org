@@ -2093,48 +2093,6 @@
                                      (shell . t))))
     #+end_src
 
-** Org Roam
-   A very interesting tool for managing notes in Org Mode, creating a
-   database of links between them. I just started playing around with
-   it, and definitely recommend reading about it, it's pretty
-   impressive - hope I can make the most of it.
-
-   [[https://github.com/org-roam/org-roam][Git repository]]
-   #+begin_src emacs-lisp
-     (use-package org-roam
-       :init
-       (setq org-roam-v2-ack t)
-       (setq org-roam-directory (concat org-directory "/roam"))
-       (setq org-roam-dailies-directory "daily")
-       (setq org-roam-dailies-capture-templates 
-             '(("d" "default" entry
-                "* %<%H:%M>\n%?"
-                :if-new (file+head "%<%Y-%m-%d>.org"
-                                   "#+title: %<%A, %d %B %Y>\n#+filetags: :journal:\n\n"))))
-       :config
-       (org-roam-setup)
-       (general-def
-         :states 'insert
-         :keymaps 'org-mode-map
-         "C-c i" 'org-roam-node-insert)
-       (luc/leader-def
-         "cn" 'org-roam-dailies-goto-next-note
-         "cp" 'org-roam-dailies-goto-previous-note
-         "cf" 'org-roam-node-find
-         "cv" 'org-roam-capture
-         "cx" 'org-roam-ref-add
-         "cX" 'org-roam-ref-remove
-         "cg" 'org-roam-tag-add
-         "cG" 'org-roam-tag-remove
-         "cl" 'org-roam-alias-add
-         "cL" 'org-roam-alias-remove
-         "cb" 'org-roam-buffer-toggle
-         "ct" 'org-roam-dailies-goto-today
-         "cT" 'org-roam-dailies-capture-today
-         "cd" 'org-roam-dailies-goto-date
-         "cD" 'org-roam-dailies-capture-date))
-   #+end_src
-    
 * Development
   Building a comfy and powerful development environment.
 ** LSP & DAP Setup
@@ -2150,6 +2108,10 @@
       (use-package lsp-mode
         :commands (lsp lsp-deferred)
         :init
+        (setq gc-cons-threshold 100000000)
+        (setq read-process-output-max (* 1024 1024))
+        (setq lsp-log-io nil)
+        (setq lsp-disabled-clients '(emmet-ls))
         (use-package flycheck ;; Syntax checker
           :config
           (use-package consult-flycheck)
@@ -2168,7 +2130,7 @@
           "jr" 'lsp-rename
           "jf" 'lsp-find-references))
     #+end_src
-   
+
 *** LSP UI
     #+begin_src emacs-lisp
       (use-package lsp-ui
@@ -2183,7 +2145,7 @@
           :keymaps 'lsp-mode-map
           "ls" 'lsp-ui-sideline-mode))
     #+end_src
-    
+
 *** DAP Mode
     [[https://github.com/emacs-lsp/dap-mode][Git repository]]
     #+begin_src emacs-lisp
@@ -2192,7 +2154,7 @@
         ((lsp-mode . dap-mode)
          (dap-mode . dap-ui-mode)))
     #+end_src
-    
+
 ** Languages
    Configuring the development environment for different languages
    (mainly with LSP and DAP).
