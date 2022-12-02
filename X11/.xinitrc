@@ -10,8 +10,6 @@ export LANG=ja_JP.UTF-8
 nvidia-settings --load-config-only &
 nvidia-settings -a [gpu:0]/GpuPowerMizerMode=1 &
 picom --experimental-backends &
-dwmbar &
-mpdupdate &
 flameshot &
 xrdb ~/.Xresources &
 dunst &
