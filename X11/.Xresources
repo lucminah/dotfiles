@@ -20,20 +20,20 @@ Xft.rgba:       rgb
 ! Doom Vibrant
 background: #0f0f22
 foreground: #dfdfdf
-cursorfg:   #51afef
+cursorfg:   #d2a6ff
 cursorbg:   #111111
 
 color0:     #101010
-color1:     #ff665c
-color2:     #7bc275
+color1:     #f07178
+color2:     #7fd962
 color3:     #fcce7b
-color4:     #51afef
-color5:     #c57bdb
+color4:     #59c2ff
+color5:     #d2a6ff
 color6:     #5cefff
-color7:     #757B80
+color7:     #475266
 
 color8:     #484854
-color9:     #e69055
+color9:     #e6b673
 color10:    #99bb66
 color11:    #ecbe7b
 color12:    #2257A0
