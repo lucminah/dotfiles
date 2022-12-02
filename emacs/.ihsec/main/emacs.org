@@ -75,24 +75,31 @@
    Vim's modal editing, grammar and keybindings are very much pillars
    of my text editing (and now, thanks to Emacs, much
    more). Thankfully, these packages are here to save the day.
-*** Evil Mode
-    The Extensive Vi Layer itself! Here I load Evil and customizing some
-    basic variables. For information on the package I'm using for
-    undo-redo actions and setting here as my undo system, see [[*Undo Fu][Undo Fu]].
+*** Evil Mode & Undo Tree
+    The Extensive Vi Layer itself! Here I load Evil and customizing
+    some basic variables. I'm using =undo-tree= as my undo/redo system,
+    and it seems that needs to be loaded before Evil, so that's what
+    I'm doing.
 
     [[https://evil.readthedocs.io/en/latest/index.html][Documentation]]
     #+begin_src emacs-lisp
-      (use-package evil
+      (use-package undo-tree
+        :custom
+        (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
         :init
-        (setq evil-want-keybinding nil    ;; For playing nice with `evil-collection'
-              evil-want-Y-yank-to-eol t   ;; Equivalent to 'map Y y$' in Vim
-              evil-symbol-word-search t   ;; * and # will search for symbols, not words.
-              evil-want-C-u-scroll t      ;; \
-              evil-want-C-u-delete t)     ;; -\ I don't use C-u for the universal argument
-        :config
-        (evil-mode 1)
-        (evil-select-search-module 'evil-search-module 'evil-search)
-        (evil-set-undo-system 'undo-fu)) ;; See the Undo Fu section.
+        (with-eval-after-load 'undo-tree (defun undo-tree-overridden-undo-bindings-p () nil))
+        (global-undo-tree-mode 1)
+        (use-package evil
+          :init
+          (setq evil-want-keybinding nil ;; For playing nice with `evil-collection'
+                evil-want-Y-yank-to-eol t ;; Equivalent to 'map Y y$' in Vim
+                evil-symbol-word-search t ;; * and # will search for symbols, not words.
+                evil-want-C-u-scroll t    ;; \
+                evil-want-C-u-delete t) ;; -\ I don't use C-u for the universal argument
+          :config
+          (evil-mode 1)
+          (evil-select-search-module 'evil-search-module 'evil-search)
+          (evil-set-undo-system 'undo-tree)))
     #+end_src
 
 *** Evil Collection
@@ -136,34 +143,6 @@
     #+end_src
 
 * Editing
-** Undo Fu
-   My preferred undo system. Works by creating checkpoints on the undo
-   actions that keep the functionality linear and sensibly delimited,
-   much easier to follow than the default Emacs undo, but also allow
-   for unconstrained and non-linear (default) undo/redo, so there's
-   still access to all previous states of the file. It also has a
-   function to allow it to be limited to a selected region, but I
-   haven't tried that out yet.
-
-   [[https://gitlab.com/ideasman42/emacs-undo-fu][Undo Fu]]
-
-   I'm also using =undo-fu-session=, which makes it possible to have a
-   persistent change history of files between sessions. The history
-   saving is made automatically when writing to the file.
-
-   [[https://gitlab.com/ideasman42/emacs-undo-fu-session][Undo Fu Session]]
-   #+begin_src emacs-lisp
-     (use-package undo-fu
-       :custom
-       (undo-fu-ignore-keyboard-quit t)    ;; C-g won't disable the checkpoint...
-       :config
-       (luc/leader-def
-         "u" 'undo-fu-disable-checkpoint)  ;; ...but now this will
-       (use-package undo-fu-session
-         :config
-         (global-undo-fu-session-mode)))
-   #+end_src
-
 ** Evil Surround
    Makes surrounding pairs (including brackets, quotes) a text object
    to be operated on, be it changing, deleting or adding.
