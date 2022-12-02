@@ -2170,6 +2170,13 @@
 **** Common Lisp
      #+begin_src emacs-lisp
        (use-package sly
+         :init
+         (general-def
+           :keymaps 'sly-mode-map
+           :states '(normal insert)
+           "C-<return>" 'sly-compile-defun
+           "S-<return>" 'sly-eval-last-expression
+           "C-S-<return>" 'sly-eval-defun)
          :hook (common-lisp-mode . sly-mode))
      #+end_src
 
