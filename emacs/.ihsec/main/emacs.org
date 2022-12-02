@@ -620,8 +620,8 @@
           (general-def
             :keymaps 'corfu-map
             :states 'insert
-            "M-p" 'corfu-doc-scroll-up
-            "M-n" 'corfu-doc-scroll-down))
+            "C-S-n" 'corfu-doc-scroll-up
+            "C-S-p" 'corfu-doc-scroll-down))
         (defun corfu-enable-in-minibuffer ()
           "Enable Corfu in the minibuffer if `completion-at-point' is bound."
           (when (where-is-internal #'completion-at-point (list (current-local-map)))
@@ -1192,9 +1192,9 @@
        (general-def
          :keymaps 'override
          :states '(insert normal visual emacs motion)
-         "M-;" 'popper-toggle-latest
-         "M-," 'popper-cycle
-         "M-." 'popper-toggle-type))
+         "C-," 'popper-toggle-latest
+         "C-." 'popper-cycle
+         "C-S-," 'popper-toggle-type))
    #+end_src
 
 ** Scrolling
