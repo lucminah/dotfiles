@@ -2143,11 +2143,7 @@
     with =lispyville= (an additional mode that works with lispy for Evil
     users).
 
-    [[https://github.com/Fanael/highlight-quoted][Highlight Quoted]]
-
-    [[https://github.com/abo-abo/lispy][Lispy]]
-
-    [[https://github.com/noctuid/lispyville][Lispyville]]
+    [[https://github.com/Fanael/highlight-quoted][Highlight Quoted]] | [[https://github.com/abo-abo/lispy][Lispy]] | [[https://github.com/noctuid/lispyville][Lispyville]]
 
     #+begin_src emacs-lisp
       (use-package emacs
