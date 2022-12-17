@@ -2162,6 +2162,7 @@
            (emacs-lisp-mode . lispyville-mode)
            (scheme-mode . lispyville-mode)
            (lisp-mode . lispyville-mode)
+           (clojure-mode . lispyville-mode)
            :config
            (general-def
              :keymaps 'lispyville-mode-map
@@ -2187,7 +2188,50 @@
      #+begin_src emacs-lisp
        (use-package geiser
          :config
-         (use-package geiser-guile))
+         (use-package geiser-guile
+           :init
+           (general-def
+             :keymaps 'geiser-mode-map
+             :states '(normal insert)
+             "C-<return>" 'geiser-compile-definition
+             "S-<return>" 'geiser-eval-last-sexp
+             "C-S-<return>" 'geiser-eval-definition)))
+     #+end_src
+
+**** Clojure
+     #+begin_src emacs-lisp
+       (use-package clojure-mode
+         :hook
+         ;; (clojure-mode . lsp-deferred)
+         (clojure-mode . (lambda () (setq-local lsp-completion-enable nil)))
+         :init
+         (use-package cider
+           :hook
+           (clojure-mode . cider-mode)
+           :init
+           (defun luc/reload-rainbow-identifiers ()
+             (interactive)
+             (progn
+               (rainbow-identifiers-mode -1)
+               (rainbow-identifiers-mode 1)))
+           (advice-add 'cider-eval-defun-at-point :after #'luc/reload-rainbow-identifiers)
+           (general-def
+             :keymaps 'cider-mode-map
+             :states '(normal insert)
+             "C-<return>" 'cider-eval-defun-at-point
+             "S-<return>" 'cider-eval-last-sexp
+             "C-S-<return>" 'cider-eval-last-sexp-to-repl)))
+     #+end_src
+
+**** Emacs Lisp
+     #+begin_src emacs-lisp
+       (use-package emacs
+         :config
+         (general-def
+           :keymaps '(emacs-lisp-mode-map
+                      lisp-interaction-mode-map)
+           "C-<return>" 'eval-defun
+           "S-<return>" 'eval-last-sexp))
      #+end_src
 
 *** C/C++
