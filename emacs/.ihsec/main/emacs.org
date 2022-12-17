@@ -1194,7 +1194,7 @@
          :states '(insert normal visual emacs motion)
          "C-," 'popper-toggle-latest
          "C-." 'popper-cycle
-         "C-S-," 'popper-toggle-type))
+         "C-/" 'popper-toggle-type))
    #+end_src
 
 ** Scrolling
