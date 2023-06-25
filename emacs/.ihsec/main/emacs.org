@@ -752,6 +752,22 @@
        (add-to-list 'default-frame-alist '(font . "UbuntuMonoNerdFont-13")))
    #+end_src
 
+** Golden Ratio
+   #+begin_src emacs-lisp
+     (use-package golden-ratio
+       :init
+       (setq golden-ratio-auto-scale nil
+             golden-ratio-extra-commands '(evil-window-delete
+                                           delete-other-windows
+                                           evil-window-up
+                                           evil-window-down
+                                           evil-window-left
+                                           evil-window-right
+                                           evil-window-split
+                                           evil-window-vsplit))
+       (golden-ratio-mode))
+   #+end_src
+
 ** Solaire Mode
    For differentiating between "real" file editing buffers from
    "unreal" popups, terminals and the like, by making the background
