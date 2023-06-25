@@ -739,12 +739,14 @@
                doom-ayu-dark-comment-bg nil)
          (load-theme 'doom-ayu-dark t))
        (use-package doom-modeline
+         :init
+         (use-package nerd-icons)
          :custom
          (doom-modeline-buffer-encoding nil)
          (doom-modeline-window-width-limit 154)
          (doom-modeline-icon t)
          (doom-modeline-height 25)
-         :init
+         :config
          (doom-modeline-mode 1))
        ;; Making this the default font for this and future frames
        (add-to-list 'default-frame-alist '(font . "UbuntuMonoNerdFont-13")))
