@@ -586,19 +586,21 @@
               tab-always-indent 'complete)
         (luc/leader-def
           "ic" 'corfu-mode)
+        (general-unbind
+          :keymaps 'corfu-map
+          "TAB"
+          "<tab>"
+          "RET"
+          "C-n"
+          "C-p"
+          "<return>")
         (general-def
           :keymaps 'corfu-map
           :states 'insert
           "C-l" 'corfu-insert
           "C-n" 'evil-complete-next
           "C-p" 'evil-complete-previous
-          "C-SPC" 'corfu-insert-separator)
-        (general-unbind
-          :keymaps 'corfu-map
-          "TAB"
-          "<tab>"
-          "RET"
-          "<return>"))
+          "C-SPC" 'corfu-insert-separator))
     #+end_src
 
 *** Extending
@@ -607,21 +609,17 @@
     =company-box=), =kind-icon= for icons, and =cape= for more completion
     functions.
 
+
     [[https://github.com/JonWaltman/pcmpl-args.el][pcmpl-args.el]] |[[https://github.com/galeo/corfu-doc][corfu-doc]] | [[https://github.com/jdtsmith/kind-icon][kind-icon]] | [[https://github.com/minad/cape][Cape]] |
 
     #+begin_src emacs-lisp
       (use-package corfu
         :init
         (use-package pcmpl-args)
-        (use-package corfu-doc
-          :hook
-          (corfu-mode . corfu-doc-mode)
-          :init
-          (general-def
-            :keymaps 'corfu-map
-            :states 'insert
-            "C-S-n" 'corfu-doc-scroll-up
-            "C-S-p" 'corfu-doc-scroll-down))
+        (load-file (concat user-emacs-directory
+                           "straight/repos/corfu/extensions/corfu-popupinfo.el"))
+        (setq corfu-popupinfo-delay (cons 0.5 0))
+        (corfu-popupinfo-mode)
         (defun corfu-enable-in-minibuffer ()
           "Enable Corfu in the minibuffer if `completion-at-point' is bound."
           (when (where-is-internal #'completion-at-point (list (current-local-map)))
