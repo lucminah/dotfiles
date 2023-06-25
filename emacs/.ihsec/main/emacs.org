@@ -1721,8 +1721,11 @@
         (evil-set-initial-state 'vterm-mode 'insert)
         ;; Place cursor in the prompt line when coming back to insert state.
         (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point)
-        (luc/leader-def
-          "at" 'vterm)
+        (use-package multi-vterm
+          :init
+          (luc/leader-def
+            "at" 'vterm
+            "aT" 'multi-vterm))
         :commands vterm
         :config
         (evil-collection-vterm-setup)
