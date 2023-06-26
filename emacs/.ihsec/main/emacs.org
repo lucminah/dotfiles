@@ -754,6 +754,12 @@
    #+end_src
 
 ** Golden Ratio
+   Resizes windows based on the golden ratio. Makes the currently
+   focused window the biggest and adjusts very well to different
+   layouts. Window management just got so much easier, this is a must
+   have for me now.
+
+   [[https://github.com/roman/golden-ratio.el][Git repository]]
    #+begin_src emacs-lisp
      (use-package golden-ratio
        :init
@@ -800,6 +806,10 @@
    #+end_src
 
 ** Focus Mode
+   Very useful package for keeping only the current text block
+   highlighted, dimming the rest of the buffer.
+
+   [[https://github.com/larstvei/Focus][Git repository]]
    #+begin_src emacs-lisp
      (use-package focus
        :init
@@ -808,6 +818,7 @@
    #+end_src
 
 ** Suppress native-comp warnings
+   These can get pretty annoying.
    #+begin_src emacs-lisp
      (use-package emacs
        :config
@@ -815,6 +826,11 @@
    #+end_src
 
 ** Scroll on Jump
+   Interesting package that smooths out the moving buffer when jumping
+   around. It's not perfect, doesn't work exactly as I'd like it to,
+   but I'm enjoying it.
+
+   [[https://github.com/emacsmirror/scroll-on-jump][Git repository]]
    #+begin_src emacs-lisp
      (use-package scroll-on-jump
        :config
@@ -1193,6 +1209,8 @@
    #+end_src
 
 ** Evil Split
+   My preferred behavior for splitting windows.
+
    #+begin_src emacs-lisp
      (use-package emacs
        :config
@@ -1759,8 +1777,10 @@
     as comfortable as the Emacs buffer that =shell= provides, but more
     comfortable nonetheless), and I especially like that it can toggle
     sending =ESC= to Emacs or the shell.
+    I'm also using =multi-vterm= so I can have multiple instances of it
+    running at the same time.
 
-    [[https://github.com/akermu/emacs-libvterm][Git repository]]
+    [[https://github.com/akermu/emacs-libvterm][Vterm]] | [[https://github.com/suonlight/multi-vterm][Multi-Vterm]]
     #+begin_src emacs-lisp
       (use-package vterm
         :init
