@@ -69,6 +69,7 @@
      (setq straight-vc-git-default-protocol 'https)
      ;; Install `use-package'
      (straight-use-package 'use-package)
+     (straight-use-package 'org)
    #+end_src
 
 ** Evil & General Setup
