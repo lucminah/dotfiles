@@ -686,11 +686,11 @@
 
    [[https://github.com/emacsmirror/fasd][Base emacs-fasd Git repository]]
 
-   [[https://github.com/lucasminah/fasd][My fork]]
+   [[https://github.com/lucminah/fasd][My fork]]
    #+begin_src emacs-lisp
      (use-package fasd
        :straight (fasd :type git :host github :repo "emacsmirror/fasd"
-                       :fork (:type git :repo "lucasminah/fasd"))
+                       :fork (:type git :repo "lucminah/fasd"))
        :init
        (defun luc/fasd-find-select ()
          "`fasd-find-file' promps for selection from list of results."
@@ -1446,17 +1446,17 @@
 
     [[https://github.com/mpdel/mpdel][Base MPDel repository]]
 
-    [[https://github.com/lucasminah/libmpdel][My fork of libmpdel]]
+    [[https://github.com/lucminah/libmpdel][My fork of libmpdel]]
 
-    [[https://github.com/lucasminah/mpdel][My fork of mpdel]]
+    [[https://github.com/lucminah/mpdel][My fork of mpdel]]
     #+begin_src emacs-lisp
       (use-package libmpdel
         :straight (libmpdel :type git :host github :repo "mpdel/libmpdel"
-                            :fork (:host github :repo "lucasminah/libmpdel"))
+                            :fork (:host github :repo "lucminah/libmpdel"))
         :config
         (use-package mpdel
           :straight (mpdel :type git :host github :repo "mpdel/mpdel"
-                           :fork (:host github :repo "lucasminah/mpdel"))
+                           :fork (:host github :repo "lucminah/mpdel"))
           :commands mpdel-playlist-open
           :hook
           (mpdel-tablist-mode . turn-off-evil-snipe-mode)
